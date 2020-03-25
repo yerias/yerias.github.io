@@ -1,0 +1,95 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="Linux对环境变量的理解以及alias、rm、hostory的使用"><meta name="keywords" content="Linux,DataWarehouse"><meta name="author" content="Tunan"><meta name="copyright" content="Tunan"><title>Linux对环境变量的理解以及alias、rm、hostory的使用 | TUNANのBlog</title><link rel="shortcut icon" href="/melody-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.6.1"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.6.1"><link rel="dns-prefetch" href="https://cdn.staticfile.org"><link rel="dns-prefetch" href="https://cdn.bootcss.com"><link rel="dns-prefetch" href="https://creativecommons.org"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  }
+} </script></head><body><canvas class="fireworks"></canvas><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="toggle-sidebar-info text-center"><span data-toggle="Toggle article">Toggle site</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">Catalog</div><div class="sidebar-toc__progress"><span class="progress-notice">You've read</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#目标"><span class="toc-number">1.</span> <span class="toc-text">目标</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#全局环境变量"><span class="toc-number">2.</span> <span class="toc-text">全局环境变量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#个人环境变量"><span class="toc-number">3.</span> <span class="toc-text">个人环境变量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#which的理解"><span class="toc-number">4.</span> <span class="toc-text">which的理解</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#别名"><span class="toc-number">5.</span> <span class="toc-text">别名</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#删除"><span class="toc-number">6.</span> <span class="toc-text">删除</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#history"><span class="toc-number">7.</span> <span class="toc-text">history</span></a></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="/img/xiaoqi.jpg"></div><div class="author-info__name text-center">Tunan</div><div class="author-info__description text-center">BigData Developer</div><div class="follow-button"><a href="#">Follow Me</a></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">Articles</span><span class="pull-right">71</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">Tags</span><span class="pull-right">24</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">Categories</span><span class="pull-right">20</span></a></div><hr><div class="author-info-links"><div class="author-info-links__title text-center">Links</div><a class="author-info-links__name text-center" href="https://hadoop.apache.org/docs/r2.10.0/hadoop-project-dist/hadoop-common/SingleCluster.html" target="_blank" rel="noopener">HADOOP</a><a class="author-info-links__name text-center" href="https://cwiki.apache.org/confluence/display/Hive/" target="_blank" rel="noopener">HIVE</a><a class="author-info-links__name text-center" href="https://cwiki.apache.org/" target="_blank" rel="noopener">WIKI</a><a class="author-info-links__name text-center" href="http://archive.cloudera.com/cdh5/cdh/5/" target="_blank" rel="noopener">CDH</a><a class="author-info-links__name text-center" href="http://flume.apache.org/" target="_blank" rel="noopener">FLUME</a><a class="author-info-links__name text-center" href="https://azkaban.github.io/" target="_blank" rel="noopener">AZKABAN</a><a class="author-info-links__name text-center" href="https://www.maxinhong.com/" target="_blank" rel="noopener">叶梨子</a></div></div></div><div id="content-outer"><div id="top-container" style="background-image: url(/img/soroush-golpoor-1497416-unsplash.jpg)"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">TUNANのBlog</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page" href="/">主页</a><a class="site-page" href="/archives">归档</a><a class="site-page" href="/tags">标签</a><a class="site-page" href="/categories">分类</a></span></div><div id="post-info"><div id="post-title">Linux对环境变量的理解以及alias、rm、hostory的使用</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-19</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/Linux/">Linux</a><div class="post-meta-wordcount"><span>Word count: </span><span class="word-count">927</span><span class="post-meta__separator">|</span><span>Reading time: 4 min</span></div></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><h3 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h3><ol>
+<li>整理 全局环境变量 个人环境变量 <code>which</code>的理解</li>
+<li>整理 别名</li>
+<li>整理 删除</li>
+<li>整理 <code>history</code></li>
+</ol>
+<h3 id="全局环境变量"><a href="#全局环境变量" class="headerlink" title="全局环境变量"></a>全局环境变量</h3><p>全局环境变量的配置文件是：<code>/etc/profile</code></p>
+<p>全局环境变量中一般配置的是共用的程序环境 比如<code>java</code></p>
+<p>下面以<code>java</code>为例子配置</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# vim /etc/profile</span><br></pre></td></tr></table></figure>
+
+<p>java的安装路径在 <code>/usr/java</code>下，所以文件中如下配置</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">export JAVA_HOME=/usr/java/jdk1.8.0_144</span><br><span class="line">export PATH=$JAVA_HOME/bin:$PATH</span><br></pre></td></tr></table></figure>
+
+<p>需要注意的是 <code>$PATH</code>接在<code>$JAVA_HOME</code>的后面，即把<code>$JAVA_HOME</code>放在<code>$PATH</code>的最前面</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">/opt/module/jdk1.8.0_144/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/opt/module/jdk1.8.0_144/bin:/root/bin</span><br></pre></td></tr></table></figure>
+
+<h3 id="个人环境变量"><a href="#个人环境变量" class="headerlink" title="个人环境变量"></a>个人环境变量</h3><p>个人环境变量配置在 <code>~/.bashrc</code> 文件中，这里需要注意的是如果配置在 <code>~/.bash_profile</code>文件中，使用<code>ssh</code>远程连接的时候不会加载 <code>~/.bash_profile</code>，造成一些无法排查的<code>bug</code></p>
+<p>个人环境配置一些独自使用的程序变量，如果配置在用户的个人环境中，其他用户无法访问，比如在<code>hadoop</code>用户下配置 <code>hadoop</code>的环境变量，只有<code>hadoop</code>一个用户能使用</p>
+<h3 id="which的理解"><a href="#which的理解" class="headerlink" title="which的理解"></a>which的理解</h3><p>安装完程序或者配置完变量后，最好的习惯是使用<code>which</code>看一下，检查一下环境是否配置正确，否则可能遇到自以为正确的<code>bug</code></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# which java</span><br><span class="line">/opt/module/jdk1.8.0_144/bin/java</span><br></pre></td></tr></table></figure>
+
+<h3 id="别名"><a href="#别名" class="headerlink" title="别名"></a>别名</h3><p>别名的使用可以简写冗长且难以记忆或者难以书写的命令</p>
+<p>格式：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">alias [-p] [name[=value] ... ]</span><br></pre></td></tr></table></figure>
+
+<p>例子：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# alias a='ll -a'</span><br><span class="line">[root@aliyun ~]# a</span><br><span class="line">total 80</span><br><span class="line">dr-xr-x---.  6 root root 4096 Nov 15 19:46 .</span><br><span class="line">dr-xr-xr-x. 19 root root 4096 Nov  3 17:29 ..</span><br><span class="line">-rw-------   1 root root 6453 Nov 14 11:16 .bash_history</span><br><span class="line">-rw-r--r--.  1 root root   18 Dec 29  2013 .bash_logout</span><br><span class="line">-rw-r--r--.  1 root root  176 Dec 29  2013 .bash_profile</span><br><span class="line">-rw-r--r--.  1 root root  176 Dec 29  2013 .bashrc</span><br><span class="line">drwx------   3 root root 4096 Aug 18  2017 .cache</span><br></pre></td></tr></table></figure>
+
+<p>查询主机中已经存在的别名：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# alias</span><br><span class="line">alias cp='cp -i'</span><br><span class="line">alias egrep='egrep --color=auto'</span><br><span class="line">alias fgrep='fgrep --color=auto'</span><br><span class="line">alias grep='grep --color=auto'</span><br><span class="line">alias l.='ls -d .* --color=auto'</span><br><span class="line">alias ll='ls -l --color=auto'</span><br><span class="line">alias ls='ls --color=auto'</span><br><span class="line">alias mv='mv -i'</span><br><span class="line">alias rm='rm -i'</span><br><span class="line">alias which='alias | /usr/bin/which --tty-only --read-alias --show-dot --show-tilde'</span><br></pre></td></tr></table></figure>
+
+<p>永久配置别名：</p>
+<p>配置在环境变量中 <code>/etc/profile</code> ，<code>~/.bashrc</code>，<code>~/.bash_profile</code>中，即永久配置别名</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> User specific aliases and <span class="built_in">functions</span></span></span><br><span class="line"></span><br><span class="line">alias rm='rm -i'</span><br><span class="line">alias cp='cp -i'</span><br><span class="line">alias mv='mv -i'</span><br></pre></td></tr></table></figure>
+
+<h3 id="删除"><a href="#删除" class="headerlink" title="删除"></a>删除</h3><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>mkdir</code></td>
+<td>删除一个空文件</td>
+</tr>
+<tr>
+<td><code>rm -f</code></td>
+<td>直接删除文件</td>
+</tr>
+<tr>
+<td><code>rm -rf</code></td>
+<td>直接删除文件夹</td>
+</tr>
+<tr>
+<td><code>rm -rf</code></td>
+<td>是一个高危的命令</td>
+</tr>
+</tbody></table>
+<p>场景：</p>
+<p><code>shell</code>脚本中，定义变量<code>k = &quot;&quot;</code> 然后<code>rm -rf $k</code> 会默认指定根目录下</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">K=&quot;&quot;rm -rf $K 实际上是rm -rf /</span><br></pre></td></tr></table></figure>
+
+<p>解决办法是先判断k是否为空</p>
+<h3 id="history"><a href="#history" class="headerlink" title="history"></a>history</h3><p><code>history</code>命令用来查询历史记录</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# history | head -10</span><br><span class="line">    1  passwd </span><br><span class="line">    2  ls</span><br><span class="line">    3  cat /etc/hosts</span><br><span class="line">    4  yum install redis</span><br><span class="line">    5  yum install epel-release</span><br><span class="line">    6  yum install redis</span><br><span class="line">    7  df -hT</span><br><span class="line">    8  service redis start</span><br><span class="line">    9  service redis stop</span><br><span class="line">   10  service redis status</span><br></pre></td></tr></table></figure>
+
+<p>场景：</p>
+<p>莫名其妙的发现主机中的数据没了，可以查看一下历史记录用了哪些命令</p>
+<p>使用 <code>!n</code> 来快速使用一条历史命令</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# !7</span><br><span class="line">df -hT</span><br><span class="line">Filesystem     Type      Size  Used Avail Use% Mounted on</span><br><span class="line">/dev/vda1      ext4       40G   11G   27G  29% /</span><br><span class="line">devtmpfs       devtmpfs  911M     0  911M   0% /dev</span><br><span class="line">tmpfs          tmpfs     920M     0  920M   0% /dev/shm</span><br><span class="line">tmpfs          tmpfs     920M  332K  920M   1% /run</span><br><span class="line">tmpfs          tmpfs     920M     0  920M   0% /sys/fs/cgroup</span><br><span class="line">tmpfs          tmpfs     184M     0  184M   0% /run/user/0</span><br></pre></td></tr></table></figure>
+
+<p><code>history -c</code> 命令可以清空当前窗口的历史输出命令。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# history -c</span><br><span class="line">[root@aliyun ~]# history</span><br><span class="line">1  history</span><br></pre></td></tr></table></figure>
+
+<p>但是历史记录实际上保存在 <code>~/.bash_history</code>中的</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# cat .bash_history | head -10</span><br><span class="line">passwd </span><br><span class="line">ls</span><br><span class="line">cat /etc/hosts</span><br><span class="line">yum install redis</span><br><span class="line">yum install epel-release</span><br><span class="line">yum install redis</span><br><span class="line">df -hT</span><br><span class="line">service redis start</span><br><span class="line">service redis stop</span><br><span class="line">service redis status</span><br></pre></td></tr></table></figure>
+
+<p>彻底清空该文件夹的方式为：<code>cat /dell/null &gt; .bash_history</code></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# cat /dev/null &gt; .bash_history </span><br><span class="line">[root@aliyun ~]# cat .bash_history</span><br><span class="line">[root@aliyun ~]#</span><br></pre></td></tr></table></figure>
+
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="mailto:undefined" target="_blank" rel="noopener">Tunan</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="http://yerias.github.io/2018/09/19/linux/2/">http://yerias.github.io/2018/09/19/linux/2/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Linux/">Linux</a><a class="post-meta__tags" href="/tags/DataWarehouse/">DataWarehouse</a></div><div class="social-share" data-disabled="facebook,twitter,douban,linkedin,diandian"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js@1.0.16/dist/css/share.min.css"><script src="https://cdn.jsdelivr.net/npm/social-share.js@1.0.16/dist/js/social-share.min.js"></script><nav id="pagination"><div class="prev-post pull-left"><a href="/2018/09/20/linux/3/"><i class="fa fa-chevron-left">  </i><span>熟悉Linux权限相关命令</span></a></div><div class="next-post pull-right"><a href="/2018/09/18/linux/1/"><span>Linux操作文件和定位错误</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer class="footer-bg" style="background-image: url(/img/soroush-golpoor-1497416-unsplash.jpg)"><div class="layout" id="footer"><div class="copyright">&copy;2018 - 2020 By Tunan</div><div class="framework-info"><span>Driven - </span><a href="#"><span>Hexo</span></a><span class="footer-separator">|</span><span>Theme - </span><a href="#"><span>Melody</span></a></div><div class="footer_custom_text">大家好，我是图南，很高兴认识你们！</div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file-o"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.6.1"></script><script src="/js/fancybox.js?version=1.6.1"></script><script src="/js/sidebar.js?version=1.6.1"></script><script src="/js/copy.js?version=1.6.1"></script><script src="/js/fireworks.js?version=1.6.1"></script><script src="/js/transition.js?version=1.6.1"></script><script src="/js/scroll.js?version=1.6.1"></script><script src="/js/head.js?version=1.6.1"></script><script>if(/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+}</script></body></html>

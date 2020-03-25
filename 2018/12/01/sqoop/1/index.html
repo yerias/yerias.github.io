@@ -1,0 +1,209 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="SQOOP安装&amp;RDBMS导入HDFS&amp;RDBMS导入HIVE&amp;HDFS导入RDBMS&amp;HIVE导入RDBMS&amp;SQOOP的ETL案例&amp;在SHELL中操作MYSQL"><meta name="keywords" content="Sqoop"><meta name="author" content="Tunan"><meta name="copyright" content="Tunan"><title>SQOOP安装&amp;RDBMS导入HDFS&amp;RDBMS导入HIVE&amp;HDFS导入RDBMS&amp;HIVE导入RDBMS&amp;SQOOP的ETL案例&amp;在SHELL中操作MYSQL | TUNANのBlog</title><link rel="shortcut icon" href="/melody-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.6.1"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.6.1"><link rel="dns-prefetch" href="https://cdn.staticfile.org"><link rel="dns-prefetch" href="https://cdn.bootcss.com"><link rel="dns-prefetch" href="https://creativecommons.org"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  }
+} </script></head><body><canvas class="fireworks"></canvas><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="toggle-sidebar-info text-center"><span data-toggle="Toggle article">Toggle site</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">Catalog</div><div class="sidebar-toc__progress"><span class="progress-notice">You've read</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Sqoop安装"><span class="toc-number">1.</span> <span class="toc-text">Sqoop安装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RDBMS到HDFS"><span class="toc-number">2.</span> <span class="toc-text">RDBMS到HDFS</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#MySQL准备表和数据"><span class="toc-number">2.1.</span> <span class="toc-text">MySQL准备表和数据</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#将MySQL数据导入到HDFS"><span class="toc-number">2.2.</span> <span class="toc-text">将MySQL数据导入到HDFS</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#全部导入"><span class="toc-number">2.2.1.</span> <span class="toc-text">全部导入</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#查询导入-query"><span class="toc-number">2.2.2.</span> <span class="toc-text">查询导入(query)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#导入指定列-columns"><span class="toc-number">2.2.3.</span> <span class="toc-text">导入指定列(columns)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#筛选查询导入数据-where"><span class="toc-number">2.2.4.</span> <span class="toc-text">筛选查询导入数据(where)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#增量导入"><span class="toc-number">2.2.5.</span> <span class="toc-text">增量导入</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RDBMS导入到Hive"><span class="toc-number">3.</span> <span class="toc-text">RDBMS导入到Hive</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HDFS导出到RDBMS"><span class="toc-number">4.</span> <span class="toc-text">HDFS导出到RDBMS</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Hive导出到RDBMS"><span class="toc-number">5.</span> <span class="toc-text">Hive导出到RDBMS</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Sqoop的综合操作"><span class="toc-number">6.</span> <span class="toc-text">Sqoop的综合操作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#shell操作数据库"><span class="toc-number">7.</span> <span class="toc-text">shell操作数据库</span></a></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="/img/xiaoqi.jpg"></div><div class="author-info__name text-center">Tunan</div><div class="author-info__description text-center">BigData Developer</div><div class="follow-button"><a href="#">Follow Me</a></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">Articles</span><span class="pull-right">71</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">Tags</span><span class="pull-right">24</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">Categories</span><span class="pull-right">20</span></a></div><hr><div class="author-info-links"><div class="author-info-links__title text-center">Links</div><a class="author-info-links__name text-center" href="https://hadoop.apache.org/docs/r2.10.0/hadoop-project-dist/hadoop-common/SingleCluster.html" target="_blank" rel="noopener">HADOOP</a><a class="author-info-links__name text-center" href="https://cwiki.apache.org/confluence/display/Hive/" target="_blank" rel="noopener">HIVE</a><a class="author-info-links__name text-center" href="https://cwiki.apache.org/" target="_blank" rel="noopener">WIKI</a><a class="author-info-links__name text-center" href="http://archive.cloudera.com/cdh5/cdh/5/" target="_blank" rel="noopener">CDH</a><a class="author-info-links__name text-center" href="http://flume.apache.org/" target="_blank" rel="noopener">FLUME</a><a class="author-info-links__name text-center" href="https://azkaban.github.io/" target="_blank" rel="noopener">AZKABAN</a><a class="author-info-links__name text-center" href="https://www.maxinhong.com/" target="_blank" rel="noopener">叶梨子</a></div></div></div><div id="content-outer"><div id="top-container" style="background-image: url(/img/soroush-golpoor-1497416-unsplash.jpg)"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">TUNANのBlog</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page" href="/">主页</a><a class="site-page" href="/archives">归档</a><a class="site-page" href="/tags">标签</a><a class="site-page" href="/categories">分类</a></span></div><div id="post-info"><div id="post-title">SQOOP安装&amp;RDBMS导入HDFS&amp;RDBMS导入HIVE&amp;HDFS导入RDBMS&amp;HIVE导入RDBMS&amp;SQOOP的ETL案例&amp;在SHELL中操作MYSQL</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-12-01</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/Sqoop/">Sqoop</a><div class="post-meta-wordcount"><span>Word count: </span><span class="word-count">1.9k</span><span class="post-meta__separator">|</span><span>Reading time: 9 min</span></div></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><p>首先抛出两个场景</p>
+<ol>
+<li>数据数据在RDBMS中，你想使用Hive进行处理，怎么做</li>
+<li>使用Hive统计分析好了，数据还在Hive中，如何导到RDBMS中</li>
+</ol>
+<h2 id="Sqoop安装"><a href="#Sqoop安装" class="headerlink" title="Sqoop安装"></a>Sqoop安装</h2><ol>
+<li><p>下载并解压</p>
+<p>下载地址：<a href="http://archive.cloudera.com/cdh5/cdh/5/sqoop-1.4.6-cdh5.16.2.tar.gz" target="_blank" rel="noopener">http://archive.cloudera.com/cdh5/cdh/5/sqoop-1.4.6-cdh5.16.2.tar.gz</a></p>
+<p>上传安装包sqoop-1.4.6-cdh5.16.2.tar.gz到主机中</p>
+<p>解压sqoop安装包到指定目录，如：$ tar -zxf sqoop-1.4.6-cdh5.16.2.tar.gz -C /opt/module/</p>
+</li>
+<li><p>修改配置文件</p>
+<p>重命名配置文件</p>
+<p><code>$ mv sqoop-env-template.sh sqoop-env.sh</code></p>
+<p>修改配置文件</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">export HADOOP_COMMON_HOME=/opt/module/hadoop</span><br><span class="line">export HADOOP_MAPRED_HOME=/opt/module/hadoop</span><br><span class="line">export HIVE_HOME=/opt/module/hive</span><br><span class="line">export ZOOKEEPER_HOME=/opt/module/zookeeper</span><br><span class="line">export ZOOCFGDIR=/opt/module/zookeeper</span><br><span class="line">export HBASE_HOME=/opt/module/hbase</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>拷贝JDBC驱动</p>
+<p><code>$ cp mysql-connector-java-5.1.27-bin.jar /opt/module/sqoop/lib/</code></p>
+</li>
+<li><p>验证Sqoop</p>
+<p><code>$ bin/sqoop help</code></p>
+<p>出现一些Warning警告（警告信息已省略），并伴随着帮助命令的输出：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">Available commands:</span><br><span class="line">  codegen            Generate code to interact with database records</span><br><span class="line">  create-hive-table  Import a table definition into Hive</span><br><span class="line">  eval               Evaluate a SQL statement and display the results</span><br><span class="line">  export             Export an HDFS directory to a database table</span><br><span class="line">  help               List available commands</span><br><span class="line">  import             Import a table from a database to HDFS</span><br><span class="line">  import-all-tables  Import tables from a database to HDFS</span><br><span class="line">  import-mainframe   Import datasets from a mainframe server to HDFS</span><br><span class="line">  job                Work with saved jobs</span><br><span class="line">  list-databases     List available databases on a server</span><br><span class="line">  list-tables        List available tables in a database</span><br><span class="line">  merge              Merge results of incremental imports</span><br><span class="line">  metastore          Run a standalone Sqoop metastore</span><br><span class="line">  version            Display version information</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>测试Sqoop是否能够成功连接数据库</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">sqoop \</span><br><span class="line">list-databases \</span><br><span class="line"><span class="comment">--connect jdbc:mysql://aliyun:3306/ \</span></span><br><span class="line"><span class="comment">--username root \</span></span><br><span class="line"><span class="comment">--password root</span></span><br></pre></td></tr></table></figure>
+
+<p>数据库用到的参数:</p>
+<ul>
+<li>“\“： 代表换行</li>
+<li>“connect”：连接数据库</li>
+<li>username：用户</li>
+<li>password：密码</li>
+</ul>
+<p>显示所有的数据库列表</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">information_schema</span><br><span class="line">leyou1</span><br><span class="line">metastore</span><br><span class="line">mypython</span><br><span class="line">mysql</span><br><span class="line">performance_schema</span><br><span class="line">sys</span><br><span class="line">travel</span><br><span class="line">tunan</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h2 id="RDBMS到HDFS"><a href="#RDBMS到HDFS" class="headerlink" title="RDBMS到HDFS"></a>RDBMS到HDFS</h2><h3 id="MySQL准备表和数据"><a href="#MySQL准备表和数据" class="headerlink" title="MySQL准备表和数据"></a>MySQL准备表和数据</h3><ol>
+<li><p>确定mysql服务开启正常</p>
+</li>
+<li><p>在mysql中创建库表</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">database</span> company;</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> company.staff(</span><br><span class="line">    <span class="keyword">id</span> <span class="built_in">int</span>(<span class="number">4</span>) primary <span class="keyword">key</span> <span class="keyword">not</span> <span class="literal">null</span> auto_increment, </span><br><span class="line">    <span class="keyword">name</span> <span class="built_in">varchar</span>(<span class="number">255</span>), </span><br><span class="line">    sex <span class="built_in">varchar</span>(<span class="number">255</span>)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>插入数据</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> company.staff(<span class="keyword">name</span>, sex) <span class="keyword">values</span>(<span class="string">'Thomas'</span>, <span class="string">'Male'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> company.staff(<span class="keyword">name</span>, sex) <span class="keyword">values</span>(<span class="string">'Catalina'</span>, <span class="string">'FeMale'</span>);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看数据</p>
+<p><code>select * from staff;</code></p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">+<span class="comment">----+----------+--------+</span></span><br><span class="line">| id | name     | sex    |</span><br><span class="line">+<span class="comment">----+----------+--------+</span></span><br><span class="line">|  1 | Thomas   | Male   |</span><br><span class="line">|  2 | Catalina | FeMale |</span><br><span class="line">+<span class="comment">----+----------+--------+</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h3 id="将MySQL数据导入到HDFS"><a href="#将MySQL数据导入到HDFS" class="headerlink" title="将MySQL数据导入到HDFS"></a>将MySQL数据导入到HDFS</h3><h4 id="全部导入"><a href="#全部导入" class="headerlink" title="全部导入"></a>全部导入</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sqoop import \</span><br><span class="line">--connect jdbc:mysql://aliyun:3306/company \</span><br><span class="line">--username root \</span><br><span class="line">--password root \</span><br><span class="line">--table staff \</span><br><span class="line">--target-dir /user/company \</span><br><span class="line">--delete-target-dir \</span><br><span class="line">--num-mappers 1 \</span><br><span class="line">--fields-terminated-by &quot;\t&quot;</span><br></pre></td></tr></table></figure>
+
+<p>全部导入用到的参数:</p>
+<ul>
+<li>table：指定被导入的表名</li>
+<li>target-dir：指定导入路径</li>
+<li>delete-target-dir：如果目标目录存在就删除它</li>
+<li>num-mappers：mapper的个数</li>
+<li>fields-terminated-by：指定字段分隔符</li>
+</ul>
+<h4 id="查询导入-query"><a href="#查询导入-query" class="headerlink" title="查询导入(query)"></a>查询导入(query)</h4><p>query参数就可以让用户随意写sql语句来查询了。query和table参数是互斥的。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sqoop import \</span><br><span class="line">--connect jdbc:mysql://aliyun:3306/company \</span><br><span class="line">--username root \</span><br><span class="line">--password root \</span><br><span class="line">--target-dir /user/company \</span><br><span class="line">--delete-target-dir \</span><br><span class="line">--num-mappers 1 \</span><br><span class="line">--fields-terminated-by &quot;\t&quot; \</span><br><span class="line">--query &apos;select name,sex from staff where id &lt;=1 and $CONDITIONS;&apos;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>query：指定查询SQL where条件要有$CONDITIONS</li>
+</ul>
+<p>注意:  <code>must contain &#39;$CONDITIONS&#39; in WHERE clause.</code></p>
+<p>如果query后使用的是双引号，则$CONDITIONS前必须加转移符，防止shell识别为自己的变量。</p>
+<h4 id="导入指定列-columns"><a href="#导入指定列-columns" class="headerlink" title="导入指定列(columns)"></a>导入指定列(columns)</h4><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">sqoop import \</span><br><span class="line"><span class="comment">--connect jdbc:mysql://aliyun:3306/company \</span></span><br><span class="line"><span class="comment">--username root \</span></span><br><span class="line"><span class="comment">--password root \</span></span><br><span class="line"><span class="comment">--target-dir /user/company \</span></span><br><span class="line"><span class="comment">--delete-target-dir \</span></span><br><span class="line"><span class="comment">--num-mappers 1 \</span></span><br><span class="line"><span class="comment">--fields-terminated-by "\t" \</span></span><br><span class="line"><span class="comment">--columns id,sex \</span></span><br><span class="line"><span class="comment">--table staff</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>columns：指定导入的列</li>
+</ul>
+<h4 id="筛选查询导入数据-where"><a href="#筛选查询导入数据-where" class="headerlink" title="筛选查询导入数据(where)"></a>筛选查询导入数据(where)</h4><p>where参数可以进行一些简单的筛选</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">sqoop import \</span><br><span class="line"><span class="comment">--connect jdbc:mysql://aliyun:3306/company \</span></span><br><span class="line"><span class="comment">--username root \</span></span><br><span class="line"><span class="comment">--password root \</span></span><br><span class="line"><span class="comment">--target-dir /user/company \</span></span><br><span class="line"><span class="comment">--delete-target-dir \</span></span><br><span class="line"><span class="comment">--num-mappers 1 \</span></span><br><span class="line"><span class="comment">--fields-terminated-by "\t" \</span></span><br><span class="line"><span class="comment">--table staff \</span></span><br><span class="line"><span class="comment">--where "id=1"</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>where：指定查询过滤条件</li>
+</ul>
+<h4 id="增量导入"><a href="#增量导入" class="headerlink" title="增量导入"></a>增量导入</h4><p>增量导入的一个场景就是昨天导入了一批数据，今天又增加了部分数据，现在要把这部分数据也导入到hdfs中。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">sqoop import \</span><br><span class="line"><span class="comment">--connect jdbc:mysql://localhost:3306/company \</span></span><br><span class="line"><span class="comment">--username root \</span></span><br><span class="line"><span class="comment">--password root \</span></span><br><span class="line"><span class="comment">--target-dir /user/company/ \</span></span><br><span class="line"><span class="comment">--num-mappers 1 \</span></span><br><span class="line"><span class="comment">--table staff \</span></span><br><span class="line"><span class="comment">--null-string "" \</span></span><br><span class="line"><span class="comment">--null-non-string "0" \</span></span><br><span class="line"><span class="comment">--check-column "id" \</span></span><br><span class="line"><span class="comment">--incremental append \</span></span><br><span class="line"><span class="comment">--fields-terminated-by '\t' \</span></span><br><span class="line"><span class="comment">--last-value 0</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>null-string：字符串为null怎么处理</li>
+<li>null-non-string：其他类型为null怎么处理</li>
+<li>check-column：根据哪一行做增量导入</li>
+<li>last-value：开始增量导入的上个位置</li>
+</ul>
+<h2 id="RDBMS导入到Hive"><a href="#RDBMS导入到Hive" class="headerlink" title="RDBMS导入到Hive"></a>RDBMS导入到Hive</h2><ol>
+<li><p>在导入hive之前先在hive创建一样的表结构</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">external</span> <span class="keyword">table</span> staff(</span><br><span class="line">    <span class="keyword">id</span> <span class="built_in">int</span>(<span class="number">4</span>) , </span><br><span class="line">    <span class="keyword">name</span> <span class="built_in">varchar</span>(<span class="number">255</span>), </span><br><span class="line">    sex <span class="built_in">varchar</span>(<span class="number">255</span>)</span><br><span class="line">)</span><br><span class="line"><span class="keyword">row</span> <span class="keyword">format</span> <span class="keyword">delimited</span></span><br><span class="line"><span class="keyword">fields</span> <span class="keyword">terminated</span> <span class="keyword">by</span> <span class="string">'\t'</span>;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>使用sqoop导入数据</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">sqoop import \</span><br><span class="line"><span class="comment">--connect jdbc:mysql://aliyun:3306/company \</span></span><br><span class="line"><span class="comment">--password root \</span></span><br><span class="line"><span class="comment">--username root \</span></span><br><span class="line"><span class="comment">--table staff \</span></span><br><span class="line"><span class="comment">--hive-overwrite \</span></span><br><span class="line"><span class="comment">--delete-target-dir \</span></span><br><span class="line"><span class="comment">--null-string "" \</span></span><br><span class="line"><span class="comment">--null-non-string "0" \</span></span><br><span class="line"><span class="comment">--hive-import \</span></span><br><span class="line"><span class="comment">--hive-database default \</span></span><br><span class="line"><span class="comment">--hive-table staff \</span></span><br><span class="line"><span class="comment">--fields-terminated-by '\t' \</span></span><br><span class="line"><span class="comment">--num-mappers 1</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>hive-import：数据从关系数据库中导入到hive表中</p>
+</li>
+<li><p>hive-overwrite：覆盖掉在hive表中已经存在的数据</p>
+</li>
+<li><p>hive-table：后面接hive表,默认使用MySQL的表名</p>
+</li>
+<li><p>如果导入的是分区表，需要指定分区的key和value</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">--hive-partition-key key \</span></span><br><span class="line"><span class="comment">--hive-partition-value value \</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>该过程分为两步，第一步将数据导入到HDFS，第二步将导入到HDFS的数据迁移到Hive仓库，第一步默认的临时目录是/user/hadoop/表名</p>
+</li>
+<li><p>查看hive表中的数据:</p>
+<p><code>select * from staff;</code></p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">id|name    |sex   |</span><br><span class="line"><span class="comment">--|--------|------|</span></span><br><span class="line"> 1|Thomas  |Male  |</span><br><span class="line"> 2|Catalina|FeMale|</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h2 id="HDFS导出到RDBMS"><a href="#HDFS导出到RDBMS" class="headerlink" title="HDFS导出到RDBMS"></a>HDFS导出到RDBMS</h2><ol>
+<li><p>首先保证MySQL创建了一张和Hive一样表结构的表用来接收数据</p>
+<p>注意表结构和分隔符都要一样</p>
+</li>
+<li><p>写Sqoop代码(批量导入)</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">sqoop export \</span><br><span class="line">-Dsqoop.export.records.per.statement=10 \</span><br><span class="line"><span class="comment">--connect jdbc:mysql://aliyun:3306/company \</span></span><br><span class="line"><span class="comment">--password root \</span></span><br><span class="line"><span class="comment">--username root \</span></span><br><span class="line"><span class="comment">--table staff \</span></span><br><span class="line"><span class="comment">--export-dir /user/company/ \</span></span><br><span class="line"><span class="comment">--null-string "" \</span></span><br><span class="line"><span class="comment">--null-non-string "0" \</span></span><br><span class="line"><span class="comment">--columns "id,name" \</span></span><br><span class="line"><span class="comment">--fields-terminated-by '\t' \</span></span><br><span class="line">-m 1</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>Dsqoop.export.records.per.statement</code>：批量更新，每隔10条提交一次 </li>
+<li>export-dir：导出的hdfs目录</li>
+<li>table：导入的表名</li>
+<li>columns：指定导入的列</li>
+</ul>
+<p><code>注意:</code> MySQL中如果表不存在，不会自动创建</p>
+</li>
+</ol>
+<h2 id="Hive导出到RDBMS"><a href="#Hive导出到RDBMS" class="headerlink" title="Hive导出到RDBMS"></a>Hive导出到RDBMS</h2><ol>
+<li><p>首先保证MySQL创建了一张和Hive一样表结构的表用来接收数据</p>
+<p>注意表结构和分隔符都要一样</p>
+</li>
+<li><p>写Sqoop代码</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">sqoop export \</span><br><span class="line"><span class="comment">--connect jdbc:mysql://aliyun:3306/company \</span></span><br><span class="line"><span class="comment">--username root \</span></span><br><span class="line"><span class="comment">--password root \</span></span><br><span class="line"><span class="comment">--table staff \</span></span><br><span class="line"><span class="comment">--num-mappers 1 \</span></span><br><span class="line"><span class="comment">--export-dir /user/hive/warehouse/staff \</span></span><br><span class="line"><span class="comment">--input-fields-terminated-by "\t"</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>export-dir：指定被导出的目录</p>
+</li>
+<li><p>input-fields-terminated-by：导入的分隔符格式，和导入的fields-terminated-by有区别</p>
+</li>
+</ul>
+<p><code>注意:</code> Mysql中如果表不存在，不会自动创建</p>
+</li>
+<li><p>查看MySQL数据库中的数据</p>
+<p><code>select * from staff;</code></p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">+<span class="comment">----+----------+--------+</span></span><br><span class="line">| id | name     | sex    |</span><br><span class="line">+<span class="comment">----+----------+--------+</span></span><br><span class="line">|  1 | Thomas   | Male   |</span><br><span class="line">|  2 | Catalina | FeMale |</span><br><span class="line">|  3 | tunan    | Male   |</span><br><span class="line">+<span class="comment">----+----------+--------+</span></span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ol>
+<h2 id="Sqoop的综合操作"><a href="#Sqoop的综合操作" class="headerlink" title="Sqoop的综合操作"></a>Sqoop的综合操作</h2><p>需求：emp和dept表是在MySQL，把MySQL数据抽取到Hive进行统计分析，然后把统计的结果回写到MySQL中</p>
+<ol>
+<li><p>在Hive中创建与MySQL中emp和dept表相对应的表emp_hive，dept_hive</p>
+<p><code>emp_hive表</code></p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">external</span> <span class="keyword">table</span> emp_hive(</span><br><span class="line">empno <span class="built_in">int</span>,</span><br><span class="line">ename <span class="keyword">string</span>,</span><br><span class="line">job <span class="keyword">string</span>,</span><br><span class="line">mgr <span class="built_in">int</span>,</span><br><span class="line">hiredate <span class="keyword">string</span>,</span><br><span class="line">sal <span class="keyword">double</span>,</span><br><span class="line">comm <span class="keyword">double</span>,</span><br><span class="line">deptno <span class="built_in">int</span></span><br><span class="line">)</span><br><span class="line"><span class="keyword">row</span> <span class="keyword">format</span> <span class="keyword">delimited</span></span><br><span class="line"><span class="keyword">fields</span> <span class="keyword">terminated</span> <span class="keyword">by</span> <span class="string">'\t'</span>;</span><br></pre></td></tr></table></figure>
+
+<p><code>dept_hive表</code></p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">external</span> <span class="keyword">table</span> dept_hive(</span><br><span class="line">deptno <span class="built_in">int</span>,</span><br><span class="line">dname <span class="keyword">string</span>,</span><br><span class="line">loc <span class="keyword">string</span></span><br><span class="line">)</span><br><span class="line"><span class="keyword">row</span> <span class="keyword">format</span> <span class="keyword">delimited</span></span><br><span class="line"><span class="keyword">fields</span> <span class="keyword">terminated</span> <span class="keyword">by</span> <span class="string">'\t'</span>;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建在Hive中的中间结果表</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">external</span> <span class="keyword">table</span> mid_hive(</span><br><span class="line">empno <span class="built_in">int</span>,</span><br><span class="line">ename <span class="keyword">string</span>,</span><br><span class="line">deptno <span class="built_in">int</span>,</span><br><span class="line">dname <span class="keyword">string</span></span><br><span class="line">)</span><br><span class="line"><span class="keyword">row</span> <span class="keyword">format</span> <span class="keyword">delimited</span></span><br><span class="line"><span class="keyword">fields</span> <span class="keyword">terminated</span> <span class="keyword">by</span> <span class="string">'\t'</span>;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>将MySQL中的emp表中的数据传到emp_hive中</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">sqoop import \</span><br><span class="line"><span class="comment">--connect jdbc:mysql://aliyun:3306/tunan \</span></span><br><span class="line"><span class="comment">--username root \</span></span><br><span class="line"><span class="comment">--password root \</span></span><br><span class="line"><span class="comment">--table emp \</span></span><br><span class="line"><span class="comment">--hive-overwrite \</span></span><br><span class="line"><span class="comment">--delete-target-dir \</span></span><br><span class="line"><span class="comment">--null-string "-" \</span></span><br><span class="line"><span class="comment">--null-non-string "0" \</span></span><br><span class="line"><span class="comment">--hive-import \</span></span><br><span class="line"><span class="comment">--hive-database default \</span></span><br><span class="line"><span class="comment">--hive-table emp_hive \</span></span><br><span class="line"><span class="comment">--fields-terminated-by '\t' \</span></span><br><span class="line">-m 1</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>将MySQL中的dept表中的数据传到dept_hive</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">sqoop import \</span><br><span class="line"><span class="comment">--connect jdbc:mysql://aliyun:3306/tunan \</span></span><br><span class="line"><span class="comment">--username root \</span></span><br><span class="line"><span class="comment">--password root \</span></span><br><span class="line"><span class="comment">--table dept \</span></span><br><span class="line"><span class="comment">--delete-target-dir \</span></span><br><span class="line"><span class="comment">--null-string "-" \</span></span><br><span class="line"><span class="comment">--null-non-string '0' \</span></span><br><span class="line"><span class="comment">--hive-import \</span></span><br><span class="line"><span class="comment">--hive-database default \</span></span><br><span class="line"><span class="comment">--hive-table dept_hive \</span></span><br><span class="line"><span class="comment">--fields-terminated-by '\t' \</span></span><br><span class="line">-m 1</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>将Hive中的表进行业务处理</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">table</span> </span><br><span class="line">	mid_hive</span><br><span class="line"><span class="keyword">select</span></span><br><span class="line">	e.empno,e.ename,d.deptno,d.dname</span><br><span class="line"><span class="keyword">from</span></span><br><span class="line">	emp_hive  e</span><br><span class="line"><span class="keyword">join</span></span><br><span class="line">	dept_hive  d</span><br><span class="line"><span class="keyword">on</span></span><br><span class="line">	e.deptno=d.deptno</span><br><span class="line"><span class="keyword">select</span></span><br><span class="line">	*</span><br><span class="line"><span class="keyword">from</span> </span><br><span class="line">	mid_hive;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看中间表的数据</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> mid_hive;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">empno|ename |deptno|dname     |</span><br><span class="line"><span class="comment">-----|------|------|----------|</span></span><br><span class="line"> 7369|SMITH |    20|RESEARCH  |</span><br><span class="line"> 7499|ALLEN |    30|SALES     |</span><br><span class="line"> 7521|WARD  |    30|SALES     |</span><br><span class="line"> 7566|JONES |    20|RESEARCH  |</span><br><span class="line"> 7654|MARTIN|    30|SALES     |</span><br><span class="line"> 7698|BLAKE |    30|SALES     |</span><br><span class="line"> 7782|CLARK |    10|ACCOUNTING|</span><br><span class="line"> 7788|SCOTT |    20|RESEARCH  |</span><br><span class="line"> 7839|KING  |    10|ACCOUNTING|</span><br><span class="line"> 7844|TURNER|    30|SALES     |</span><br><span class="line"> 7876|ADAMS |    20|RESEARCH  |</span><br><span class="line"> 7900|JAMES |    30|SALES     |</span><br><span class="line"> 7902|FORD  |    20|RESEARCH  |</span><br><span class="line"> 7934|MILLER|    10|ACCOUNTING|</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在MySQL中创建返回数据的表</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> <span class="string">`mid`</span>(</span><br><span class="line">empno <span class="built_in">int</span>(<span class="number">11</span>),</span><br><span class="line">ename <span class="built_in">varchar</span>(<span class="number">20</span>),</span><br><span class="line">deptno <span class="built_in">int</span>(<span class="number">11</span>),</span><br><span class="line">dname <span class="built_in">varchar</span>(<span class="number">20</span>)</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>将处理好的数据用Sqoop发回MySQL</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">sqoop export \</span><br><span class="line"><span class="comment">--connect jdbc:mysql://aliyun:3306/tunan \</span></span><br><span class="line"><span class="comment">--username root \</span></span><br><span class="line"><span class="comment">--password root \</span></span><br><span class="line"><span class="comment">--table mid \</span></span><br><span class="line">-m 1 \</span><br><span class="line"><span class="comment">--export-dir /user/hive/warehouse/mid_hive \</span></span><br><span class="line"><span class="comment">--input-fields-terminated-by '\t'</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看MySQL中已经发回的数据</p>
+<p><code>select * from mid;</code></p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">+<span class="comment">-------+--------+--------+------------+</span></span><br><span class="line">| empno | ename  | deptno | dname      |</span><br><span class="line">+<span class="comment">-------+--------+--------+------------+</span></span><br><span class="line">|  7369 | SMITH  |     20 | RESEARCH   |</span><br><span class="line">|  7499 | ALLEN  |     30 | SALES      |</span><br><span class="line">|  7521 | WARD   |     30 | SALES      |</span><br><span class="line">|  7566 | JONES  |     20 | RESEARCH   |</span><br><span class="line">|  7654 | MARTIN |     30 | SALES      |</span><br><span class="line">|  7698 | BLAKE  |     30 | SALES      |</span><br><span class="line">|  7782 | CLARK  |     10 | ACCOUNTING |</span><br><span class="line">|  7788 | SCOTT  |     20 | RESEARCH   |</span><br><span class="line">|  7839 | KING   |     10 | ACCOUNTING |</span><br><span class="line">|  7844 | TURNER |     30 | SALES      |</span><br><span class="line">|  7876 | ADAMS  |     20 | RESEARCH   |</span><br><span class="line">|  7900 | JAMES  |     30 | SALES      |</span><br><span class="line">|  7902 | FORD   |     20 | RESEARCH   |</span><br><span class="line">|  7934 | MILLER |     10 | ACCOUNTING |</span><br><span class="line">+<span class="comment">-------+--------+--------+------------+</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h2 id="shell操作数据库"><a href="#shell操作数据库" class="headerlink" title="shell操作数据库"></a>shell操作数据库</h2><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">mysql -uroot -pruozedata &lt;&lt;EOF</span><br><span class="line">	<span class="keyword">use</span> sqoop;</span><br><span class="line">	<span class="keyword">truncate</span> etl_result;</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure></div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="mailto:undefined" target="_blank" rel="noopener">Tunan</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="http://yerias.github.io/2018/12/01/sqoop/1/">http://yerias.github.io/2018/12/01/sqoop/1/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Sqoop/">Sqoop</a></div><div class="social-share" data-disabled="facebook,twitter,douban,linkedin,diandian"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js@1.0.16/dist/css/share.min.css"><script src="https://cdn.jsdelivr.net/npm/social-share.js@1.0.16/dist/js/social-share.min.js"></script><nav id="pagination"><div class="prev-post pull-left"><a href="/2018/12/01/flume/1/"><i class="fa fa-chevron-left">  </i><span>Flume架构摸排</span></a></div><div class="next-post pull-right"><a href="/2018/11/09/hive/9/"><span>Hive调优</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer class="footer-bg" style="background-image: url(/img/soroush-golpoor-1497416-unsplash.jpg)"><div class="layout" id="footer"><div class="copyright">&copy;2018 - 2020 By Tunan</div><div class="framework-info"><span>Driven - </span><a href="#"><span>Hexo</span></a><span class="footer-separator">|</span><span>Theme - </span><a href="#"><span>Melody</span></a></div><div class="footer_custom_text">大家好，我是图南，很高兴认识你们！</div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file-o"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.6.1"></script><script src="/js/fancybox.js?version=1.6.1"></script><script src="/js/sidebar.js?version=1.6.1"></script><script src="/js/copy.js?version=1.6.1"></script><script src="/js/fireworks.js?version=1.6.1"></script><script src="/js/transition.js?version=1.6.1"></script><script src="/js/scroll.js?version=1.6.1"></script><script src="/js/head.js?version=1.6.1"></script><script>if(/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+}</script></body></html>

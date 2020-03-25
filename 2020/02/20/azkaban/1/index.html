@@ -1,0 +1,162 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="Aakaban的安装&amp;使用&amp;坑"><meta name="keywords" content="Aakaban"><meta name="author" content="Tunan"><meta name="copyright" content="Tunan"><title>Aakaban的安装&amp;使用&amp;坑 | TUNANのBlog</title><link rel="shortcut icon" href="/melody-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.6.1"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.6.1"><link rel="dns-prefetch" href="https://cdn.staticfile.org"><link rel="dns-prefetch" href="https://cdn.bootcss.com"><link rel="dns-prefetch" href="https://creativecommons.org"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  }
+} </script></head><body><canvas class="fireworks"></canvas><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="toggle-sidebar-info text-center"><span data-toggle="Toggle article">Toggle site</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">Catalog</div><div class="sidebar-toc__progress"><span class="progress-notice">You've read</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#目标"><span class="toc-number">1.</span> <span class="toc-text">目标</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Git的安装"><span class="toc-number">2.</span> <span class="toc-text">Git的安装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Aakaban的安装"><span class="toc-number">3.</span> <span class="toc-text">Aakaban的安装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Aakaban的使用"><span class="toc-number">4.</span> <span class="toc-text">Aakaban的使用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#单节点部署"><span class="toc-number">4.1.</span> <span class="toc-text">单节点部署</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#多节点部署"><span class="toc-number">4.2.</span> <span class="toc-text">多节点部署</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#二次开发"><span class="toc-number">4.3.</span> <span class="toc-text">二次开发</span></a></li></ol></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="/img/xiaoqi.jpg"></div><div class="author-info__name text-center">Tunan</div><div class="author-info__description text-center">BigData Developer</div><div class="follow-button"><a href="#">Follow Me</a></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">Articles</span><span class="pull-right">71</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">Tags</span><span class="pull-right">24</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">Categories</span><span class="pull-right">20</span></a></div><hr><div class="author-info-links"><div class="author-info-links__title text-center">Links</div><a class="author-info-links__name text-center" href="https://hadoop.apache.org/docs/r2.10.0/hadoop-project-dist/hadoop-common/SingleCluster.html" target="_blank" rel="noopener">HADOOP</a><a class="author-info-links__name text-center" href="https://cwiki.apache.org/confluence/display/Hive/" target="_blank" rel="noopener">HIVE</a><a class="author-info-links__name text-center" href="https://cwiki.apache.org/" target="_blank" rel="noopener">WIKI</a><a class="author-info-links__name text-center" href="http://archive.cloudera.com/cdh5/cdh/5/" target="_blank" rel="noopener">CDH</a><a class="author-info-links__name text-center" href="http://flume.apache.org/" target="_blank" rel="noopener">FLUME</a><a class="author-info-links__name text-center" href="https://azkaban.github.io/" target="_blank" rel="noopener">AZKABAN</a><a class="author-info-links__name text-center" href="https://www.maxinhong.com/" target="_blank" rel="noopener">叶梨子</a></div></div></div><div id="content-outer"><div id="top-container" style="background-image: url(/img/soroush-golpoor-1497416-unsplash.jpg)"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">TUNANのBlog</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page" href="/">主页</a><a class="site-page" href="/archives">归档</a><a class="site-page" href="/tags">标签</a><a class="site-page" href="/categories">分类</a></span></div><div id="post-info"><div id="post-title">Aakaban的安装&amp;使用&amp;坑</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-02-20</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/Aakaban/">Aakaban</a><div class="post-meta-wordcount"><span>Word count: </span><span class="word-count">1.1k</span><span class="post-meta__separator">|</span><span>Reading time: 4 min</span></div></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><h2 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h2><ol>
+<li>Aakaban的安装</li>
+<li>Aakaban的使用</li>
+<li>Git的安装</li>
+</ol>
+<h2 id="Git的安装"><a href="#Git的安装" class="headerlink" title="Git的安装"></a>Git的安装</h2><p>在安装Azkaban之前要安装Git</p>
+<ol>
+<li><p>获取github最新的Git安装包下载链接，进入Linux服务器，执行下载，命令为： </p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">wget https://github.com/git/git/archive/v2.17.0.tar.gz</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>压缩包解压，命令为：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">tar -zxvf v2.17.0.tar.gz</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>安装编译源码所需依赖，命令为：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">yum install curl-devel expat-devel gettext-devel openssl-devel zlib-devel gcc perl-ExtUtils-MakeMaker</span><br></pre></td></tr></table></figure>
+
+<p>耐心等待安装，出现提示输入y即可；</p>
+</li>
+<li><p>安装依赖时，yum自动安装了Git，需要卸载旧版本Git，命令为：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">yum remove git -y</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>进入解压后的文件夹，命令 cd git-2.17.0 ，然后执行编译，命令为:  </p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">make prefix=/usr/local/git all</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>安装Git至/usr/local/git路径，命令为:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">make prefix=/usr/local/git install</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>打开环境变量配置文件，命令 vim /etc/profile ，在底部加上Git相关配置信息：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">export GIT_HOME=/usr/local/git/bin</span><br><span class="line">export PATH=$GIT_HOME/bin/:$PATH</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>输入命令 <code>git --version</code> ，查看安装的git版本，校验通过，安装成功。</p>
+</li>
+</ol>
+<h2 id="Aakaban的安装"><a href="#Aakaban的安装" class="headerlink" title="Aakaban的安装"></a>Aakaban的安装</h2><ol>
+<li><p>下载<a href="https://github.com/azkaban/azkaban/releases" target="_blank" rel="noopener">Azkaban</a></p>
+</li>
+<li><p>解压</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">tar -xzvf 3.81.0.tar.gz -C ../app/</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>安装<a href="https://azkaban.readthedocs.io/en/latest/getStarted.html" target="_blank" rel="noopener">编译文档</a></p>
+<p>在开始编译之前要下载名为<a href="https://services.gradle.org/distributions/gradle-4.6-all.zip" target="_blank" rel="noopener">gradle-4.6-all.zip</a>的包，如果直接让系统下载超级慢，下载好了放在同目录下，并且在<code>/azkaban/gradle/wrapper/gradle-wrapper.properties</code> 中注释下载路径，并指定已经下载好的路径</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">distributionUrl=gradle-4.6-all.zip</span><br><span class="line"><span class="meta">#</span><span class="bash">distributionUrl=https\://services.gradle.org/distributions/gradle-4.6-all.zip</span></span><br></pre></td></tr></table></figure>
+
+<p>还需要安装gcc环境:</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo yum install -y gcc-c++*</span><br></pre></td></tr></table></figure>
+
+<p>修改maven仓库为阿里云镜像</p>
+<p><code>vim azkaban-3.81.0/build.gradle 54行左右</code> </p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">maven &#123;</span><br><span class="line">	//这里是阿里云</span><br><span class="line">	url &apos;http://maven.aliyun.com/nexus/content/repositories/central/&apos;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ol>
+<p>   正式编译</p>
+   <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">./gradlew build installDist -x test</span><br></pre></td></tr></table></figure>
+
+<p>   编译后生成三个文件</p>
+   <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">azkaban-exec-server</span><br><span class="line">azkaban-solo-server</span><br><span class="line">azkaban-web-server</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li><p>执行<code>azkaban-solo-server</code></p>
+<ol>
+<li><p>解压<code>azkaban-solo-server</code>到<code>app</code>目录下</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">tar -xzvf azkaban-solo-server/build/distributionsa/zkaban-solo-server-0.1.0-SNAPSHOT.tar.gz ~/app</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>启动: <code>bin/start-solo.sh</code>，生成<code>AzkabanSingleServer</code>进程</p>
+</li>
+<li><p>修改配置(时区、用户)</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">时区: default.timezone.id=Asia/Shanghai</span><br><span class="line">用户: &lt;user password="tunan" roles="admin" username="tunan"/&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>web端登录，端口8081</p>
+</li>
+</ol>
+</li>
+<li><p>azkaban需要至少3G内存，如果内存不足3G，需要设置不检查内存</p>
+<p>azkaban-web-server-2.7.0/plugins/jobtypes/commonprivate.properties</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">memCheck.enabled=false</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h2 id="Aakaban的使用"><a href="#Aakaban的使用" class="headerlink" title="Aakaban的使用"></a>Aakaban的使用</h2><h3 id="单节点部署"><a href="#单节点部署" class="headerlink" title="单节点部署"></a>单节点部署</h3><p><a href="https://azkaban.readthedocs.io/en/latest/createFlows.html" target="_blank" rel="noopener">官方文档</a></p>
+<ol>
+<li><p>创建flow20.projec文件，写入信息: </p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">azkaban-flow-version: 2.0</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建basic.flow文件，写入信息:</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">nodes:</span><br><span class="line">  - name: jobA</span><br><span class="line">    type: command</span><br><span class="line">    config:</span><br><span class="line">      command: echo "This is an echoed text."</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>压缩Archive.zip文件，在web页面中提交</p>
+<p><code>坑</code>: 提交的用户和hadoop上的用户不同</p>
+</li>
+<li><p>多依赖案例</p>
+<p>flow20.projec文件相同，basic.flow文件内容不同，文件名可不同</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">nodes:</span><br><span class="line">  - name: jobC</span><br><span class="line">    type: noop</span><br><span class="line">    # jobC depends on jobA and jobB</span><br><span class="line">    dependsOn:</span><br><span class="line">      - jobA</span><br><span class="line">      - jobB</span><br><span class="line"></span><br><span class="line">  - name: jobA</span><br><span class="line">    type: command</span><br><span class="line">    config:</span><br><span class="line">      command: echo "This is an echoed text."</span><br><span class="line"></span><br><span class="line">  - name: jobB</span><br><span class="line">    type: command</span><br><span class="line">    config:</span><br><span class="line">      command: pwd</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>wc案例</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">nodes:</span><br><span class="line">  - name: tunan-wordcount</span><br><span class="line">    type: command</span><br><span class="line">    config:</span><br><span class="line">      command: hadoop jar /home/hadoop/app/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-2.6.0-cdh5.16.2.jar wordcount /azkaban/data/wc.txt /out</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>直接点击程序修改输出文件参数</li>
+<li>使用Flow Parameters修改输出文件参数</li>
+</ol>
+</li>
+<li><p>hive案例</p>
+<p>除了固定的flow20.project文件，需要修改hive.flow文件和添加stat.sh文件</p>
+<p>hive.flow</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">nodes:</span><br><span class="line">  - name: exe hive</span><br><span class="line">    type: command</span><br><span class="line">    config:</span><br><span class="line">      command: sh stat.sh</span><br></pre></td></tr></table></figure>
+
+<p>stat.sh</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">! /bin/bash</span></span><br><span class="line">hive -e "select * from offline_dw.dws_country_traffic"</span><br></pre></td></tr></table></figure>
+
+<p>上传相同的文件，新版本会覆盖旧的版本</p>
+</li>
+<li><p>调度执行</p>
+<p>在执行页面的左下角点击Schedule即可，并可在Scheduling中查看调度信息，然后在History中查看历史执行信息</p>
+</li>
+</ol>
+<h3 id="多节点部署"><a href="#多节点部署" class="headerlink" title="多节点部署"></a>多节点部署</h3><ol>
+<li><p>在mysql中创建数据库</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">mysql&gt; CREATE DATABASE azkaban;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建用户</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">mysql&gt; CREATE USER 'tunan'@'%' IDENTIFIED BY 'tunan';</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>赋权给用户</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">GRANT</span> <span class="keyword">SELECT</span>,<span class="keyword">INSERT</span>,<span class="keyword">UPDATE</span>,<span class="keyword">DELETE</span> <span class="keyword">ON</span> azkaban.* <span class="keyword">to</span> <span class="string">'tunan'</span>@<span class="string">'%'</span> <span class="keyword">WITH</span> <span class="keyword">GRANT</span> <span class="keyword">OPTION</span>;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在mysql中生成需要的表</p>
+<p>这里的source可能会遇到权限问题，解决的办法很多，如移动其他位置</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">use</span> azkaban;</span><br><span class="line">source /home/hadoop/app/azkaban/azkaban-db/build/<span class="keyword">install</span>/azkaban-db/<span class="keyword">create</span>-<span class="keyword">all</span>-<span class="keyword">sql</span><span class="number">-0.1</span><span class="number">.0</span>-SNAPSHOT.sql;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>执行SQL获取动态端口号</p>
+<p><code>mysql&gt; select * from executors ;</code></p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">+<span class="comment">----+--------+-------+--------+</span></span><br><span class="line">| id | host   | port  | active |</span><br><span class="line">+<span class="comment">----+--------+-------+--------+</span></span><br><span class="line">|  1 | aliyun | 46418 |      0 |</span><br><span class="line">+<span class="comment">----+--------+-------+--------+</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>激活执行器</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl -G "http://aliyun:46418/executor?action=activate"</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>把<code>azkaban-exec-server</code>和<code>azkaban-web-server</code>解压，并启动</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">tar -xzvf azkaban-exec-server/build/distributionsa/azkaban-exec-server-0.1.0-SNAPSHOT.tar.gz ~/app</span><br><span class="line">tar -xzvf azkaban-web-server/build/distributionsa/azkaban-web-server-0.1.0-SNAPSHOT.tar.gz ~/app</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>登录web使用，使用方式和单节点一样</p>
+</li>
+</ol>
+<h3 id="二次开发"><a href="#二次开发" class="headerlink" title="二次开发"></a>二次开发</h3><p>azkaban的二次开发需要调用az已经做好的接口</p>
+<p><a href="https://azkaban.readthedocs.io/en/latest/ajaxApi.html#request-parameters-1" target="_blank" rel="noopener">官方文档</a></p>
+<p>命令行获取session.id</p>
+<p><code>curl -k -X POST --data &quot;action=login&amp;username=azkaban&amp;password=azkaban&quot; http://aliyun:8081</code></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  "session.id" : "f1725f59-9d20-4fe2-b89e-3715ef85****",</span><br><span class="line">  "status" : "success"</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="mailto:undefined" target="_blank" rel="noopener">Tunan</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="http://yerias.github.io/2020/02/20/azkaban/1/">http://yerias.github.io/2020/02/20/azkaban/1/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Aakaban/">Aakaban</a></div><div class="social-share" data-disabled="facebook,twitter,douban,linkedin,diandian"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js@1.0.16/dist/css/share.min.css"><script src="https://cdn.jsdelivr.net/npm/social-share.js@1.0.16/dist/js/social-share.min.js"></script><nav id="pagination"><div class="prev-post pull-left"><a href="/2020/03/02/zookeeper/1/"><i class="fa fa-chevron-left">  </i><span>Zookeeper的安装&amp;使用</span></a></div><div class="next-post pull-right"><a href="/2019/02/01/git/1/"><span>GIT的常用操作&amp;GITHUB的常用操作&amp;在IDEA中使用GIT操作GITHUB</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer class="footer-bg" style="background-image: url(/img/soroush-golpoor-1497416-unsplash.jpg)"><div class="layout" id="footer"><div class="copyright">&copy;2018 - 2020 By Tunan</div><div class="framework-info"><span>Driven - </span><a href="#"><span>Hexo</span></a><span class="footer-separator">|</span><span>Theme - </span><a href="#"><span>Melody</span></a></div><div class="footer_custom_text">大家好，我是图南，很高兴认识你们！</div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file-o"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.6.1"></script><script src="/js/fancybox.js?version=1.6.1"></script><script src="/js/sidebar.js?version=1.6.1"></script><script src="/js/copy.js?version=1.6.1"></script><script src="/js/fireworks.js?version=1.6.1"></script><script src="/js/transition.js?version=1.6.1"></script><script src="/js/scroll.js?version=1.6.1"></script><script src="/js/head.js?version=1.6.1"></script><script>if(/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+}</script></body></html>

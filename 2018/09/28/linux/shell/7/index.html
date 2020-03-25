@@ -1,0 +1,95 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="Shell的printf命令"><meta name="keywords" content="Linux,Shell"><meta name="author" content="Tunan"><meta name="copyright" content="Tunan"><title>Shell的printf命令 | TUNANのBlog</title><link rel="shortcut icon" href="/melody-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.6.1"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.6.1"><link rel="dns-prefetch" href="https://cdn.staticfile.org"><link rel="dns-prefetch" href="https://cdn.bootcss.com"><link rel="dns-prefetch" href="https://creativecommons.org"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  }
+} </script></head><body><canvas class="fireworks"></canvas><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="toggle-sidebar-info text-center"><span data-toggle="Toggle article">Toggle site</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">Catalog</div><div class="sidebar-toc__progress"><span class="progress-notice">You've read</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#printf的转义序列"><span class="toc-number">1.</span> <span class="toc-text">printf的转义序列</span></a></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="/img/xiaoqi.jpg"></div><div class="author-info__name text-center">Tunan</div><div class="author-info__description text-center">BigData Developer</div><div class="follow-button"><a href="#">Follow Me</a></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">Articles</span><span class="pull-right">71</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">Tags</span><span class="pull-right">24</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">Categories</span><span class="pull-right">20</span></a></div><hr><div class="author-info-links"><div class="author-info-links__title text-center">Links</div><a class="author-info-links__name text-center" href="https://hadoop.apache.org/docs/r2.10.0/hadoop-project-dist/hadoop-common/SingleCluster.html" target="_blank" rel="noopener">HADOOP</a><a class="author-info-links__name text-center" href="https://cwiki.apache.org/confluence/display/Hive/" target="_blank" rel="noopener">HIVE</a><a class="author-info-links__name text-center" href="https://cwiki.apache.org/" target="_blank" rel="noopener">WIKI</a><a class="author-info-links__name text-center" href="http://archive.cloudera.com/cdh5/cdh/5/" target="_blank" rel="noopener">CDH</a><a class="author-info-links__name text-center" href="http://flume.apache.org/" target="_blank" rel="noopener">FLUME</a><a class="author-info-links__name text-center" href="https://azkaban.github.io/" target="_blank" rel="noopener">AZKABAN</a><a class="author-info-links__name text-center" href="https://www.maxinhong.com/" target="_blank" rel="noopener">叶梨子</a></div></div></div><div id="content-outer"><div id="top-container" style="background-image: url(/img/soroush-golpoor-1497416-unsplash.jpg)"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">TUNANのBlog</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page" href="/">主页</a><a class="site-page" href="/archives">归档</a><a class="site-page" href="/tags">标签</a><a class="site-page" href="/categories">分类</a></span></div><div id="post-info"><div id="post-title">Shell的printf命令</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-28</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/Linux/">Linux</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/Linux/Shell/">Shell</a><div class="post-meta-wordcount"><span>Word count: </span><span class="word-count">718</span><span class="post-meta__separator">|</span><span>Reading time: 2 min</span></div></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><p>printf 命令模仿 C 程序库（library）里的 printf() 程序。</p>
+<p>printf 由 POSIX 标准所定义，因此使用 printf 的脚本比使用 echo 移植性好。</p>
+<p>printf 使用引用文本或空格分隔的参数，外面可以在 printf 中使用格式化字符串，还可以制定字符串的宽度、左右对齐方式等。默认 printf 不会像 echo 自动添加换行符，我们可以手动添加 \n。</p>
+<p>printf 命令的语法：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">printf  format-string  [arguments...]</span><br></pre></td></tr></table></figure>
+
+<p><strong>参数说明：</strong></p>
+<ul>
+<li><strong>format-string:</strong> 为格式控制字符串</li>
+<li><strong>arguments:</strong> 为参数列表。</li>
+</ul>
+<p>实例如下：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">echo</span> <span class="string">"Hello, Shell"</span></span></span><br><span class="line">Hello, Shell</span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">printf</span> <span class="string">"Hello, Shell\n"</span></span></span><br><span class="line">Hello, Shell</span><br><span class="line"><span class="meta">$</span></span><br></pre></td></tr></table></figure>
+
+<p>接下来,我来用一个脚本来体现printf的强大功能：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">printf "%-10s %-8s %-4s\n" 姓名 性别 体重kg  </span><br><span class="line">printf "%-10s %-8s %-4.2f\n" 郭靖 男 66.1234 </span><br><span class="line">printf "%-10s %-8s %-4.2f\n" 杨过 男 48.6543 </span><br><span class="line">printf "%-10s %-8s %-4.2f\n" 郭芙 女 47.9876</span><br></pre></td></tr></table></figure>
+
+<p>执行脚本，输出结果如下所示：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">姓名     性别   体重kg</span><br><span class="line">郭靖     男      66.12</span><br><span class="line">杨过     男      48.65</span><br><span class="line">郭芙     女      47.99</span><br></pre></td></tr></table></figure>
+
+<p>%s %c %d %f都是格式替代符</p>
+<p>%-10s 指一个宽度为10个字符（-表示左对齐，没有则表示右对齐），任何字符都会被显示在10个字符宽的字符内，如果不足则自动以空格填充，超过也会将内容全部显示出来。</p>
+<p>%-4.2f 指格式化为小数，其中.2指保留2位小数。</p>
+<p>更多实例：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> format-string为双引号</span></span><br><span class="line">printf "%d %s\n" 1 "abc"</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 单引号与双引号效果一样 </span></span><br><span class="line">printf '%d %s\n' 1 "abc" </span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 没有引号也可以输出</span></span><br><span class="line">printf %s abcdef</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 格式只指定了一个参数，但多出的参数仍然会按照该格式输出，format-string 被重用</span></span><br><span class="line">printf %s abc def</span><br><span class="line"></span><br><span class="line">printf "%s\n" abc def</span><br><span class="line"></span><br><span class="line">printf "%s %s %s\n" a b c d e f g h i j</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 如果没有 arguments，那么 %s 用NULL代替，%d 用 0 代替</span></span><br><span class="line">printf "%s and %d \n"</span><br></pre></td></tr></table></figure>
+
+<p>执行脚本，输出结果如下所示：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">1 abc</span><br><span class="line">1 abc</span><br><span class="line">abcdefabcdefabc</span><br><span class="line">def</span><br><span class="line">a b c</span><br><span class="line">d e f</span><br><span class="line">g h i</span><br><span class="line">j  </span><br><span class="line"> and 0</span><br></pre></td></tr></table></figure>
+
+<h3 id="printf的转义序列"><a href="#printf的转义序列" class="headerlink" title="printf的转义序列"></a>printf的转义序列</h3><table>
+<thead>
+<tr>
+<th align="left">序列</th>
+<th align="left">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">\a</td>
+<td align="left">警告字符，通常为ASCII的BEL字符</td>
+</tr>
+<tr>
+<td align="left">\b</td>
+<td align="left">后退</td>
+</tr>
+<tr>
+<td align="left">\c</td>
+<td align="left">抑制（不显示）输出结果中任何结尾的换行字符（只在%b格式指示符控制下的参数字符串中有效），而且，任何留在参数里的字符、任何接下来的参数以及任何留在格式字符串中的字符，都被忽略</td>
+</tr>
+<tr>
+<td align="left">\f</td>
+<td align="left">换页（formfeed）</td>
+</tr>
+<tr>
+<td align="left">\n</td>
+<td align="left">换行</td>
+</tr>
+<tr>
+<td align="left">\r</td>
+<td align="left">回车（Carriage return）</td>
+</tr>
+<tr>
+<td align="left">\t</td>
+<td align="left">水平制表符</td>
+</tr>
+<tr>
+<td align="left">\v</td>
+<td align="left">垂直制表符</td>
+</tr>
+<tr>
+<td align="left">\</td>
+<td align="left">一个字面上的反斜杠字符</td>
+</tr>
+<tr>
+<td align="left">\ddd</td>
+<td align="left">表示1到3位数八进制值的字符。仅在格式字符串中有效</td>
+</tr>
+<tr>
+<td align="left">\0ddd</td>
+<td align="left">表示1到3位的八进制值字符</td>
+</tr>
+</tbody></table>
+<p>实例:</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">printf</span> <span class="string">"a string, no processing:&lt;%s&gt;\n"</span> <span class="string">"A\nB"</span></span></span><br><span class="line">a string, no processing:&lt;A\nB&gt;</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">printf</span> <span class="string">"a string, no processing:&lt;%b&gt;\n"</span> <span class="string">"A\nB"</span></span></span><br><span class="line">a string, no processing:&lt;A</span><br><span class="line"><span class="meta">B&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">printf</span> <span class="string">"www.runoob.com \a"</span></span></span><br><span class="line">www.runoob.com $                  #不换行</span><br></pre></td></tr></table></figure></div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="mailto:undefined" target="_blank" rel="noopener">Tunan</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="http://yerias.github.io/2018/09/28/linux/shell/7/">http://yerias.github.io/2018/09/28/linux/shell/7/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Linux/">Linux</a><a class="post-meta__tags" href="/tags/Shell/">Shell</a></div><div class="social-share" data-disabled="facebook,twitter,douban,linkedin,diandian"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js@1.0.16/dist/css/share.min.css"><script src="https://cdn.jsdelivr.net/npm/social-share.js@1.0.16/dist/js/social-share.min.js"></script><nav id="pagination"><div class="prev-post pull-left"><a href="/2018/09/29/linux/shell/8/"><i class="fa fa-chevron-left">  </i><span>Shell的流程控制</span></a></div><div class="next-post pull-right"><a href="/2018/09/27/linux/shell/6/"><span>Shell的echo命令</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer class="footer-bg" style="background-image: url(/img/soroush-golpoor-1497416-unsplash.jpg)"><div class="layout" id="footer"><div class="copyright">&copy;2018 - 2020 By Tunan</div><div class="framework-info"><span>Driven - </span><a href="#"><span>Hexo</span></a><span class="footer-separator">|</span><span>Theme - </span><a href="#"><span>Melody</span></a></div><div class="footer_custom_text">大家好，我是图南，很高兴认识你们！</div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file-o"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.6.1"></script><script src="/js/fancybox.js?version=1.6.1"></script><script src="/js/sidebar.js?version=1.6.1"></script><script src="/js/copy.js?version=1.6.1"></script><script src="/js/fireworks.js?version=1.6.1"></script><script src="/js/transition.js?version=1.6.1"></script><script src="/js/scroll.js?version=1.6.1"></script><script src="/js/head.js?version=1.6.1"></script><script>if(/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+}</script></body></html>

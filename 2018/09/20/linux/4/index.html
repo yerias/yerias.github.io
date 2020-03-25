@@ -1,0 +1,172 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="熟练使用vim、系统命令和程序管理工具"><meta name="keywords" content="Linux,DataWarehouse"><meta name="author" content="Tunan"><meta name="copyright" content="Tunan"><title>熟练使用vim、系统命令和程序管理工具 | TUNANのBlog</title><link rel="shortcut icon" href="/melody-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.6.1"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.6.1"><link rel="dns-prefetch" href="https://cdn.staticfile.org"><link rel="dns-prefetch" href="https://cdn.bootcss.com"><link rel="dns-prefetch" href="https://creativecommons.org"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  }
+} </script></head><body><canvas class="fireworks"></canvas><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="toggle-sidebar-info text-center"><span data-toggle="Toggle article">Toggle site</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">Catalog</div><div class="sidebar-toc__progress"><span class="progress-notice">You've read</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#目标"><span class="toc-number">1.</span> <span class="toc-text">目标</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#vim中的常见用法-部分"><span class="toc-number">2.</span> <span class="toc-text">vim中的常见用法(部分)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#系统命令"><span class="toc-number">3.</span> <span class="toc-text">系统命令</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#查看磁盘-（df-h）"><span class="toc-number">3.1.</span> <span class="toc-text">查看磁盘 （df -h）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#查看内存（free-h）"><span class="toc-number">3.2.</span> <span class="toc-text">查看内存（free -h）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#查看负载均衡（top）"><span class="toc-number">3.3.</span> <span class="toc-text">查看负载均衡（top）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#查看进程（ps-ef）"><span class="toc-number">3.4.</span> <span class="toc-text">查看进程（ps -ef）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#查看端口号（netstat-nlp）"><span class="toc-number">3.5.</span> <span class="toc-text">查看端口号（netstat -nlp）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#telnet命令安装"><span class="toc-number">3.6.</span> <span class="toc-text">telnet命令安装</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#window："><span class="toc-number">3.6.1.</span> <span class="toc-text">window：</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#linux："><span class="toc-number">3.6.2.</span> <span class="toc-text">linux：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#三个高危命令"><span class="toc-number">4.</span> <span class="toc-text">三个高危命令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#常用的程序管理工具"><span class="toc-number">5.</span> <span class="toc-text">常用的程序管理工具</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#wget下载安装包"><span class="toc-number">5.1.</span> <span class="toc-text">wget下载安装包</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#yum包管理"><span class="toc-number">5.2.</span> <span class="toc-text">yum包管理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#rpm包管理"><span class="toc-number">5.3.</span> <span class="toc-text">rpm包管理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#zip压缩解压"><span class="toc-number">5.4.</span> <span class="toc-text">zip压缩解压</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#tar压缩解压"><span class="toc-number">5.5.</span> <span class="toc-text">tar压缩解压</span></a></li></ol></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="/img/xiaoqi.jpg"></div><div class="author-info__name text-center">Tunan</div><div class="author-info__description text-center">BigData Developer</div><div class="follow-button"><a href="#">Follow Me</a></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">Articles</span><span class="pull-right">71</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">Tags</span><span class="pull-right">24</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">Categories</span><span class="pull-right">20</span></a></div><hr><div class="author-info-links"><div class="author-info-links__title text-center">Links</div><a class="author-info-links__name text-center" href="https://hadoop.apache.org/docs/r2.10.0/hadoop-project-dist/hadoop-common/SingleCluster.html" target="_blank" rel="noopener">HADOOP</a><a class="author-info-links__name text-center" href="https://cwiki.apache.org/confluence/display/Hive/" target="_blank" rel="noopener">HIVE</a><a class="author-info-links__name text-center" href="https://cwiki.apache.org/" target="_blank" rel="noopener">WIKI</a><a class="author-info-links__name text-center" href="http://archive.cloudera.com/cdh5/cdh/5/" target="_blank" rel="noopener">CDH</a><a class="author-info-links__name text-center" href="http://flume.apache.org/" target="_blank" rel="noopener">FLUME</a><a class="author-info-links__name text-center" href="https://azkaban.github.io/" target="_blank" rel="noopener">AZKABAN</a><a class="author-info-links__name text-center" href="https://www.maxinhong.com/" target="_blank" rel="noopener">叶梨子</a></div></div></div><div id="content-outer"><div id="top-container" style="background-image: url(/img/soroush-golpoor-1497416-unsplash.jpg)"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">TUNANのBlog</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page" href="/">主页</a><a class="site-page" href="/archives">归档</a><a class="site-page" href="/tags">标签</a><a class="site-page" href="/categories">分类</a></span></div><div id="post-info"><div id="post-title">熟练使用vim、系统命令和程序管理工具</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-20</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/Linux/">Linux</a><div class="post-meta-wordcount"><span>Word count: </span><span class="word-count">1.3k</span><span class="post-meta__separator">|</span><span>Reading time: 6 min</span></div></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><h3 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h3><ol>
+<li>整理 vi</li>
+<li>整理 进程 端口号</li>
+<li>整理 连接拒绝 (权限受限)</li>
+<li>整理 高危命令</li>
+<li>常用的 wget yum rpm 压缩</li>
+</ol>
+<h3 id="vim中的常见用法-部分"><a href="#vim中的常见用法-部分" class="headerlink" title="vim中的常见用法(部分)"></a>vim中的常见用法(部分)</h3><table>
+<thead>
+<tr>
+<th>复制</th>
+<th>yy</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>复制多行</td>
+<td>nyy</td>
+</tr>
+<tr>
+<td>当前行向下粘贴</td>
+<td>p</td>
+</tr>
+<tr>
+<td>当前行下上粘贴</td>
+<td>P</td>
+</tr>
+<tr>
+<td>当前位置插入</td>
+<td>i(I)</td>
+</tr>
+<tr>
+<td>当下位置的下一个位置插入</td>
+<td>a(A)</td>
+</tr>
+<tr>
+<td>当前行的下一行插入</td>
+<td>o(O)</td>
+</tr>
+<tr>
+<td>删除当前字符</td>
+<td>x</td>
+</tr>
+<tr>
+<td>删除当前位置到行尾</td>
+<td>D</td>
+</tr>
+<tr>
+<td>删除当前行</td>
+<td>dd</td>
+</tr>
+<tr>
+<td>删除当前行到未行</td>
+<td>dG</td>
+</tr>
+<tr>
+<td>删除n行</td>
+<td>ndd</td>
+</tr>
+<tr>
+<td>删除全部</td>
+<td>gg + dG</td>
+</tr>
+<tr>
+<td>跳转行尾</td>
+<td>Shift + $</td>
+</tr>
+<tr>
+<td>跳转行首</td>
+<td>Shift + ^</td>
+</tr>
+<tr>
+<td>跳转首行</td>
+<td>gg</td>
+</tr>
+<tr>
+<td>跳转未行</td>
+<td>G</td>
+</tr>
+<tr>
+<td>跳转到n行</td>
+<td>:n或者是nG或者是ngg</td>
+</tr>
+<tr>
+<td>撤回一次</td>
+<td>u</td>
+</tr>
+<tr>
+<td>撤回多次</td>
+<td>U</td>
+</tr>
+</tbody></table>
+<p><code>vim编辑中的坑：</code>编辑或者调优配置文件前，一定要备份</p>
+<h3 id="系统命令"><a href="#系统命令" class="headerlink" title="系统命令"></a>系统命令</h3><h4 id="查看磁盘-（df-h）"><a href="#查看磁盘-（df-h）" class="headerlink" title="查看磁盘 （df -h）"></a>查看磁盘 （df -h）</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# df -h</span><br><span class="line">Filesystem      Size  Used Avail Use% Mounted on</span><br><span class="line">/dev/vda1        40G   11G   27G  29% /</span><br><span class="line">devtmpfs        911M     0  911M   0% /dev</span><br><span class="line">tmpfs           920M     0  920M   0% /dev/shm</span><br><span class="line">tmpfs           920M  332K  920M   1% /run</span><br><span class="line">tmpfs           920M     0  920M   0% /sys/fs/cgroup</span><br><span class="line">tmpfs           184M     0  184M   0% /run/user/0</span><br></pre></td></tr></table></figure>
+
+<p>了解数据盘的格式：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">/dev/vdb1        1T   10G    XXX   X% /data01 数据盘</span><br></pre></td></tr></table></figure>
+
+<h4 id="查看内存（free-h）"><a href="#查看内存（free-h）" class="headerlink" title="查看内存（free -h）"></a>查看内存（free -h）</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# free -h</span><br><span class="line">              total        used        free      shared  buff/cache   available</span><br><span class="line">Mem:           1.8G        853M         88M        336K        897M        792M</span><br><span class="line">Swap:            0B          0B          0B</span><br></pre></td></tr></table></figure>
+
+<p>延伸：<a href="http://blog.itpub.net/30089851/viewspace-2131678/" target="_blank" rel="noopener">http://blog.itpub.net/30089851/viewspace-2131678/</a></p>
+<h4 id="查看负载均衡（top）"><a href="#查看负载均衡（top）" class="headerlink" title="查看负载均衡（top）"></a>查看负载均衡（top）</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# top</span><br><span class="line">top - 11:51:16 up 23 days, 12:56,  1 user,  load average: 0.00, 0.01, 0.05</span><br><span class="line">Tasks:  65 total,   1 running,  64 sleeping,   0 stopped,   0 zombie</span><br><span class="line">%Cpu(s):  0.0 us,  0.3 sy,  0.0 ni, 99.7 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st</span><br><span class="line">KiB Mem :  1883724 total,    90012 free,   874596 used,   919116 buff/cache</span><br><span class="line">KiB Swap:        0 total,        0 free,        0 used.   810836 avail Mem </span><br><span class="line"></span><br><span class="line">  PID USER      PR  NI    VIRT    RES    SHR S %CPU %MEM     TIME+ COMMAND                                       </span><br><span class="line">19516 root       0 -20  126596   9340   6508 S  0.3  0.5  98:38.33 AliYunDun                                     </span><br><span class="line">    1 root      20   0  125124   3344   2112 S  0.0  0.2   0:10.82 systemd                                       </span><br><span class="line">    2 root      20   0       0      0      0 S  0.0  0.0   0:00.00 kthreadd                                      </span><br><span class="line">    3 root      20   0       0      0      0 S  0.0  0.0   0:02.21 ksoftirqd/0                                   </span><br><span class="line">    5 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 kworker/0:0H</span><br></pre></td></tr></table></figure>
+
+<p>注意：</p>
+<ol>
+<li>负载均衡的数值不能超过10</li>
+<li>如果某服务长期占用cpu或者men，去检查这个进程是在做什么</li>
+<li>如果cpu飙升3000%以上，夯住 ，代码级别，如果不是自己编写的代码，大概率硬件级别–&gt;内存条坏了</li>
+</ol>
+<h4 id="查看进程（ps-ef）"><a href="#查看进程（ps-ef）" class="headerlink" title="查看进程（ps -ef）"></a>查看进程（ps -ef）</h4><p>查看进程常常和 grep 配合使用</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# ps -ef|grep ssh</span><br><span class="line">root      4295     1  0 Oct25 ?        00:00:00 /usr/sbin/sshd -D</span><br><span class="line">root     20282  4295  0 11:34 ?        00:00:00 sshd: root@pts/0</span><br><span class="line">root     20318 20284  0 11:56 pts/0    00:00:00 grep --color=auto ssh</span><br></pre></td></tr></table></figure>
+
+<p>最后一条是自己的进程，可以加上 grep -v grep 去掉这条记录</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# ps -ef|grep ssh | grep -v grep进程用户　进程的pid　父id　　　　　　　　　　　　　　　　进程用户的内容(进程所属的目录)</span><br><span class="line">root      4295     1  0 Oct25 ?        00:00:00 /usr/sbin/sshd -D</span><br><span class="line">root     20282  4295  0 11:34 ?        00:00:00 sshd: root@pts/0</span><br></pre></td></tr></table></figure>
+
+<h4 id="查看端口号（netstat-nlp）"><a href="#查看端口号（netstat-nlp）" class="headerlink" title="查看端口号（netstat -nlp）"></a>查看端口号（netstat -nlp）</h4><p>最常配合查看进程得到的pid号查看端口号</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# netstat -nlp | grep 4295</span><br><span class="line">tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      4295/sshd</span><br></pre></td></tr></table></figure>
+
+<p><code>注意：</code> 如果查询出来的端口号前面的ip是127.0.0.1或者localhost，属于本地回环ip地址，需要修改相应的配置文件</p>
+<p><code>场景：</code> 在centos部署大数据组件，发现一个错误 Connection refused</p>
+<p>解决思路：</p>
+<ol>
+<li>ping ip 测试ip</li>
+<li>telnet ip port 测试ip和端口号 </li>
+<li>防火墙</li>
+</ol>
+<h4 id="telnet命令安装"><a href="#telnet命令安装" class="headerlink" title="telnet命令安装"></a>telnet命令安装</h4><h5 id="window："><a href="#window：" class="headerlink" title="window："></a>window：</h5><p><img src="https://img2018.cnblogs.com/i-beta/1657732/201911/1657732-20191118121808051-1147850773.png" alt="win10开启telnet命令"></p>
+<h5 id="linux："><a href="#linux：" class="headerlink" title="linux："></a>linux：</h5><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# yum install -y telnet</span><br><span class="line">[root@aliyun ~]# which telnet</span><br><span class="line">/usr/bin/telnet</span><br><span class="line">[root@aliyun ~]# telnet 121.196.220.143 22</span><br><span class="line">Trying 121.196.220.143...</span><br><span class="line">Connected to 121.196.220.143.</span><br><span class="line">Escape character is &apos;^]&apos;.</span><br><span class="line">SSH-2.0-OpenSSH_6.6.1</span><br></pre></td></tr></table></figure>
+
+<h3 id="三个高危命令"><a href="#三个高危命令" class="headerlink" title="三个高危命令"></a>三个高危命令</h3><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>rm -rf /</code></td>
+<td>强制无提示删除</td>
+</tr>
+<tr>
+<td><code>vim</code></td>
+<td>编辑生产环境的配置文件不备份</td>
+</tr>
+<tr>
+<td><code>kill -9 $(pgrep -f 匹配关键词)</code></td>
+<td>杀死全部的进程</td>
+</tr>
+</tbody></table>
+<p><code>杀进程之前，先ps 找到相关的进程，搞清楚，哪些是你要杀的，不然造成生产事故</code></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# ps -ef | grep ssh</span><br><span class="line">root      4295     1  0 Oct25 ?        00:00:00 /usr/sbin/sshd -D</span><br><span class="line">root     20282  4295  0 11:34 ?        00:00:00 sshd: root@pts/0</span><br><span class="line">root     20329  4295  0 12:00 ?        00:00:00 sshd: root@pts/1</span><br><span class="line">root     20360  4295  0 12:01 ?        00:00:00 sshd: root@pts/2</span><br><span class="line">root     20380  4295  0 12:02 ?        00:00:00 sshd: root@pts/3</span><br><span class="line">root     20407  4295  0 12:12 ?        00:00:00 sshd: root@pts/4</span><br><span class="line">root     20474  4295  0 12:22 ?        00:00:00 sshd: root@pts/6</span><br><span class="line">root     20502 20476  0 12:30 pts/6    00:00:00 grep --color=auto ssh</span><br><span class="line">[root@aliyun ~]# kill -9 $(pgrep -f ssh)</span><br></pre></td></tr></table></figure>
+
+<h3 id="常用的程序管理工具"><a href="#常用的程序管理工具" class="headerlink" title="常用的程序管理工具"></a>常用的程序管理工具</h3><h4 id="wget下载安装包"><a href="#wget下载安装包" class="headerlink" title="wget下载安装包"></a>wget下载安装包</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">wget http://archive.cloudera.com/cdh5/cdh/5/hadoop-2.6.0-cdh5.16.2.tar.gz</span><br></pre></td></tr></table></figure>
+
+<h4 id="yum包管理"><a href="#yum包管理" class="headerlink" title="yum包管理"></a>yum包管理</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">yum search xxx</span><br><span class="line">yum install -y xxx</span><br><span class="line">yum remove xxx</span><br></pre></td></tr></table></figure>
+
+<h4 id="rpm包管理"><a href="#rpm包管理" class="headerlink" title="rpm包管理"></a>rpm包管理</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[root@aliyun conf]# rpm -qa | grep http　　#查看</span><br><span class="line">httpd-2.4.6-90.el7.centos.x86_64</span><br><span class="line">httpd-tools-2.4.6-90.el7.centos.x86_64</span><br><span class="line">[root@aliyun conf]# rpm -e httpd-tools-2.4.6-90.el7.centos.x86_64　　#卸载失败，有依赖文件</span><br><span class="line">error: Failed dependencies:</span><br><span class="line">        httpd-tools = 2.4.6-90.el7.centos is needed by (installed) httpd-2.4.6-90.el7.centos.x86_64</span><br><span class="line">[root@aliyun conf]# rpm -e  --nodeps     httpd-tools-2.4.6-90.el7.centos.x86_64　　#强制跳过依赖检查</span><br></pre></td></tr></table></figure>
+
+<h4 id="zip压缩解压"><a href="#zip压缩解压" class="headerlink" title="zip压缩解压"></a>zip压缩解压</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">zip -r xxx.zip ./*  　　　　#在文件夹里面压缩文件 　　　　</span><br><span class="line">zip -r test.zip test/* 　　#在文件夹外卖压缩文件夹里面的文件unzip test.zip</span><br></pre></td></tr></table></figure>
+
+<h4 id="tar压缩解压"><a href="#tar压缩解压" class="headerlink" title="tar压缩解压"></a>tar压缩解压</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">tar -xzvf hadoop-2.6.0-cdh5.16.2.tar.gz　　　　#解压缩.ge的tar包</span><br><span class="line">tar -czvf hadoop-2.6.0-cdh5.16.2.tar.gz  hadoop-2.6.0-cdh5.16.2/*　　#压缩.ge的tar包</span><br></pre></td></tr></table></figure></div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="mailto:undefined" target="_blank" rel="noopener">Tunan</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="http://yerias.github.io/2018/09/20/linux/4/">http://yerias.github.io/2018/09/20/linux/4/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Linux/">Linux</a><a class="post-meta__tags" href="/tags/DataWarehouse/">DataWarehouse</a></div><div class="social-share" data-disabled="facebook,twitter,douban,linkedin,diandian"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js@1.0.16/dist/css/share.min.css"><script src="https://cdn.jsdelivr.net/npm/social-share.js@1.0.16/dist/js/social-share.min.js"></script><nav id="pagination"><div class="prev-post pull-left"><a href="/2018/09/21/linux/5/"><i class="fa fa-chevron-left">  </i><span>后台执行、crontab调度和软连接的使用场景</span></a></div><div class="next-post pull-right"><a href="/2018/09/20/linux/3/"><span>熟悉Linux权限相关命令</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer class="footer-bg" style="background-image: url(/img/soroush-golpoor-1497416-unsplash.jpg)"><div class="layout" id="footer"><div class="copyright">&copy;2018 - 2020 By Tunan</div><div class="framework-info"><span>Driven - </span><a href="#"><span>Hexo</span></a><span class="footer-separator">|</span><span>Theme - </span><a href="#"><span>Melody</span></a></div><div class="footer_custom_text">大家好，我是图南，很高兴认识你们！</div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file-o"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.6.1"></script><script src="/js/fancybox.js?version=1.6.1"></script><script src="/js/sidebar.js?version=1.6.1"></script><script src="/js/copy.js?version=1.6.1"></script><script src="/js/fireworks.js?version=1.6.1"></script><script src="/js/transition.js?version=1.6.1"></script><script src="/js/scroll.js?version=1.6.1"></script><script src="/js/head.js?version=1.6.1"></script><script>if(/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+}</script></body></html>

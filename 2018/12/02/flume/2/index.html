@@ -1,0 +1,295 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="案例&amp;Flume单源单出口&amp;Flume单源多出口&amp;Flume多源单出口"><meta name="keywords" content="Flume"><meta name="author" content="Tunan"><meta name="copyright" content="Tunan"><title>案例&amp;Flume单源单出口&amp;Flume单源多出口&amp;Flume多源单出口 | TUNANのBlog</title><link rel="shortcut icon" href="/melody-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.6.1"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.6.1"><link rel="dns-prefetch" href="https://cdn.staticfile.org"><link rel="dns-prefetch" href="https://cdn.bootcss.com"><link rel="dns-prefetch" href="https://creativecommons.org"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  }
+} </script></head><body><canvas class="fireworks"></canvas><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="toggle-sidebar-info text-center"><span data-toggle="Toggle article">Toggle site</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">Catalog</div><div class="sidebar-toc__progress"><span class="progress-notice">You've read</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#安装地址"><span class="toc-number">1.</span> <span class="toc-text">安装地址</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#安装部署"><span class="toc-number">2.</span> <span class="toc-text">安装部署</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#测试"><span class="toc-number">3.</span> <span class="toc-text">测试</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#实时读取本地文件到HDFS案例"><span class="toc-number">4.</span> <span class="toc-text">实时读取本地文件到HDFS案例</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#实时读取目录文件到HDFS案例"><span class="toc-number">5.</span> <span class="toc-text">实时读取目录文件到HDFS案例</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#单数据源多出口案例-选择器"><span class="toc-number">6.</span> <span class="toc-text">单数据源多出口案例(选择器)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#单数据源多出口案例-Sink组"><span class="toc-number">7.</span> <span class="toc-text">单数据源多出口案例(Sink组)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#多数据源汇总案例"><span class="toc-number">8.</span> <span class="toc-text">多数据源汇总案例</span></a></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="/img/xiaoqi.jpg"></div><div class="author-info__name text-center">Tunan</div><div class="author-info__description text-center">BigData Developer</div><div class="follow-button"><a href="#">Follow Me</a></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">Articles</span><span class="pull-right">71</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">Tags</span><span class="pull-right">24</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">Categories</span><span class="pull-right">20</span></a></div><hr><div class="author-info-links"><div class="author-info-links__title text-center">Links</div><a class="author-info-links__name text-center" href="https://hadoop.apache.org/docs/r2.10.0/hadoop-project-dist/hadoop-common/SingleCluster.html" target="_blank" rel="noopener">HADOOP</a><a class="author-info-links__name text-center" href="https://cwiki.apache.org/confluence/display/Hive/" target="_blank" rel="noopener">HIVE</a><a class="author-info-links__name text-center" href="https://cwiki.apache.org/" target="_blank" rel="noopener">WIKI</a><a class="author-info-links__name text-center" href="http://archive.cloudera.com/cdh5/cdh/5/" target="_blank" rel="noopener">CDH</a><a class="author-info-links__name text-center" href="http://flume.apache.org/" target="_blank" rel="noopener">FLUME</a><a class="author-info-links__name text-center" href="https://azkaban.github.io/" target="_blank" rel="noopener">AZKABAN</a><a class="author-info-links__name text-center" href="https://www.maxinhong.com/" target="_blank" rel="noopener">叶梨子</a></div></div></div><div id="content-outer"><div id="top-container" style="background-image: url(/img/soroush-golpoor-1497416-unsplash.jpg)"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">TUNANのBlog</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page" href="/">主页</a><a class="site-page" href="/archives">归档</a><a class="site-page" href="/tags">标签</a><a class="site-page" href="/categories">分类</a></span></div><div id="post-info"><div id="post-title">案例&amp;Flume单源单出口&amp;Flume单源多出口&amp;Flume多源单出口</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-12-02</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/Flume/">Flume</a><div class="post-meta-wordcount"><span>Word count: </span><span class="word-count">4.2k</span><span class="post-meta__separator">|</span><span>Reading time: 19 min</span></div></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><h2 id="安装地址"><a href="#安装地址" class="headerlink" title="安装地址"></a>安装地址</h2><ol>
+<li><p>Flume官网地址</p>
+<p><a href="http://flume.apache.org/" target="_blank" rel="noopener">http://flume.apache.org/</a></p>
+</li>
+<li><p>文档查看地址</p>
+<p><a href="http://flume.apache.org/FlumeUserGuide.html" target="_blank" rel="noopener">http://flume.apache.org/FlumeUserGuide.html</a></p>
+</li>
+<li><p>下载地址</p>
+<p><a href="http://archive.cloudera.com/cdh5/cdh/5/flume-ng-1.6.0-cdh5.16.2-src.tar.gz" target="_blank" rel="noopener">http://archive.cloudera.com/cdh5/cdh/5/flume-ng-1.6.0-cdh5.16.2-src.tar.gz</a></p>
+</li>
+</ol>
+<h2 id="安装部署"><a href="#安装部署" class="headerlink" title="安装部署"></a>安装部署</h2><ol>
+<li><p>将apache-flume-1.7.0-bin.tar.gz上传到linux的/opt/software目录下</p>
+</li>
+<li><p>解压apache-flume-1.7.0-bin.tar.gz到/opt/module/目录下</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[aliyun@aliyun software]$ tar -zxf apache-flume-1.7.0-bin.tar.gz -C /opt/module/</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>修改apache-flume-1.7.0-bin的名称为flume</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[aliyun@aliyun module]$ mv apache-flume-1.7.0-bin flume</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>将flume/conf下的flume-env.sh.template文件修改为flume-env.sh，并配置flume-env.sh文件</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[aliyun@aliyun conf]$ mv flume-env.sh.template flume-env.sh</span><br><span class="line">[aliyun@aliyun conf]$ vi flume-env.sh</span><br><span class="line">export JAVA_HOME=/opt/module/jdk1.8.0_144</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><ol>
+<li><p>安装netcat工具</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[aliyun@aliyun software]$ sudo yum install -y nc</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>判断44444端口是否被占用</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[aliyun@aliyun flume-telnet]$ sudo netstat -tunlp | grep 44444</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建Flume Agent配置文件flume-netcat-logger.conf</p>
+<p>在flume目录下创建job文件夹并进入job文件夹。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[aliyun@aliyun flume]$ mkdir job</span><br><span class="line">[aliyun@aliyun flume]$ cd job/</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在job文件夹下创建Flume Agent配置文件flume-netcat-logger.conf。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[aliyun@aliyun job]$ vim flume-netcat-logger.conf</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>添加内容如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># Name the components on this agent    #a1表示agent的名称</span><br><span class="line">a1.sources = r1		#r1表示a1的输入源</span><br><span class="line">a1.sinks = k1		#k1表示a1的输出目的地</span><br><span class="line">a1.channels = c1	#c1表示a1的缓冲区</span><br><span class="line"></span><br><span class="line"># Describe/configure the source</span><br><span class="line">a1.sources.r1.type = netcat		#表示a1的输入源类型为netcat端口类型</span><br><span class="line">a1.sources.r1.bind = localhost	#表示a1的监听的主机</span><br><span class="line">a1.sources.r1.port = 44444		#表示a1的监听的端口号</span><br><span class="line"></span><br><span class="line"># Describe the sink</span><br><span class="line">a1.sinks.k1.type = logger		#表示a1的输出目的地是控制台logger类型</span><br><span class="line"></span><br><span class="line"># Use a channel which buffers events in memory</span><br><span class="line">a1.channels.c1.type = memory		#表示a1的channel类型是memory内存型</span><br><span class="line">a1.channels.c1.capacity = 1000		#表示a1的channel总容量1000个event</span><br><span class="line">a1.channels.c1.transactionCapacity = 10		#表示a1的channel传输时收集到了100条event以后再去提交事务</span><br><span class="line"></span><br><span class="line"># Bind the source and sink to the channel</span><br><span class="line">a1.sources.r1.channels = c1		#将r1和c1连接起来</span><br><span class="line">a1.sinks.k1.channel = c1		#将k1和c1连接起来</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>先开启flume监听端口</p>
+<p>第一种写法：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[aliyun@aliyun flume]$ bin/flume-ng agent --conf conf/ --name a1 --conf-file job/flume-netcat-logger.conf -Dflume.root.logger=INFO,console</span><br></pre></td></tr></table></figure>
+
+<p>第二种写法：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[aliyun@aliyun flume]$ bin/flume-ng agent -c conf/ -n a1 –f job/flume-netcat-logger.conf -Dflume.root.logger=INFO,console</span><br></pre></td></tr></table></figure>
+
+<p>参数说明：</p>
+<p>​        <code>--conf conf/：</code>表示配置文件存储在conf/目录</p>
+<p>​        <code>--name a1：</code>表示给agent起名为a1</p>
+<pre><code>`--conf-file job/flume-netcat.conf ：`flume本次启动读取的配置文件是在job文件夹下的flume-telnet.conf文件。</code></pre><p>​        <code>--Dflume.root.logger==INFO,console ：</code>-D表示flume运行时动态修改flume.root.logger参数属性值，并将控制台日志打印级别设置为INFO级别。日志级别包括:log、info、warn、error。</p>
+</li>
+<li><p>使用netcat工具向本机的44444端口发送内容</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[aliyun@aliyun ~]$ nc localhost 44444</span><br><span class="line">hello </span><br><span class="line">aliyun</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在Flume监听页面观察接收数据情况</p>
+</li>
+</ol>
+<h2 id="实时读取本地文件到HDFS案例"><a href="#实时读取本地文件到HDFS案例" class="headerlink" title="实时读取本地文件到HDFS案例"></a>实时读取本地文件到HDFS案例</h2><p>案例需求：实时监控Hive日志，并上传到HDFS中</p>
+<p><img src="https://yerias.github.io/flume_img/%E5%8D%95%E6%BA%90%E5%8D%95%E5%87%BA%E5%8F%A31.jpg" alt="单源单出口1"></p>
+<ol>
+<li><p>给Flume的lib目录下添加aliyun相关的jar包</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">commons-configuration-1.6.jar</span><br><span class="line">aliyun-auth-2.7.2.jar</span><br><span class="line">aliyun-common-2.7.2.jar</span><br><span class="line">aliyun-hdfs-2.7.2.jar</span><br><span class="line">commons-io-2.4.jar</span><br><span class="line">htrace-core-3.1.0-incubating.jar</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建flume-file-hdfs.conf文件</p>
+<p>创建文件</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[aliyun@aliyun job]$ touch flume-file-hdfs.conf</span><br></pre></td></tr></table></figure>
+
+<p>注：要想读取Linux系统中的文件，就得按照Linux命令的规则执行命令。由于Hive日志在Linux系统中所以读取文件的类型选择：exec即execute执行的意思。表示执行Linux命令来读取文件。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[aliyun@aliyun job]$ vim flume-file-hdfs.conf</span><br></pre></td></tr></table></figure>
+
+<p>添加如下内容</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># Name the components on this agent</span><br><span class="line">a2.sources = r2		#定义source</span><br><span class="line">a2.sinks = k2		#定义sink</span><br><span class="line">a2.channels = c2	#定义channels</span><br><span class="line"></span><br><span class="line"># Describe/configure the source</span><br><span class="line">a2.sources.r2.type = exec				#定义source类型为exec可执行命令的</span><br><span class="line">a2.sources.r2.command = tail -F /opt/module/hive/logs/hive.log</span><br><span class="line">a2.sources.r2.shell = /bin/bash -c		#执行shell脚本的绝对路径</span><br><span class="line"></span><br><span class="line"># Describe the sink</span><br><span class="line">a2.sinks.k2.type = hdfs</span><br><span class="line">a2.sinks.k2.hdfs.path = hdfs://aliyun:9000/flume/%Y%m%d/%H</span><br><span class="line">a2.sinks.k2.hdfs.filePrefix = logs-			#上传文件的前缀</span><br><span class="line">a2.sinks.k2.hdfs.round = true				#是否按照时间滚动文件夹		</span><br><span class="line">a2.sinks.k2.hdfs.roundValue = 1				#多少时间单位创建一个新的文件夹	</span><br><span class="line">a2.sinks.k2.hdfs.roundUnit = hour			#重新定义时间单位</span><br><span class="line">a2.sinks.k2.hdfs.useLocalTimeStamp = true	#是否使用本地时间戳</span><br><span class="line">a2.sinks.k2.hdfs.batchSize = 1000			#积攒多少个Event才flush到HDFS一次</span><br><span class="line">a2.sinks.k2.hdfs.fileType = DataStream		#设置文件类型，可支持压缩</span><br><span class="line">a2.sinks.k2.hdfs.rollInterval = 60			#多久生成一个新的文件</span><br><span class="line">a2.sinks.k2.hdfs.rollSize = 134217700		#设置每个文件的滚动大小</span><br><span class="line">a2.sinks.k2.hdfs.rollCount = 0				#文件的滚动与Event数量无关</span><br><span class="line"></span><br><span class="line"># Use a channel which buffers events in memory</span><br><span class="line">a2.channels.c2.type = memory</span><br><span class="line">a2.channels.c2.capacity = 1000</span><br><span class="line">a2.channels.c2.transactionCapacity = 100</span><br><span class="line"></span><br><span class="line"># Bind the source and sink to the channel</span><br><span class="line">a2.sources.r2.channels = c2</span><br><span class="line">a2.sinks.k2.channel = c2</span><br></pre></td></tr></table></figure>
+
+<p><strong>注意</strong>：</p>
+<p>对于所有与时间相关的转义序列，Event Header中必须存在以 “timestamp”的key（除非hdfs.useLocalTimeStamp设置为true，此方法会使用TimestampInterceptor自动添加timestamp）。</p>
+</li>
+<li><p>执行监控配置</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[aliyun@aliyun flume]$ bin/flume-ng agent --conf conf/ --name a2 --conf-file job/flume-file-hdfs.conf</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>开启aliyun和Hive并操作Hive产生日志</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[aliyun@aliyun aliyun-2.7.2]$ sbin/start-dfs.sh</span><br><span class="line">[aliyun@aliyun103 aliyun-2.7.2]$ sbin/start-yarn.sh</span><br><span class="line"></span><br><span class="line">[aliyun@aliyun hive]$ bin/hive</span><br><span class="line">hive (default)&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在HDFS上查看文件。</p>
+</li>
+</ol>
+<h2 id="实时读取目录文件到HDFS案例"><a href="#实时读取目录文件到HDFS案例" class="headerlink" title="实时读取目录文件到HDFS案例"></a>实时读取目录文件到HDFS案例</h2><p>案例需求：使用Flume监听整个目录的文件</p>
+<p><img src="https://yerias.github.io/flume_img/%E5%8D%95%E6%BA%90%E5%8D%95%E5%87%BA%E5%8F%A32.jpg" alt="单源单出口2"></p>
+<ol>
+<li><p>创建配置文件flume-dir-hdfs.conf</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[aliyun@aliyun job]$ touch flume-dir-hdfs.conf</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>打开文件</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[aliyun@aliyun job]$ vim flume-dir-hdfs.conf</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>添加如下内容</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">a3.sources = r3		#定义sources</span><br><span class="line">a3.sinks = k3		#定义sink</span><br><span class="line">a3.channels = c3	#定义channel</span><br><span class="line"></span><br><span class="line"># Describe/configure the source</span><br><span class="line">a3.sources.r3.type = spooldir						#定义souce类型为目录</span><br><span class="line">a3.sources.r3.spoolDir = /opt/module/flume/upload	#定义监控目录</span><br><span class="line">a3.sources.r3.fileSuffix = .COMPLETED				#定义文件上传完的后缀</span><br><span class="line">a3.sources.r3.fileHeader = true						#是否有文件头</span><br><span class="line">a3.sources.r3.ignorePattern = ([^ ]*\.tmp)			#忽略所有以.tmp结尾的文件，不上传</span><br><span class="line"></span><br><span class="line"># Describe the sink</span><br><span class="line">a3.sinks.k3.type = hdfs							#sink类型为hdfs</span><br><span class="line">a3.sinks.k3.hdfs.pat=hdfs://aliyun:9000/flume/upload/%Y%m%d/%H  #文件上传到hdfs的路径</span><br><span class="line"></span><br><span class="line">a3.sinks.k3.hdfs.filePrefix = upload-			#上传文件到hdfs的前缀</span><br><span class="line">a3.sinks.k3.hdfs.round = true					#是否按照时间滚动文件夹</span><br><span class="line">a3.sinks.k3.hdfs.roundValue = 1					#多少时间单位创建一个新的文件夹</span><br><span class="line">a3.sinks.k3.hdfs.roundUnit = hour				#重新定义时间单位</span><br><span class="line">a3.sinks.k3.hdfs.useLocalTimeStamp = true		#是否使用本地时间戳</span><br><span class="line">a3.sinks.k3.hdfs.batchSize = 100				#积攒多少个Event才flush到HDFS一次</span><br><span class="line">a3.sinks.k3.hdfs.fileType = DataStream			#设置文件类型，可支持压缩</span><br><span class="line">a3.sinks.k3.hdfs.rollInterval = 60				#多久生成一个新的文件</span><br><span class="line">a3.sinks.k3.hdfs.rollSize = 134217700			#设置每个文件的滚动大小大概是128M</span><br><span class="line">a3.sinks.k3.hdfs.rollCount = 0					#文件的滚动与Event数量无关</span><br><span class="line"></span><br><span class="line"># Use a channel which buffers events in memory</span><br><span class="line">a3.channels.c3.type = memory</span><br><span class="line">a3.channels.c3.capacity = 1000</span><br><span class="line">a3.channels.c3.transactionCapacity = 100</span><br><span class="line"></span><br><span class="line"># Bind the source and sink to the channel</span><br><span class="line">a3.sources.r3.channels = c3</span><br><span class="line">a3.sinks.k3.channel = c3</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>启动监控文件夹命令</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[aliyun@aliyun flume]$ bin/flume-ng agent --conf conf/ --name a3 --conf-file job/flume-dir-hdfs.conf</span><br></pre></td></tr></table></figure>
+
+<p>说明： 在使用Spooling Directory Source时</p>
+<ol>
+<li>不要在监控目录中创建并持续修改文件</li>
+<li>上传完成的文件会以.COMPLETED结尾</li>
+<li>被监控文件夹每500毫秒扫描一次文件变动</li>
+</ol>
+</li>
+<li><p>向upload文件夹中添加文件</p>
+<p>在/opt/module/flume目录下创建upload文件夹</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[aliyun@aliyun flume]$ mkdir upload</span><br></pre></td></tr></table></figure>
+
+<p>向upload文件夹中添加文件</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[aliyun@aliyun upload]$ touch aliyun.txt</span><br><span class="line">[aliyun@aliyun upload]$ touch aliyun.tmp</span><br><span class="line">[aliyun@aliyun upload]$ touch aliyun.log</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看HDFS上的数据</p>
+</li>
+<li><p>等待1s，再次查询upload文件夹</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[aliyun@aliyun upload]$ ll</span><br><span class="line">总用量 0</span><br><span class="line">-rw-rw-r--. 1 aliyun aliyun 0 5月  20 22:31 aliyun.log.COMPLETED</span><br><span class="line">-rw-rw-r--. 1 aliyun aliyun 0 5月  20 22:31 aliyun.tmp</span><br><span class="line">-rw-rw-r--. 1 aliyun aliyun 0 5月  20 22:31 aliyun.txt.COMPLETED</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ol>
+<h2 id="单数据源多出口案例-选择器"><a href="#单数据源多出口案例-选择器" class="headerlink" title="单数据源多出口案例(选择器)"></a>单数据源多出口案例(选择器)</h2><p>案例需求：使用Flume-1监控文件变动，Flume-1将变动内容传递给Flume-2，Flume-2负责存储到HDFS。同时Flume-1将变动内容传递给Flume-3，Flume-3负责输出到Local FileSystem。</p>
+<p><img src="https://yerias.github.io/flume_img/%E5%8D%95%E6%BA%90%E5%A4%9A%E5%87%BA%E5%8F%A31.jpg" alt="单源多出口1"></p>
+<ol>
+<li><p>准备工作</p>
+<p>在/opt/module/flume/job目录下创建group1文件夹</p>
+<p><code>[hadoop@aliyun102 job]$ cd group1/</code></p>
+<p>在/opt/module/datas/目录下创建flume3文件夹</p>
+<p><code>[hadoop@aliyun102 datas]$ mkdir flume3</code></p>
+</li>
+<li><p>创建flume-file-flume.conf</p>
+<p>配置1个接收日志文件的source和两个channel、两个sink，分别输送给flume-flume-hdfs和flume-flume-dir。</p>
+<p>创建配置文件并打开</p>
+<p><code>[hadoop@aliyun102 group1]$ touch flume-file-flume.conf</code></p>
+<p><code>[hadoop@aliyun102 group1]$ vim flume-file-flume.conf</code></p>
+<p>添加如下内容</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># Name the components on this agent</span><br><span class="line">a1.sources = r1</span><br><span class="line">a1.sinks = k1 k2</span><br><span class="line">a1.channels = c1 c2</span><br><span class="line"></span><br><span class="line"># 将数据流复制给所有channel</span><br><span class="line">a1.sources.r1.selector.type = replicating</span><br><span class="line"># Describe/configure the source</span><br><span class="line">a1.sources.r1.type = exec</span><br><span class="line">a1.sources.r1.command = tail -F /opt/module/hive/logs/hive.log</span><br><span class="line">a1.sources.r1.shell = /bin/bash -c</span><br><span class="line"> </span><br><span class="line"># Describe the sink</span><br><span class="line"># sink端的avro是一个数据发送者</span><br><span class="line">a1.sinks.k1.type = avro</span><br><span class="line">a1.sinks.k1.hostname = aliyun102 </span><br><span class="line">a1.sinks.k1.port = 4141</span><br><span class="line">a1.sinks.k2.type = avro</span><br><span class="line">a1.sinks.k2.hostname = aliyun102</span><br><span class="line">a1.sinks.k2.port = 4142</span><br><span class="line"></span><br><span class="line"># Describe the channel</span><br><span class="line">a1.channels.c1.type = memory</span><br><span class="line">a1.channels.c1.capacity = 1000</span><br><span class="line">a1.channels.c1.transactionCapacity = 100</span><br><span class="line"></span><br><span class="line">a1.channels.c2.type = memory</span><br><span class="line">a1.channels.c2.capacity = 1000</span><br><span class="line">a1.channels.c2.transactionCapacity = 100</span><br><span class="line"></span><br><span class="line"># Bind the source and sink to the channel</span><br><span class="line">a1.sources.r1.channels = c1 c2</span><br><span class="line">a1.sinks.k1.channel = c1</span><br><span class="line">a1.sinks.k2.channel = c2</span><br></pre></td></tr></table></figure>
+
+<p>注：Avro是由aliyun创始人Doug Cutting创建的一种语言无关的数据序列化和RPC框架。</p>
+<p>注：RPC（Remote Procedure Call）—远程过程调用，它是一种通过网络从远程计算机程序上请求服务，而不需要了解底层网络技术的协议。</p>
+</li>
+<li><p>创建flume-flume-hdfs.conf</p>
+<p>配置上级Flume输出的Source，输出是到HDFS的Sink。</p>
+<p>创建配置文件并打开</p>
+<p><code>[hadoop@aliyun102 group1]$ touch flume-flume-hdfs.conf</code></p>
+<p><code>[hadoop@aliyun102 group1]$ vim flume-flume-hdfs.conf</code></p>
+<p>添加如下内容</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># Name the components on this agent</span><br><span class="line">a2.sources = r1</span><br><span class="line">a2.sinks = k1</span><br><span class="line">a2.channels = c1</span><br><span class="line"></span><br><span class="line"># Describe/configure the source</span><br><span class="line"># source端的avro是一个数据接收服务</span><br><span class="line">a2.sources.r1.type = avro</span><br><span class="line">a2.sources.r1.bind = aliyun102</span><br><span class="line">a2.sources.r1.port = 4141</span><br><span class="line"></span><br><span class="line"># Describe the sink</span><br><span class="line">a2.sinks.k1.type = hdfs</span><br><span class="line">a2.sinks.k1.hdfs.path = hdfs://aliyun102:9000/flume2/%Y%m%d/%H</span><br><span class="line">#上传文件的前缀</span><br><span class="line">a2.sinks.k1.hdfs.filePrefix = flume2-</span><br><span class="line">#是否按照时间滚动文件夹</span><br><span class="line">a2.sinks.k1.hdfs.round = true</span><br><span class="line">#多少时间单位创建一个新的文件夹</span><br><span class="line">a2.sinks.k1.hdfs.roundValue = 1</span><br><span class="line">#重新定义时间单位</span><br><span class="line">a2.sinks.k1.hdfs.roundUnit = hour</span><br><span class="line">#是否使用本地时间戳</span><br><span class="line">a2.sinks.k1.hdfs.useLocalTimeStamp = true</span><br><span class="line">#积攒多少个Event才flush到HDFS一次</span><br><span class="line">a2.sinks.k1.hdfs.batchSize = 100</span><br><span class="line">#设置文件类型，可支持压缩</span><br><span class="line">a2.sinks.k1.hdfs.fileType = DataStream</span><br><span class="line">#多久生成一个新的文件</span><br><span class="line">a2.sinks.k1.hdfs.rollInterval = 600</span><br><span class="line">#设置每个文件的滚动大小大概是128M</span><br><span class="line">a2.sinks.k1.hdfs.rollSize = 134217700</span><br><span class="line">#文件的滚动与Event数量无关</span><br><span class="line">a2.sinks.k1.hdfs.rollCount = 0</span><br><span class="line"></span><br><span class="line"># Describe the channel</span><br><span class="line">a2.channels.c1.type = memory</span><br><span class="line">a2.channels.c1.capacity = 1000</span><br><span class="line">a2.channels.c1.transactionCapacity = 100</span><br><span class="line"></span><br><span class="line"># Bind the source and sink to the channel</span><br><span class="line">a2.sources.r1.channels = c1</span><br><span class="line">a2.sinks.k1.channel = c1</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建flume-flume-dir.conf</p>
+<p>配置上级Flume输出的Source，输出是到本地目录的Sink。</p>
+<p>创建配置文件并打开</p>
+<p><code>[hadoop@aliyun102 group1]$ touch flume-flume-dir.conf</code></p>
+<p><code>[hadoop@aliyun102 group1]$ vim flume-flume-dir.conf</code></p>
+<p>添加如下内容</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># Name the components on this agent</span><br><span class="line">a3.sources = r1</span><br><span class="line">a3.sinks = k1</span><br><span class="line">a3.channels = c2</span><br><span class="line"></span><br><span class="line"># Describe/configure the source</span><br><span class="line">a3.sources.r1.type = avro</span><br><span class="line">a3.sources.r1.bind = aliyun102</span><br><span class="line">a3.sources.r1.port = 4142</span><br><span class="line"></span><br><span class="line"># Describe the sink</span><br><span class="line">a3.sinks.k1.type = file_roll</span><br><span class="line">a3.sinks.k1.sink.directory = /opt/module/data/flume3</span><br><span class="line"></span><br><span class="line"># Describe the channel</span><br><span class="line">a3.channels.c2.type = memory</span><br><span class="line">a3.channels.c2.capacity = 1000</span><br><span class="line">a3.channels.c2.transactionCapacity = 100</span><br><span class="line"></span><br><span class="line"># Bind the source and sink to the channel</span><br><span class="line">a3.sources.r1.channels = c2</span><br><span class="line">a3.sinks.k1.channel = c2</span><br></pre></td></tr></table></figure>
+
+<p>提示：输出的本地目录必须是已经存在的目录，如果该目录不存在，并不会创建新的目录。</p>
+</li>
+<li><p>执行配置文件</p>
+<p>分别开启对应配置文件：flume-flume-dir，flume-flume-hdfs，flume-file-flume。</p>
+<p><code>[hadoop@aliyun102 flume]$ bin/flume-ng agent --conf conf/ --name a3 --conf-file job/group1/flume-flume-dir.conf</code></p>
+<p><code>[hadoop@aliyun102 flume]$ bin/flume-ng agent --conf conf/ --name a2 --conf-file job/group1/flume-flume-hdfs.conf</code></p>
+<p><code>[hadoop@aliyun102 flume]$ bin/flume-ng agent --conf conf/ --name a1 --conf-file job/group1/flume-file-flume.conf</code></p>
+</li>
+<li><p>启动aliyun和Hive</p>
+<p><code>[hadoop@aliyun102 aliyun-2.7.2]$ sbin/start-dfs.sh</code></p>
+<p><code>[hadoop@aliyun103 aliyun-2.7.2]$ sbin/start-yarn.sh</code></p>
+<p><code>[hadoop@aliyun102 hive]$ bin/hive</code></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">hive (default)&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>检查HDFS上数据</p>
+</li>
+<li><p>检查/opt/module/datas/flume3目录中数据</p>
+<p><code>[hadoop@aliyun102 flume3]$ ll</code></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">总用量 8</span><br><span class="line">-rw-rw-r--. 1 hadoop hadoop 5942 5月 22 00:09 1526918887550-3</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h2 id="单数据源多出口案例-Sink组"><a href="#单数据源多出口案例-Sink组" class="headerlink" title="单数据源多出口案例(Sink组)"></a>单数据源多出口案例(Sink组)</h2><p>案例需求：使用Flume-1监控文件变动，Flume-1将变动内容传递给Flume-2，Flume-2负责存储到HDFS。同时Flume-1将变动内容传递给Flume-3，Flume-3也负责存储到HDFS </p>
+<p><img src="https://yerias.github.io/flume_img/%E5%8D%95%E6%BA%90%E5%A4%9A%E5%87%BA%E5%8F%A32.jpg" alt="单源多出口2"></p>
+<ol>
+<li><p>准备工作</p>
+<p>在/opt/module/flume/job目录下创建group2文件夹</p>
+<p><code>[hadoop@aliyun102 job]$ cd group2/</code></p>
+</li>
+<li><p>创建flume-netcat-flume.conf</p>
+<p>配置1个接收日志文件的source和1个channel、两个sink，分别输送给flume-flume-console1和flume-flume-console2。</p>
+<p>创建配置文件并打开</p>
+<p><code>[hadoop@aliyun102 group2]$ touch flume-netcat-flume.conf</code></p>
+<p><code>[hadoop@aliyun102 group2]$ vim flume-netcat-flume.conf</code></p>
+<p>添加如下内容</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># Name the components on this agent</span><br><span class="line">a1.sources = r1</span><br><span class="line">a1.channels = c1</span><br><span class="line">a1.sinkgroups = g1</span><br><span class="line">a1.sinks = k1 k2</span><br><span class="line"></span><br><span class="line"># Describe/configure the source</span><br><span class="line">a1.sources.r1.type = netcat</span><br><span class="line">a1.sources.r1.bind = localhost</span><br><span class="line">a1.sources.r1.port = 44444</span><br><span class="line"></span><br><span class="line">a1.sinkgroups.g1.processor.type = load_balance</span><br><span class="line">a1.sinkgroups.g1.processor.backoff = true</span><br><span class="line">a1.sinkgroups.g1.processor.selector = round_robin</span><br><span class="line">a1.sinkgroups.g1.processor.selector.maxTimeOut=10000</span><br><span class="line"></span><br><span class="line"># Describe the sink</span><br><span class="line">a1.sinks.k1.type = avro</span><br><span class="line">a1.sinks.k1.hostname = aliyun102</span><br><span class="line">a1.sinks.k1.port = 4141</span><br><span class="line"></span><br><span class="line">a1.sinks.k2.type = avro</span><br><span class="line">a1.sinks.k2.hostname = aliyun102</span><br><span class="line">a1.sinks.k2.port = 4142</span><br><span class="line"></span><br><span class="line"># Describe the channel</span><br><span class="line">a1.channels.c1.type = memory</span><br><span class="line">a1.channels.c1.capacity = 1000</span><br><span class="line">a1.channels.c1.transactionCapacity = 100</span><br><span class="line"></span><br><span class="line"># Bind the source and sink to the channel</span><br><span class="line">a1.sources.r1.channels = c1</span><br><span class="line">a1.sinkgroups.g1.sinks = k1 k2</span><br><span class="line">a1.sinks.k1.channel = c1</span><br><span class="line">a1.sinks.k2.channel = c1</span><br></pre></td></tr></table></figure>
+
+<p>注：Avro是由aliyun创始人Doug Cutting创建的一种语言无关的数据序列化和RPC框架。</p>
+<p>注：RPC（Remote Procedure Call）—远程过程调用，它是一种通过网络从远程计算机程序上请求服务，而不需要了解底层网络技术的协议。</p>
+</li>
+<li><p>创建flume-flume-console1.conf</p>
+<p>配置上级Flume输出的Source，输出是到本地控制台。</p>
+<p>创建配置文件并打开</p>
+<p><code>[hadoop@aliyun102 group2]$ touch flume-flume-console1.conf</code></p>
+<p><code>[hadoop@aliyun102 group2]$ vim flume-flume-console1.conf</code></p>
+<p>添加如下内容</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># Name the components on this agent</span><br><span class="line">a2.sources = r1</span><br><span class="line">a2.sinks = k1</span><br><span class="line">a2.channels = c1</span><br><span class="line"></span><br><span class="line"># Describe/configure the source</span><br><span class="line">a2.sources.r1.type = avro</span><br><span class="line">a2.sources.r1.bind = aliyun102</span><br><span class="line">a2.sources.r1.port = 4141</span><br><span class="line"></span><br><span class="line"># Describe the sink</span><br><span class="line">a2.sinks.k1.type = logger</span><br><span class="line"></span><br><span class="line"># Describe the channel</span><br><span class="line">a2.channels.c1.type = memory</span><br><span class="line">a2.channels.c1.capacity = 1000</span><br><span class="line">a2.channels.c1.transactionCapacity = 100</span><br><span class="line"></span><br><span class="line"># Bind the source and sink to the channel</span><br><span class="line">a2.sources.r1.channels = c1</span><br><span class="line">a2.sinks.k1.channel = c1</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建flume-flume-console2.conf</p>
+<p>配置上级Flume输出的Source，输出是到本地控制台。</p>
+<p>创建配置文件并打开</p>
+<p><code>[hadoop@aliyun102 group2]$ touch flume-flume-console2.conf</code></p>
+<p><code>[hadoop@aliyun102 group2]$ vim flume-flume-console2.conf</code></p>
+<p>添加如下内容</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># Name the components on this agent</span><br><span class="line">a3.sources = r1</span><br><span class="line">a3.sinks = k1</span><br><span class="line">a3.channels = c2</span><br><span class="line"></span><br><span class="line"># Describe/configure the source</span><br><span class="line">a3.sources.r1.type = avro</span><br><span class="line">a3.sources.r1.bind = aliyun102</span><br><span class="line">a3.sources.r1.port = 4142</span><br><span class="line"></span><br><span class="line"># Describe the sink</span><br><span class="line">a3.sinks.k1.type = logger</span><br><span class="line"></span><br><span class="line"># Describe the channel</span><br><span class="line">a3.channels.c2.type = memory</span><br><span class="line">a3.channels.c2.capacity = 1000</span><br><span class="line">a3.channels.c2.transactionCapacity = 100</span><br><span class="line"></span><br><span class="line"># Bind the source and sink to the channel</span><br><span class="line">a3.sources.r1.channels = c2</span><br><span class="line">a3.sinks.k1.channel = c2</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>执行配置文件</p>
+<p>分别开启对应配置文件：flume-flume-console2，flume-flume-console1，flume-netcat-flume。</p>
+<p><code>[hadoop@aliyun102 flume]$ bin/flume-ng agent --conf conf/ --name a3 --conf-file job/group2/flume-flume-console2.conf -Dflume.root.logger=INFO,console</code></p>
+<p><code>[hadoop@aliyun102 flume]$ bin/flume-ng agent --conf conf/ --name a2 --conf-file job/group2/flume-flume-console1.conf -Dflume.root.logger=INFO,console</code></p>
+<p><code>[hadoop@aliyun102 flume]$ bin/flume-ng agent --conf conf/ --name a1 --conf-file job/group2/flume-netcat-flume.conf</code></p>
+</li>
+<li><p>使用netcat工具向本机的44444端口发送内容</p>
+<p><code>$ nc localhost 44444</code></p>
+</li>
+<li><p>查看Flume2及Flume3的控制台打印</p>
+</li>
+</ol>
+<h2 id="多数据源汇总案例"><a href="#多数据源汇总案例" class="headerlink" title="多数据源汇总案例"></a>多数据源汇总案例</h2><p>案例需求：</p>
+<p>aliyun103上的Flume-1监控文件/opt/module/group.log，</p>
+<p>aliyun102上的Flume-2监控某一个端口的数据流，</p>
+<p>Flume-1与Flume-2将数据发送给aliyun104上的Flume-3，Flume-3将最终数据打印到控制台。</p>
+<p><img src="https://yerias.github.io/flume_img/%E5%A4%9A%E6%BA%90%E5%8D%95%E5%87%BA%E5%8F%A3.jpg" alt="多源单出口"></p>
+<ol>
+<li><p>准备工作</p>
+<p>分发Flume</p>
+<p><code>[hadoop@aliyun102 module]$ xsync flume</code></p>
+<p>在aliyun102、aliyun103以及aliyun104的/opt/module/flume/job目录下创建一个group3文件夹。</p>
+<p><code>[hadoop@aliyun102 job]$ mkdir group3</code></p>
+<p><code>[hadoop@aliyun103 job]$ mkdir group3</code></p>
+<p><code>[hadoop@aliyun104 job]$ mkdir group3</code></p>
+</li>
+<li><p>创建flume1-logger-flume.conf</p>
+<p>配置Source用于监控hive.log文件，配置Sink输出数据到下一级Flume。</p>
+<p>在aliyun103上创建配置文件并打开</p>
+<p><code>[hadoop@aliyun103 group3]$ touch flume1-logger-flume.conf</code></p>
+<p><code>[hadoop@aliyun103 group3]$ vim flume1-logger-flume.conf</code></p>
+<p>添加如下内容</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># Name the components on this agent</span><br><span class="line">a1.sources = r1</span><br><span class="line">a1.sinks = k1</span><br><span class="line">a1.channels = c1</span><br><span class="line"></span><br><span class="line"># Describe/configure the source</span><br><span class="line">a1.sources.r1.type = exec</span><br><span class="line">a1.sources.r1.command = tail -F /opt/module/group.log</span><br><span class="line">a1.sources.r1.shell = /bin/bash -c</span><br><span class="line"></span><br><span class="line"># Describe the sink</span><br><span class="line">a1.sinks.k1.type = avro</span><br><span class="line">a1.sinks.k1.hostname = aliyun104</span><br><span class="line">a1.sinks.k1.port = 4141</span><br><span class="line"></span><br><span class="line"># Describe the channel</span><br><span class="line">a1.channels.c1.type = memory</span><br><span class="line">a1.channels.c1.capacity = 1000</span><br><span class="line">a1.channels.c1.transactionCapacity = 100</span><br><span class="line"></span><br><span class="line"># Bind the source and sink to the channel</span><br><span class="line">a1.sources.r1.channels = c1</span><br><span class="line">a1.sinks.k1.channel = c1</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建flume2-netcat-flume.conf</p>
+<p>配置Source监控端口44444数据流，配置Sink数据到下一级Flume：</p>
+<p>在aliyun102上创建配置文件并打开</p>
+<p><code>[hadoop@aliyun102 group3]$ touch flume2-netcat-flume.conf</code></p>
+<p><code>[hadoop@aliyun102 group3]$ vim flume2-netcat-flume.conf</code></p>
+<p>添加如下内容</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># Name the components on this agent</span><br><span class="line">a2.sources = r1</span><br><span class="line">a2.sinks = k1</span><br><span class="line">a2.channels = c1</span><br><span class="line"></span><br><span class="line"># Describe/configure the source</span><br><span class="line">a2.sources.r1.type = netcat</span><br><span class="line">a2.sources.r1.bind = aliyun102</span><br><span class="line">a2.sources.r1.port = 44444</span><br><span class="line"></span><br><span class="line"># Describe the sink</span><br><span class="line">a2.sinks.k1.type = avro</span><br><span class="line">a2.sinks.k1.hostname = aliyun104</span><br><span class="line">a2.sinks.k1.port = 4141</span><br><span class="line"></span><br><span class="line"># Use a channel which buffers events in memory</span><br><span class="line">a2.channels.c1.type = memory</span><br><span class="line">a2.channels.c1.capacity = 1000</span><br><span class="line">a2.channels.c1.transactionCapacity = 100</span><br><span class="line"></span><br><span class="line"># Bind the source and sink to the channel</span><br><span class="line">a2.sources.r1.channels = c1</span><br><span class="line">a2.sinks.k1.channel = c1</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建flume3-flume-logger.conf</p>
+<p>配置source用于接收flume1与flume2发送过来的数据流，最终合并后sink到控制台。</p>
+<p>在aliyun104上创建配置文件并打开</p>
+<p><code>[hadoop@aliyun104 group3]$ touch flume3-flume-logger.conf</code></p>
+<p><code>[hadoop@aliyun104 group3]$ vim flume3-flume-logger.conf</code></p>
+<p>添加如下内容</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># Name the components on this agent</span><br><span class="line">a3.sources = r1</span><br><span class="line">a3.sinks = k1</span><br><span class="line">a3.channels = c1</span><br><span class="line"></span><br><span class="line"># Describe/configure the source</span><br><span class="line">a3.sources.r1.type = avro</span><br><span class="line">a3.sources.r1.bind = aliyun104</span><br><span class="line">a3.sources.r1.port = 4141</span><br><span class="line"></span><br><span class="line"># Describe the sink</span><br><span class="line"># Describe the sink</span><br><span class="line">a3.sinks.k1.type = logger</span><br><span class="line"></span><br><span class="line"># Describe the channel</span><br><span class="line">a3.channels.c1.type = memory</span><br><span class="line">a3.channels.c1.capacity = 1000</span><br><span class="line">a3.channels.c1.transactionCapacity = 100</span><br><span class="line"></span><br><span class="line"># Bind the source and sink to the channel</span><br><span class="line">a3.sources.r1.channels = c1</span><br><span class="line">a3.sinks.k1.channel = c1</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>执行配置文件</p>
+<p>分别开启对应配置文件：flume3-flume-logger.conf，flume2-netcat-flume.conf，flume1-logger-flume.conf。</p>
+<p><code>[hadoop@aliyun104 flume]$ bin/flume-ng agent --conf conf/ --name a3 --conf-file job/group3/flume3-flume-logger.conf -Dflume.root.logger=INFO,console</code></p>
+<p><code>[hadoop@aliyun102 flume]$ bin/flume-ng agent --conf conf/ --name a2 --conf-file job/group3/flume2-netcat-flume.conf</code></p>
+<p><code>[hadoop@aliyun103 flume]$ bin/flume-ng agent --conf conf/ --name a1 --conf-file job/group3/flume1-logger-flume.conf</code></p>
+</li>
+<li><p>在aliyun103上向/opt/module目录下的group.log追加内容</p>
+<p><code>[hadoop@aliyun103 module]$ echo &#39;hello&#39; &gt; group.log</code></p>
+</li>
+<li><p>在aliyun102上向44444端口发送数据</p>
+<p><code>[hadoop@aliyun102 flume]$ telnet aliyun102 44444</code></p>
+</li>
+<li><p>检查aliyun104上数据</p>
+</li>
+</ol>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="mailto:undefined" target="_blank" rel="noopener">Tunan</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="http://yerias.github.io/2018/12/02/flume/2/">http://yerias.github.io/2018/12/02/flume/2/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Flume/">Flume</a></div><div class="social-share" data-disabled="facebook,twitter,douban,linkedin,diandian"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js@1.0.16/dist/css/share.min.css"><script src="https://cdn.jsdelivr.net/npm/social-share.js@1.0.16/dist/js/social-share.min.js"></script><nav id="pagination"><div class="prev-post pull-left"><a href="/2018/12/03/flume/3/"><i class="fa fa-chevron-left">  </i><span>Flume的Channel选择器&amp;Flume的Sink选择器&amp;Channel的两种类型</span></a></div><div class="next-post pull-right"><a href="/2018/12/01/flume/1/"><span>Flume架构摸排</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer class="footer-bg" style="background-image: url(/img/soroush-golpoor-1497416-unsplash.jpg)"><div class="layout" id="footer"><div class="copyright">&copy;2018 - 2020 By Tunan</div><div class="framework-info"><span>Driven - </span><a href="#"><span>Hexo</span></a><span class="footer-separator">|</span><span>Theme - </span><a href="#"><span>Melody</span></a></div><div class="footer_custom_text">大家好，我是图南，很高兴认识你们！</div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file-o"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.6.1"></script><script src="/js/fancybox.js?version=1.6.1"></script><script src="/js/sidebar.js?version=1.6.1"></script><script src="/js/copy.js?version=1.6.1"></script><script src="/js/fireworks.js?version=1.6.1"></script><script src="/js/transition.js?version=1.6.1"></script><script src="/js/scroll.js?version=1.6.1"></script><script src="/js/head.js?version=1.6.1"></script><script>if(/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+}</script></body></html>
