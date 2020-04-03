@@ -30,9 +30,9 @@
 <p>在spark程序中，当一个传递给Spark操作(例如map和reduce)的函数在远程节点上面运行时，Spark操作实际上操作的是这个函数所用变量的一个<strong>独立副本</strong>。这些变量会被复制到每台机器上，并且这些变量在远程机器上的所有更新都不会传递回驱动程序。通常跨任务的读写变量是低效的，但是，Spark还是为两种常见的使用模式提供了两种有限的共享变量：广播变量（broadcast variable）和累加器（accumulator）</p>
 <h2 id="计数器"><a href="#计数器" class="headerlink" title="计数器"></a>计数器</h2><h3 id="为什么要定义计数器？"><a href="#为什么要定义计数器？" class="headerlink" title="为什么要定义计数器？"></a>为什么要定义计数器？</h3><p>在spark应用程序中，我们经常会有这样的需求，如<em>异常监控</em>，<em>调试</em>，<em>记录符合某特性的数据的数目</em>，这种需求都需要用到计数器，如果一个变量不被声明为一个累加器，那么它将在被改变时不会再driver端进行全局汇总，即在分布式运行时每个task运行的只是原始变量的一个副本，并不能改变原始变量的值，但是当这个变量被声明为累加器后，该变量就会有分布式计数的功能。</p>
 <h3 id="图解计数器"><a href="#图解计数器" class="headerlink" title="图解计数器"></a>图解计数器</h3><p>错误的图解</p>
-<p><img src="E:%5Chexo%5Cyeriasblog%5Cthemes%5Cmelody%5Csource%5Cspark_img%5C%E7%B4%AF%E5%8A%A0%E5%99%A8%E9%94%99%E8%AF%AF%E7%9A%84%E5%9B%BE%E8%A7%A3.png" alt="累加器错误的图解"></p>
+<p><img src="https://yerias.github.io/spark_img/spark_img/%E7%B4%AF%E5%8A%A0%E5%99%A8%E9%94%99%E8%AF%AF%E7%9A%84%E5%9B%BE%E8%A7%A3.png" alt="累加器错误的图解"></p>
 <p>正确的图解</p>
-<p><img src="E:%5Chexo%5Cyeriasblog%5Cthemes%5Cmelody%5Csource%5Cspark_img%5C%E7%B4%AF%E5%8A%A0%E5%99%A8%E6%AD%A3%E7%A1%AE%E7%9A%84%E5%9B%BE%E8%A7%A3.png" alt="累加器正确的图解"></p>
+<p><img src="https://yerias.github.io/spark_img/spark_img/%E7%B4%AF%E5%8A%A0%E5%99%A8%E6%AD%A3%E7%A1%AE%E7%9A%84%E5%9B%BE%E8%A7%A3.png" alt="累加器正确的图解"></p>
 <p>计数器种类很多，但是经常用的就是两种，<code>longAccumulator</code>和<code>collectionAccumulator</code></p>
 <p><strong>需要注意的是计数器是lazy的，只有触发action才会进行计数，在不持久化的情况下重复触发action，计数器会重复累加</strong></p>
 <h3 id="LongAccumulator"><a href="#LongAccumulator" class="headerlink" title="LongAccumulator"></a>LongAccumulator</h3><p>Accumulators 是只能通过associative和commutative操作“added”的变量，因此可以有效地并行支持。它们可用于实现计数器(如MapReduce)和Spark本身支持数字类型的累加器，程序员还<strong>可以添加对新类型的支持</strong>。</p>
@@ -107,9 +107,9 @@
 <p>伪代码以及画图表示出什么是LRU？</p>
 <h2 id="广播变量"><a href="#广播变量" class="headerlink" title="广播变量"></a>广播变量</h2><h3 id="为什么要将变量定义成广播变量？"><a href="#为什么要将变量定义成广播变量？" class="headerlink" title="为什么要将变量定义成广播变量？"></a>为什么要将变量定义成广播变量？</h3><p>如果我们要在分布式计算里面分发大对象，例如：<em>字典</em>，<em>集合</em>，<em>黑白名单</em>等，这个都会由Driver端进行分发，一般来讲，如果这个变量不是广播变量，那么每个task就会分发一份，这在<strong>task数目十分多的情况下Driver的带宽会成为系统的瓶颈，而且会大量消耗task服务器上的资源</strong>，如果将这个变量声明为广播变量，那么知识每个executor拥有一份，这个executor启动的task会共享这个变量，节省了通信的成本和服务器的资源。</p>
 <h3 id="广播变量图解"><a href="#广播变量图解" class="headerlink" title="广播变量图解"></a>广播变量图解</h3><p>错误的，不使用广播变量</p>
-<p><img src="E:%5Chexo%5Cyeriasblog%5Cthemes%5Cmelody%5Csource%5Cspark_img%5C%E4%B8%8D%E4%BD%BF%E7%94%A8%E5%B9%BF%E6%92%AD%E5%8F%98%E9%87%8F.png" alt="不使用广播变量"></p>
+<p><img src="https://yerias.github.io/spark_img/spark_img/%E4%B8%8D%E4%BD%BF%E7%94%A8%E5%B9%BF%E6%92%AD%E5%8F%98%E9%87%8F.png" alt="不使用广播变量"></p>
 <p>正确的，使用广播变量的情况</p>
-<p><img src="E:%5Chexo%5Cyeriasblog%5Cthemes%5Cmelody%5Csource%5Cspark_img%5C%E4%BD%BF%E7%94%A8%E5%B9%BF%E6%92%AD%E5%8F%98%E9%87%8F.png" alt="使用广播变量"></p>
+<p><img src="https://yerias.github.io/spark_img/spark_img/%E4%BD%BF%E7%94%A8%E5%B9%BF%E6%92%AD%E5%8F%98%E9%87%8F.png" alt="使用广播变量"></p>
 <h3 id="小表广播案例"><a href="#小表广播案例" class="headerlink" title="小表广播案例"></a>小表广播案例</h3><p>使用广播变量的场景很多， 我们都知道spark 一种常见的优化方式就是小表广播， 使用 map join 来代替 reduce join， 我们通过把小的数据集广播到各个节点上，节省了一次特别 expensive 的 shuffle 操作。</p>
 <p>比如driver 上有一张数据量很小的表， 其他节点上的task 都需要 lookup 这张表， 那么 driver 可以先把这张表 copy 到这些节点，这样 task 就可以在本地查表了。</p>
 <ol>
