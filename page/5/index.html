@@ -46,12 +46,18 @@ flume中的事务基 ...</div><a class="more" href="/2018/12/01/flume/1/#more" s
 
 Sqoop安装
 下载并解压
-下载地址：http://archive.cloudera.com/cdh5/cdh/5/sqoop-1.4.6-cdh5.1 ...</div><a class="more" href="/2018/12/01/sqoop/1/#more" style="margin-top: 14px">Read more</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/11/12/hive/13/">HIVE调优之优化策略</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-11-12</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Hive/">Hive</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Hive/">Hive</a></span><div class="content">Hadoop 框架计算特性
-数据量大不是问题，数据倾斜是个问题
-
-jobs 数比较多的作业运行效率相对比较低，比如即使有几百行的表，如果多次关联多次 汇总，产生十几个 jobs，耗时很长。原因是 map reduce 作业初始化的时间是比较长的
-
-sum,count,max,min 等 UDAF，不 ...</div><a class="more" href="/2018/11/12/hive/13/#more" style="margin-top: 14px">Read more</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/11/12/hive/12/">HIVE调优之存储格式</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-11-12</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Hive/">Hive</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Hive/">Hive</a></span><div class="content">目录
+下载地址：http://archive.cloudera.com/cdh5/cdh/5/sqoop-1.4.6-cdh5.1 ...</div><a class="more" href="/2018/12/01/sqoop/1/#more" style="margin-top: 14px">Read more</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/11/13/hive/13/">HIVE调优(2)</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-11-13</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Hive/">Hive</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Hive/">Hive</a></span><div class="content">目录
+Hadoop 框架计算特性
+优化常用手段
+排序选择
+怎样做笛卡尔积
+怎样写 in/exists 语句
+设置合理的 maptask 数量
+小文件合并
+设置合理的 reduceTask 的数量
+合理利用分桶：Bucketing 和 Sampling
+合理利用分区：Partition 
+Join 优 ...</div><a class="more" href="/2018/11/13/hive/13/#more" style="margin-top: 14px">Read more</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/11/12/hive/12/">HIVE调优之存储格式</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-11-12</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Hive/">Hive</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Hive/">Hive</a></span><div class="content">目录
 
 行式数据库和列式数据库的对比
 存储格式的比较
