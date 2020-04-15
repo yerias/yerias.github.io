@@ -1,0 +1,128 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="JVM之运行时数据区"><meta name="keywords" content="Java"><meta name="author" content="Tunan"><meta name="copyright" content="Tunan"><title>JVM之运行时数据区 | TUNANのBlog</title><link rel="shortcut icon" href="/melody-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.6.1"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.6.1"><link rel="dns-prefetch" href="https://cdn.staticfile.org"><link rel="dns-prefetch" href="https://cdn.bootcss.com"><link rel="dns-prefetch" href="https://creativecommons.org"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  }
+} </script></head><body><canvas class="fireworks"></canvas><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="toggle-sidebar-info text-center"><span data-toggle="Toggle article">Toggle site</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">Catalog</div><div class="sidebar-toc__progress"><span class="progress-notice">You've read</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#目录"><span class="toc-number">1.</span> <span class="toc-text">目录</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#jvm命令"><span class="toc-number">2.</span> <span class="toc-text">jvm命令</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#JVM参数类型"><span class="toc-number">2.1.</span> <span class="toc-text">JVM参数类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#常见的XX类型的参数"><span class="toc-number">2.2.</span> <span class="toc-text">常见的XX类型的参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#几个特殊的XX类型参数"><span class="toc-number">2.3.</span> <span class="toc-text">几个特殊的XX类型参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#常用命令"><span class="toc-number">2.4.</span> <span class="toc-text">常用命令</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#jvm的运行时数据区"><span class="toc-number">3.</span> <span class="toc-text">jvm的运行时数据区</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#程序计数器"><span class="toc-number">3.1.</span> <span class="toc-text">程序计数器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Java虚拟机栈"><span class="toc-number">3.2.</span> <span class="toc-text">Java虚拟机栈</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#本地方法栈"><span class="toc-number">3.3.</span> <span class="toc-text">本地方法栈</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#java堆"><span class="toc-number">3.4.</span> <span class="toc-text">java堆</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#方法区"><span class="toc-number">3.5.</span> <span class="toc-text">方法区</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#直接内存"><span class="toc-number">3.6.</span> <span class="toc-text">直接内存</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#jvm会发生哪些ERROR"><span class="toc-number">4.</span> <span class="toc-text">jvm会发生哪些ERROR</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#java堆内存OOM异常测试"><span class="toc-number">4.1.</span> <span class="toc-text">java堆内存OOM异常测试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#java虚拟机栈和本地方法栈SOF测试"><span class="toc-number">4.2.</span> <span class="toc-text">java虚拟机栈和本地方法栈SOF测试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#java虚拟机栈和本地方法栈OOM测试"><span class="toc-number">4.3.</span> <span class="toc-text">java虚拟机栈和本地方法栈OOM测试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#方法区和运行时常量池OOM"><span class="toc-number">4.4.</span> <span class="toc-text">方法区和运行时常量池OOM</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#从一个class出发理解数据区"><span class="toc-number">5.</span> <span class="toc-text">从一个class出发理解数据区</span></a></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="/img/xiaoqi.jpg"></div><div class="author-info__name text-center">Tunan</div><div class="author-info__description text-center">BigData Developer</div><div class="follow-button"><a href="#">Follow Me</a></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">Articles</span><span class="pull-right">105</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">Tags</span><span class="pull-right">25</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">Categories</span><span class="pull-right">21</span></a></div><hr><div class="author-info-links"><div class="author-info-links__title text-center">Links</div><a class="author-info-links__name text-center" href="https://hadoop.apache.org/docs/r2.10.0/hadoop-project-dist/hadoop-common/SingleCluster.html" target="_blank" rel="noopener">HADOOP</a><a class="author-info-links__name text-center" href="https://cwiki.apache.org/confluence/display/Hive/" target="_blank" rel="noopener">HIVE</a><a class="author-info-links__name text-center" href="http://archive.cloudera.com/cdh5/cdh/5/" target="_blank" rel="noopener">CDH</a><a class="author-info-links__name text-center" href="http://flume.apache.org/" target="_blank" rel="noopener">FLUME</a><a class="author-info-links__name text-center" href="https://azkaban.github.io/" target="_blank" rel="noopener">AZKABAN</a><a class="author-info-links__name text-center" href="https://www.maxinhong.com/" target="_blank" rel="noopener">叶梨子</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/qingyunzong" target="_blank" rel="noopener">老铁</a><a class="author-info-links__name text-center" href="https://blog.csdn.net/jim8973/" target="_blank" rel="noopener">飞哥</a></div></div></div><div id="content-outer"><div id="top-container" style="background-image: url(/img/soroush-golpoor-1497416-unsplash.jpg)"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">TUNANのBlog</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page" href="/">主页</a><a class="site-page" href="/archives">归档</a><a class="site-page" href="/tags">标签</a><a class="site-page" href="/categories">分类</a></span></div><div id="post-info"><div id="post-title">JVM之运行时数据区</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-04-15</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/Java/">Java</a><div class="post-meta-wordcount"><span>Word count: </span><span class="word-count">1.9k</span><span class="post-meta__separator">|</span><span>Reading time: 6 min</span></div></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><ol>
+<li>jvm命令</li>
+<li>jvm的运行时数据区</li>
+<li>jvm会发生哪些ERROR</li>
+<li>从一个class出发理解数据区</li>
+</ol>
+<h2 id="jvm命令"><a href="#jvm命令" class="headerlink" title="jvm命令"></a>jvm命令</h2><h3 id="JVM参数类型"><a href="#JVM参数类型" class="headerlink" title="JVM参数类型"></a>JVM参数类型</h3><ol>
+<li>标准: 稳定的，长期没有变化</li>
+<li>X: 相对变化较少的</li>
+<li>XX: 变化较大，JVM调优重点</li>
+</ol>
+<p>设置参数时，idea指定在VM options里面，命令行直接加在java命令后</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">java -Xss10m -XX:+PrintGCDetails JVMParams</span><br></pre></td></tr></table></figure>
+
+<h3 id="常见的XX类型的参数"><a href="#常见的XX类型的参数" class="headerlink" title="常见的XX类型的参数"></a>常见的XX类型的参数</h3><ol>
+<li><p>-XX:+PrintGCDetails: 打印GC日志</p>
+</li>
+<li><p>-XX:+PrintFlagsInitial: 打印所有初始的参数信息</p>
+</li>
+<li><p>-XX:+PrintFlagsFinal: 打印所有最终的参数信息</p>
+</li>
+<li><p>-Xms设置堆的最小空间大小。</p>
+</li>
+<li><p>-Xmx设置堆的最大空间大小。</p>
+</li>
+<li><p>-XX:NewSize设置新生代最小空间大小。</p>
+</li>
+<li><p>-XX:MaxNewSize设置新生代最大空间大小。</p>
+</li>
+<li><p>-XX:PermSize设置永久代最小空间大小。</p>
+</li>
+<li><p>-XX:MaxPermSize设置永久代最大空间大小。</p>
+</li>
+<li><p>-Xss设置每个线程的堆栈大小。</p>
+</li>
+<li><p>没有直接设置老年代的参数，但是可以设置堆空间大小和新生代空间大小两个参数来间接控制</p>
+<p> <strong>老年代空间大小=堆空间大小-年轻代大空间大小</strong></p>
+</li>
+</ol>
+<p>例如：</p>
+<p>java -XX:+PrintFlagsFinal -version </p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">...</span><br><span class="line">uintx MaxHeapSize             := <span class="number">2048917504</span>     &#123;product&#125;</span><br><span class="line">intx MaxInlineLevel            = <span class="number">9</span>              &#123;product&#125;</span><br><span class="line">intx MaxInlineSize    		   = <span class="number">35</span>             &#123;product&#125;</span><br><span class="line">bool ParGCTrimOverflow   	   = <span class="keyword">true</span>           &#123;product&#125;</span><br><span class="line">bool ParGCUseLocalOverflow     = <span class="keyword">false</span>          &#123;product&#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>上面只显示部分参数，但是能够说明我们需要理解的内容，即 ‘=’ 表示默认值，‘:=’ 表示被修改过的值。同时还有数值类型和布尔类型。</p>
+<h3 id="几个特殊的XX类型参数"><a href="#几个特殊的XX类型参数" class="headerlink" title="几个特殊的XX类型参数"></a>几个特殊的XX类型参数</h3><p>-Xms、-Xmx、-Xss 实际上是XX类型的缩写</p>
+<p>-Xms ==&gt; -XX:InitialHeapSize: 表示为: -Xms10m<br>-Xmx ==&gt; -XX:MaxHeapSize: 表示为: -Xmx10m<br>-Xss ==&gt; -XX:ThreadStackSize</p>
+<h3 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h3><ol>
+<li><p>查看java进程：jps</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">[hadoop<span class="meta">@hadoop</span> ~]$ jps</span><br><span class="line"><span class="number">13612</span> JVMParams</span><br><span class="line"><span class="number">13644</span> Jps</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看java进程的参数信息<br>jinfo -flag name pid </p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">[hadoop<span class="meta">@hadoop</span> ~]$ jinfo -flag MaxHeapSize <span class="number">13612</span></span><br><span class="line">-XX:MaxHeapSize=<span class="number">2048917504</span></span><br><span class="line">[hadoop<span class="meta">@hadoop</span> ~]$ jinfo -flag InitialHeapSize <span class="number">13612</span></span><br><span class="line">-XX:InitialHeapSize=<span class="number">130023424</span></span><br><span class="line">[hadoop<span class="meta">@hadoop</span> ~]$ jinfo -flag ThreadStackSize <span class="number">13612</span></span><br><span class="line">-XX:ThreadStackSize=<span class="number">1024</span></span><br></pre></td></tr></table></figure>
+
+<p>怎么理解-XX:MaxHeapSize=2048917504，-XX:InitialHeapSize=130023424 ?</p>
+<p>分析：</p>
+<p>我主机的物理内存为8G，2048917504k = 1.9G，130023424  = 124M</p>
+<p>理论上heap的最大值为物理内存的1/4，最小值为物理内存的1/64</p>
+<p>但是一般情况下，我们会把MaxHeapSize和InitialHeapSize设置相同的值，防止内存抖动</p>
+</li>
+<li><p>查看java进程的默认和设置的参数</p>
+<p>jinfo -flags pid </p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">[hadoop<span class="meta">@hadoop</span> ~]$ jinfo -flags  <span class="number">13612</span></span><br><span class="line">Non-<span class="keyword">default</span> VM flags: -XX:CICompilerCount=<span class="number">2</span> ...</span><br><span class="line">Command line:  -Xss10m -XX:+PrintGCDetails ...</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h2 id="jvm的运行时数据区"><a href="#jvm的运行时数据区" class="headerlink" title="jvm的运行时数据区"></a>jvm的运行时数据区</h2><p><img src="https://yerias.github.io/java_img/%E8%BF%90%E8%A1%8C%E6%97%B6%E6%95%B0%E6%8D%AE%E5%8C%BA.jpg" alt="运行时数据区"></p>
+<h3 id="程序计数器"><a href="#程序计数器" class="headerlink" title="程序计数器"></a>程序计数器</h3><p>程序计数器是每个线程私有的</p>
+<p>程序计数器是一块较小的内存空间，它可以看做是当前线程的行号指示器，这在多线程环境下非常有用。使得线程切换后能够恢复到正确的执行位置。</p>
+<p>在java虚拟机规范中，这是唯一一个没有规定任何OutOfMemoryError的地方</p>
+<h3 id="Java虚拟机栈"><a href="#Java虚拟机栈" class="headerlink" title="Java虚拟机栈"></a>Java虚拟机栈</h3><p>java虚拟机栈也是每个线程私有的，它的生命周期和线程相同</p>
+<p>虚拟机栈描述的是java方法执行的线程内存模型: 每个方法被执行的时候，java虚拟机栈都会同步创建一个Frame(栈帧)用于存储局部变量表、操作数栈、动态链接、方法出口等信息。每一个方法被调用直到执行完毕的过程，就对应着一个栈帧在虚拟机栈中从入栈到出栈的过程。</p>
+<p>最常用的就是局部变量表，局部变量表存放了编译期可知的各种java虚拟机的基本数据类型(boolean、byte、char、sort、int、long、float、double)、对象引用(reference类型)和returnAddress类型，这部分在后面讲有详细的解释。</p>
+<p>在java虚拟机规范中，这个区域可能存在两种异常，如果线程请求的栈深度大于虚拟机所允许的深度，会抛出StackOverflowError异常，常见的有循环调用方法名；如果java虚拟机栈容量可以动态扩展，当栈无法申请到足够的内存时就会抛出OutOfMemoryError异常。</p>
+<h3 id="本地方法栈"><a href="#本地方法栈" class="headerlink" title="本地方法栈"></a>本地方法栈</h3><p>本地方法栈是线程私有的</p>
+<p>本地方法栈与虚拟机栈所发挥的作用是非常类似的，其区别只是虚拟机栈为虚拟机执行java方法服务，而本地方法栈则为本地(native)方法服务</p>
+<p>常见的本地方法有getClass、hashCode、clone、notify、notifyAll、wait、sleep等</p>
+<p>与java虚拟机栈一样，本地方法栈也会在栈深度溢出的时候或者栈扩展失败的时候抛出StackOutflowError和OutOfMemoryError异常。</p>
+<h3 id="java堆"><a href="#java堆" class="headerlink" title="java堆"></a>java堆</h3><p>java堆是所有线程共享的，是虚拟机所管理的内存中最大的一块，在虚拟机启动时创建。</p>
+<p>此内存区域的唯一目的是存放对象实例，对象实例包括对象和数组。</p>
+<p>如果在java堆中没有内存完成实例分配，并且堆也无法扩展，java虚拟机将会抛出OutOfMemoryError异常。</p>
+<h3 id="方法区"><a href="#方法区" class="headerlink" title="方法区"></a>方法区</h3><p>方法区是所有线程共享的</p>
+<p>它用于存储已被虚拟机加载的类型信息、常量、静态变量、即时编译器编译后的代码缓存等数据，简单点说就是Class。</p>
+<p>方法区只是java虚拟机的规范，它属于堆的一个逻辑部分，为了和堆区分开，也叫非堆。在jdk8之前，方法区的具体实现叫做永久代，</p>
+<ol>
+<li>由于类及方法的信息大小很难确定，所以内存设置小了会发生OOM，设置大了又浪费</li>
+<li>GC复杂度高，回收效率低</li>
+<li>合并 HotSpot 与 JRockit </li>
+</ol>
+<p>所以在jdk8完全用元空间替换了永久代，元空间直接使用的系统内存。</p>
+<p>在java虚拟机规范中，如果方法区无法满足内存分配需求时，会抛出OouOfMemoryError</p>
+<h3 id="直接内存"><a href="#直接内存" class="headerlink" title="直接内存"></a>直接内存</h3><p>直接内存不是java虚拟机规范中定义的内存区域，但是这部分也会被频繁使用，所以也可能会抛出OutOfMemoryError。</p>
+<h2 id="jvm会发生哪些ERROR"><a href="#jvm会发生哪些ERROR" class="headerlink" title="jvm会发生哪些ERROR"></a>jvm会发生哪些ERROR</h2><h3 id="java堆内存OOM异常测试"><a href="#java堆内存OOM异常测试" class="headerlink" title="java堆内存OOM异常测试"></a>java堆内存OOM异常测试</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">-Xmx10m -Xms10m -XX:+HeapDumpOnOutOfMemoryError</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HeapOOM</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">OOMObject</span></span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        ArrayList&lt;OOMObject&gt; list = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        <span class="keyword">while</span>(<span class="keyword">true</span>)&#123;</span><br><span class="line">            list.add(<span class="keyword">new</span> OOMObject());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行结果:</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">java.lang.OutOfMemoryError: Java heap space</span><br><span class="line">Dumping heap to java_pid184.hprof ...</span><br><span class="line">Heap dump file created [<span class="number">10209413</span> bytes in <span class="number">0.080</span> secs]</span><br></pre></td></tr></table></figure>
+
+<h3 id="java虚拟机栈和本地方法栈SOF测试"><a href="#java虚拟机栈和本地方法栈SOF测试" class="headerlink" title="java虚拟机栈和本地方法栈SOF测试"></a>java虚拟机栈和本地方法栈SOF测试</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">-Xss2M</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JavaVMStackSOF</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> stackLength=<span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">stackLeak</span><span class="params">()</span></span>&#123;</span><br><span class="line">        stackLength++;</span><br><span class="line">        stackLeak();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        JavaVMStackSOF stackSOF = <span class="keyword">new</span> JavaVMStackSOF();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            stackSOF.stackLeak();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Throwable e) &#123;</span><br><span class="line">            System.out.println(<span class="string">"栈深度："</span>+stackSOF.stackLength);</span><br><span class="line">            <span class="keyword">throw</span> e;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行结果:</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">栈深度：<span class="number">41075</span></span><br><span class="line">Exception in thread <span class="string">"main"</span> java.lang.StackOverflowError</span><br></pre></td></tr></table></figure>
+
+<h3 id="java虚拟机栈和本地方法栈OOM测试"><a href="#java虚拟机栈和本地方法栈OOM测试" class="headerlink" title="java虚拟机栈和本地方法栈OOM测试"></a>java虚拟机栈和本地方法栈OOM测试</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">-Xss4m</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JavaVMStackOOM</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">dontStop</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">while</span>(<span class="keyword">true</span>)&#123;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">stackleakByThread</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">while</span>(<span class="keyword">true</span>)&#123;</span><br><span class="line">            <span class="keyword">new</span> Thread(() -&gt; &#123;</span><br><span class="line">                    dontStop();</span><br><span class="line">            &#125;).start();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        JavaVMStackOOM oom = <span class="keyword">new</span> JavaVMStackOOM();</span><br><span class="line">        oom.stackleakByThread();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行结果:</p>
+<p>死机</p>
+<h3 id="方法区和运行时常量池OOM"><a href="#方法区和运行时常量池OOM" class="headerlink" title="方法区和运行时常量池OOM"></a>方法区和运行时常量池OOM</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">-XX:PerSize=6m -XX:MaxPermSize=6M</span><br><span class="line">import java.util.HashSet;</span><br><span class="line"></span><br><span class="line">public class RuntimeConstantPoolOOM &#123;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        HashSet&lt;String&gt; set = new HashSet&lt;String&gt;();</span><br><span class="line">        short i = 0;</span><br><span class="line">        while(true)&#123;</span><br><span class="line">            set.add(String.valueOf(i++).intern());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行结果:</p>
+<p>jdk8没有测试出来</p>
+<h2 id="从一个class出发理解数据区"><a href="#从一个class出发理解数据区" class="headerlink" title="从一个class出发理解数据区"></a>从一个class出发理解数据区</h2><p><img src="E:%5Chexo%5Cyeriasblog%5Cthemes%5Cmelody%5Csource%5Cjava_img%5Cclass%E7%B1%BB%E5%AF%B9%E6%AF%94%E8%BF%90%E8%A1%8C%E6%97%B6%E6%95%B0%E6%8D%AE%E5%8C%BA.jpg" alt="class类对比运行时数据区"></p>
+<p>如图所示，很容易的理解各区分别保存java代码中的哪些部分</p>
+<p>堆区: 保存的People对象</p>
+<p>栈区: 保存的栈帧，栈帧中保存了引用name和age和引用people</p>
+<p>方法区: 保存的People.class相关的，包括类型信息、常量、静态变量sss</p>
+<p>运行时常量池: 保存name和age字符串内容</p>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="mailto:undefined" target="_blank" rel="noopener">Tunan</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="http://yerias.github.io/2020/04/15/jvm/1/">http://yerias.github.io/2020/04/15/jvm/1/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Java/">Java</a></div><div class="social-share" data-disabled="facebook,twitter,douban,linkedin,diandian"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js@1.0.16/dist/css/share.min.css"><script src="https://cdn.jsdelivr.net/npm/social-share.js@1.0.16/dist/js/social-share.min.js"></script><nav id="pagination"><div class="next-post pull-right"><a href="/2020/04/15/spark/16/"><span>从jdbc的角度解读外部数据源</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer class="footer-bg" style="background-image: url(/img/soroush-golpoor-1497416-unsplash.jpg)"><div class="layout" id="footer"><div class="copyright">&copy;2018 - 2020 By Tunan</div><div class="framework-info"><span>Driven - </span><a href="#"><span>Hexo</span></a><span class="footer-separator">|</span><span>Theme - </span><a href="#"><span>Melody</span></a></div><div class="footer_custom_text">大家好，我是图南，很高兴认识你们！</div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file-o"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.6.1"></script><script src="/js/fancybox.js?version=1.6.1"></script><script src="/js/sidebar.js?version=1.6.1"></script><script src="/js/copy.js?version=1.6.1"></script><script src="/js/fireworks.js?version=1.6.1"></script><script src="/js/transition.js?version=1.6.1"></script><script src="/js/scroll.js?version=1.6.1"></script><script src="/js/head.js?version=1.6.1"></script><script>if(/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+}</script></body></html>
