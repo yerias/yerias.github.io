@@ -1,0 +1,136 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="Introducing Window Functions in Spark SQL"><meta name="keywords" content="原文翻译"><meta name="author" content="Tunan"><meta name="copyright" content="Tunan"><title>Introducing Window Functions in Spark SQL | TUNANのBlog</title><link rel="shortcut icon" href="/melody-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.6.1"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.6.1"><link rel="dns-prefetch" href="https://cdn.staticfile.org"><link rel="dns-prefetch" href="https://cdn.bootcss.com"><link rel="dns-prefetch" href="https://creativecommons.org"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"We didn't find any results for the search: ${query}"}},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  }
+} </script></head><body><canvas class="fireworks"></canvas><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="toggle-sidebar-info text-center"><span data-toggle="Toggle article">Toggle site</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">Catalog</div><div class="sidebar-toc__progress"><span class="progress-notice">You've read</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#什么是窗口函数"><span class="toc-number">1.</span> <span class="toc-text">什么是窗口函数?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用窗口函数"><span class="toc-number">2.</span> <span class="toc-text">使用窗口函数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ROW-frame"><span class="toc-number">2.1.</span> <span class="toc-text">ROW frame</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RANGE-frame"><span class="toc-number">2.2.</span> <span class="toc-text">RANGE frame</span></a></li></ol></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="/img/xiaoqi.jpg"></div><div class="author-info__name text-center">Tunan</div><div class="author-info__description text-center">BigData Developer</div><div class="follow-button"><a href="#">Follow Me</a></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">Articles</span><span class="pull-right">119</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">Tags</span><span class="pull-right">28</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">Categories</span><span class="pull-right">24</span></a></div><hr><div class="author-info-links"><div class="author-info-links__title text-center">Links</div><a class="author-info-links__name text-center" href="https://hadoop.apache.org/docs/r2.10.0/hadoop-project-dist/hadoop-common/SingleCluster.html" target="_blank" rel="noopener">HADOOP</a><a class="author-info-links__name text-center" href="https://cwiki.apache.org/confluence/display/Hive/" target="_blank" rel="noopener">HIVE</a><a class="author-info-links__name text-center" href="http://archive.cloudera.com/cdh5/cdh/5/" target="_blank" rel="noopener">CDH</a><a class="author-info-links__name text-center" href="http://flume.apache.org/" target="_blank" rel="noopener">FLUME</a><a class="author-info-links__name text-center" href="https://azkaban.github.io/" target="_blank" rel="noopener">AZKABAN</a><a class="author-info-links__name text-center" href="https://www.maxinhong.com/" target="_blank" rel="noopener">叶梨子</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/qingyunzong" target="_blank" rel="noopener">老铁</a><a class="author-info-links__name text-center" href="https://blog.csdn.net/jim8973/" target="_blank" rel="noopener">飞哥</a><a class="author-info-links__name text-center" href="https://vinxikk.github.io/" target="_blank" rel="noopener">vinx</a><a class="author-info-links__name text-center" href="http://dongxicheng.org/" target="_blank" rel="noopener">懂西成</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/xing901022/" target="_blank" rel="noopener">xingoo</a></div></div></div><div id="content-outer"><div id="top-container" style="background-image: url(/img/soroush-golpoor-1497416-unsplash.jpg)"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">TUNANのBlog</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> Search</span></a><a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/categories">Categories</a></span></div><div id="post-info"><div id="post-title">Introducing Window Functions in Spark SQL</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-04-26</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/%E5%8E%9F%E6%96%87%E7%BF%BB%E8%AF%91/">原文翻译</a><div class="post-meta-wordcount"><span>Word count: </span><span class="word-count">2.2k</span><span class="post-meta__separator">|</span><span>Reading time: 7 min</span></div></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><p>原文：<a href="https://databricks.com/blog/2015/07/15/introducing-window-functions-in-spark-sql.html" target="_blank" rel="noopener">https://databricks.com/blog/2015/07/15/introducing-window-functions-in-spark-sql.html</a></p>
+<hr>
+<p>在这篇博客文章中，我们将介绍Apache Spark 1.4中添加的新窗口函数特性。窗口函数允许Spark SQL的用户计算结果，比如给定行的秩或输入行的范围内的移动平均值。它们显著提高了Spark的SQL和DataFrame api的表达能力。本博客将首先介绍窗口函数的概念，然后讨论如何与Spark SQL和Spark的DataFrame API一起使用它们。</p>
+<h2 id="什么是窗口函数"><a href="#什么是窗口函数" class="headerlink" title="什么是窗口函数?"></a>什么是窗口函数?</h2><p>在1.4之前，Spark SQL支持两种函数，可用于计算单个返回值。内置函数或udf(如substr或round)将单个行中的值作为输入，并为每个输入行生成单个返回值。聚合函数(如SUM或MAX)对一组行进行操作，并为每个组计算单个返回值。</p>
+<p>虽然这两种方法在实践中都非常有用，但是仍然有大量的操作不能单独使用这些类型的函数来表示。具体来说，无法同时对一组行进行操作，同时仍然为每个输入行返回一个值。这种限制使得执行各种数据处理任务(如计算移动平均值、计算累计和或访问当前行之前的行值)变得非常困难。幸运的是，对于Spark SQL的用户来说，窗口函数填补了这一空白。</p>
+<p>在其核心，一个窗口函数根据一组行(称为Frame)为表的每个输入行计算一个返回值。每个输入行都可以有一个与之关联的唯一frame。窗口函数的这种特性使它们比其他函数更强大，并允许用户以简洁的方式表达各种数据处理任务，而这些任务如果没有窗口函数是很难(如果不是不可能)表达的。现在，让我们看两个例子。</p>
+<p>假设我们有一个如下所示的productRevenue表。</p>
+<p><img src="https://yerias.github.io/%E7%BF%BB%E8%AF%91/1-1.png" alt="1-1"></p>
+<p>我们想回答两个问题:</p>
+<ol>
+<li><p>每一类中最畅销和第二畅销的产品是什么(<strong>分组top n</strong>)?</p>
+</li>
+<li><p>每种产品的收入和同类产品中最畅销的产品的收入有什么不同(<strong>最大值 - 当前值</strong>)?</p>
+</li>
+</ol>
+<p>回答第一个问题“在每个类别中，最畅销和第二畅销的产品是什么?”，我们需要根据产品的收入对其进行分类，并根据排名选择最畅销和第二畅销的产品。下面是通过使用窗口函数dense_rank来回答这个问题的SQL查询(我们将在下一节中解释使用窗口函数的语法)。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span></span><br><span class="line">  product,</span><br><span class="line">  <span class="keyword">category</span>,</span><br><span class="line">  revenue</span><br><span class="line"><span class="keyword">FROM</span> (</span><br><span class="line">    <span class="keyword">SELECT</span></span><br><span class="line">        product,</span><br><span class="line">        <span class="keyword">category</span>,</span><br><span class="line">        revenue,</span><br><span class="line">        <span class="keyword">dense_rank</span>() <span class="keyword">OVER</span> (<span class="keyword">PARTITION</span> <span class="keyword">BY</span> <span class="keyword">category</span> <span class="keyword">ORDER</span> <span class="keyword">BY</span> revenue <span class="keyword">DESC</span>) <span class="keyword">as</span> <span class="keyword">rank</span></span><br><span class="line">    <span class="keyword">FROM</span> productRevenue) tmp</span><br><span class="line"><span class="keyword">WHERE</span></span><br><span class="line">  <span class="keyword">rank</span> &lt;= <span class="number">2</span></span><br></pre></td></tr></table></figure>
+
+<p>这个查询的结果如下所示。如果不使用窗口函数，就很难用SQL表达查询，即使可以表达SQL查询，底层引擎也很难有效地评估查询。</p>
+<p><img src="https://yerias.github.io/%E7%BF%BB%E8%AF%91/1-2.png" alt="1-2"></p>
+<p>对于第二个问题，“每种产品的收入与同类产品中最畅销的产品的收入有什么不同?”，要计算一个产品的收入差异，我们需要找到每个产品在相同类别下的最高收入价值。下面是一个用于回答这个问题的Python DataFrame程序(<strong>python代码不重要，看思路</strong>)。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">from</span> pyspark.sql.window <span class="keyword">import</span> Window</span><br><span class="line"><span class="keyword">import</span> pyspark.sql.functions <span class="keyword">as</span> func</span><br><span class="line">windowSpec = \</span><br><span class="line">  Window 		<span class="comment"># 定义开窗函数</span></span><br><span class="line">    .partitionBy(df[<span class="string">'category'</span>]) \   <span class="comment"># 分组</span></span><br><span class="line">    .orderBy(df[<span class="string">'revenue'</span>].desc()) \	<span class="comment"># 排序</span></span><br><span class="line">    .rangeBetween(-sys.maxsize, sys.maxsize)  <span class="comment"># 拿到最大值</span></span><br><span class="line">dataFrame = sqlContext.table(<span class="string">"productRevenue"</span>) <span class="comment"># 拿到表</span></span><br><span class="line">revenue_difference = \</span><br><span class="line">  (func.max(dataFrame[<span class="string">'revenue'</span>]).over(windowSpec) - dataFrame[<span class="string">'revenue'</span>]) <span class="comment"># 使用开窗函数</span></span><br><span class="line">dataFrame.select(     <span class="comment"># 查询</span></span><br><span class="line">  dataFrame[<span class="string">'product'</span>],</span><br><span class="line">  dataFrame[<span class="string">'category'</span>],</span><br><span class="line">  dataFrame[<span class="string">'revenue'</span>],</span><br><span class="line">  revenue_difference.alias(<span class="string">"revenue_difference"</span>))   <span class="comment"># 给个别名</span></span><br></pre></td></tr></table></figure>
+
+<p>这个程序的结果如下所示。在不使用窗口函数的情况下，用户必须找到所有类别的所有最高收入值，然后将这个派生的数据集与原始的productRevenue表连接起来，以计算收入差异。</p>
+<p><img src="https://yerias.github.io/%E7%BF%BB%E8%AF%91/1-3.png" alt="1-3"></p>
+<h2 id="使用窗口函数"><a href="#使用窗口函数" class="headerlink" title="使用窗口函数"></a>使用窗口函数</h2><p>Spark SQL支持三种窗口函数:排序函数、分析函数和聚合函数。可用的排序函数和分析函数总结如下表所示。对于聚合函数，用户可以使用任何现有的聚合函数作为窗口函数。</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th><strong>SQL</strong></th>
+<th><strong>DataFrame API</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Ranking functions</strong></td>
+<td>rank</td>
+<td>rank</td>
+</tr>
+<tr>
+<td></td>
+<td>dense_rank</td>
+<td>denseRank</td>
+</tr>
+<tr>
+<td></td>
+<td>percent_rank</td>
+<td>percentRank</td>
+</tr>
+<tr>
+<td></td>
+<td>ntile</td>
+<td>ntile</td>
+</tr>
+<tr>
+<td></td>
+<td>row_number</td>
+<td>rowNumber</td>
+</tr>
+<tr>
+<td><strong>Analytic functions</strong></td>
+<td>cume_dist</td>
+<td>cumeDist</td>
+</tr>
+<tr>
+<td></td>
+<td>first_value</td>
+<td>firstValue</td>
+</tr>
+<tr>
+<td></td>
+<td>last_value</td>
+<td>lastValue</td>
+</tr>
+<tr>
+<td></td>
+<td>lag</td>
+<td>lag</td>
+</tr>
+<tr>
+<td></td>
+<td>lead</td>
+<td>lead</td>
+</tr>
+</tbody></table>
+<p>要使用窗口函数，用户需要标记一个函数被任意一方用作窗口函数</p>
+<ol>
+<li>在SQL中支持的函数后添加OVER子句，例如<code>avg(revenue) OVER (...)</code>; </li>
+<li>调用DataFrame API中支持的函数上的over方法，例如<code>rank().over(...)</code></li>
+</ol>
+<p>一旦一个函数被标记为一个窗口函数，下一个关键步骤就是定义与这个函数相关的窗口规范。窗口规范定义在与给定输入行关联的frame中包含哪些行。一个窗口规范包括三个部分:</p>
+<ul>
+<li><p>分区规范:控制哪些行将与给定行位于同一分区中。此外，在订购和计算frame之前，用户可能希望确保将category列具有相同值的所有行收集到相同的机器上。如果没有给出分区规范，那么所有数据必须收集到一台机器上。</p>
+</li>
+<li><p>排序规范:控制分区中的行排序的方式，确定给定行在其分区中的位置。</p>
+</li>
+<li><p>Frame规范:根据当前输入行的相对位置，声明当前输入行的frame中包含哪些行。例如，“当前行之前的三行到当前行”描述了一个frame，其中包括当前输入行和出现在当前行之前的三行。</p>
+</li>
+</ul>
+<p>在SQL中， <code>PARTITION BY</code> 和 <code>ORDER BY</code> 关键字分别用于为分区规范指定分区表达式和为排序规范指定排序表达式。SQL语法如下所示。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">OVER (PARTITION BY ... ORDER BY ...)</span><br></pre></td></tr></table></figure>
+
+<p>在DataFrame API中，我们提供了实用程序函数来定义窗口规范。以Python为例，用户可以按如下方式指定分区表达式和排序表达式。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pyspark.sql.window <span class="keyword">import</span> Window</span><br><span class="line">windowSpec = \</span><br><span class="line">  Window \	<span class="comment"># 定义窗口</span></span><br><span class="line">    .partitionBy(...) \  <span class="comment"># 分区</span></span><br><span class="line">    .orderBy(...)  <span class="comment"># 排序</span></span><br></pre></td></tr></table></figure>
+
+<p>除了排序和分区之外，用户还需要定义frame的开始边界、frame的结束边界和frame的类型，这是frame规范的三个组成部分。</p>
+<p>边界有<code>UNBOUNDED PRECEDING</code>, <code>UNBOUNDED FOLLOWING</code>, <code>CURRENT ROW</code>, <code>PRECEDING</code>,和<code>&lt;value&gt; FOLLOWING</code>五种类型。 <code>&lt;value&gt; FOLLOWING</code>. <code>UNBOUNDED PRECEDING</code> and <code>UNBOUNDED FOLLOWING</code>分别表示分区的第一行和最后一行。对于其他三种类型的边界，它们指定当前输入行的位置偏移量，并根据框架的类型定义它们的特定含义。有两种类型的frame，<em>ROW</em> frame 和<em>RANGE</em> frame.</p>
+<h3 id="ROW-frame"><a href="#ROW-frame" class="headerlink" title="ROW frame"></a>ROW frame</h3><p>ROW frame是基于当前输入行位置的物理偏移量，也就是说<code>CURRENT ROW</code>, <code>&lt;value&gt; PRECEDING</code>, or <code>&lt;value&gt; FOLLOWING</code>指定物理偏移.如果使用<code>CURRENT ROW</code>作为边界，它表示当前输入行。 <code>PRECEDING</code> and <code>FOLLOWING</code>分别描述当前输入行之前和之后出现的行数。</p>
+<p>下图演示了一个行frame， <code>1 PRECEDING</code>作为开始边界， <code>1 FOLLOWING</code> 作为结束边界(在SQL中表现为<code>ROWS BETWEEN 1 PRECEDING AND 1 FOLLOWING</code>)</p>
+<p><img src="https://yerias.github.io/%E7%BF%BB%E8%AF%91/2-1-1024x338.png" alt="2-1-1024x338"></p>
+<h3 id="RANGE-frame"><a href="#RANGE-frame" class="headerlink" title="RANGE frame"></a>RANGE frame</h3><p>RANGE frames基于当前输入行位置的逻辑偏移量，语法与ROW frame类似。逻辑偏移量是当前输入行的排序表达式的值与frame的边界行相同表达式的值之间的差。由于这个定义，当使用RANGE frame时，只允许一个排序表达式。此外，对于RANGE frame，对于边界计算而言，具有与当前输入行相同的排序表达式值的所有行都被认为是相同的行。</p>
+<p>现在，让我们看一个例子。在本例中，排序表达式是revenue;开始边界是 <code>2000 PRECEDING</code>;结束边界是<code>1000 FOLLOWING</code>，(这个frame被在SQL中被定义为<code>RANGE BETWEEN 2000 PRECEDING AND 1000 FOLLOWING</code>)，下面的五幅图说明了如何使用当前输入行的更新来更新frame。基本上，对于每一个当前的输入行，基于收入值，我们计算收入范围<code>[current revenue value - 2000, current revenue value + 1000]</code>。收入值在此范围内的所有行都位于当前输入行的frame中。</p>
+<p><img src="https://yerias.github.io/%E7%BF%BB%E8%AF%91/2-2-1024x369.png" alt="2-2-1024x369"></p>
+<p><img src="https://yerias.github.io/%E7%BF%BB%E8%AF%91/2-3-1024x263.png" alt="2-3-1024x263"></p>
+<p><img src="https://yerias.github.io/%E7%BF%BB%E8%AF%91/2-4-1024x263.png" alt="2-4-1024x263"></p>
+<p><img src="https://yerias.github.io/%E7%BF%BB%E8%AF%91/2-5-1024x263.png" alt="2-5-1024x263"></p>
+<p><img src="https://yerias.github.io/%E7%BF%BB%E8%AF%91/2-6-1024x263.png" alt="2-6-1024x263"></p>
+<p>总之，要定义窗口规范，用户可以在SQL中使用以下语法。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">OVER (PARTITION BY ... ORDER BY ... frame_type BETWEEN <span class="keyword">start</span> <span class="keyword">AND</span> <span class="keyword">end</span>)</span><br></pre></td></tr></table></figure>
+
+<p>在这里，<code>frame_type</code>可以是行(对于ROW frame)或范围(对于 RANGE frame);</p>
+<p>都可以使用 <code>UNBOUNDED PRECEDING</code>, <code>CURRENT ROW</code>, <code>&lt;value&gt; PRECEDING</code>, and <code>&lt;value&gt; FOLLOWING</code>其中的任意一个作为开始;  <code>UNBOUNDED FOLLOWING</code>, <code>CURRENT ROW</code>, <code>&lt;value&gt; PRECEDING</code>, and<code>&lt;value&gt; FOLLOWING</code>其中的任意一个作为结束.</p>
+<p>在Python DataFrame API中，用户可以定义如下的窗口规范。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pyspark.sql.window <span class="keyword">import</span> Window</span><br><span class="line"><span class="comment"># Defines partitioning specification and ordering specification.</span></span><br><span class="line">windowSpec = \</span><br><span class="line">  Window \</span><br><span class="line">    .partitionBy(...) \</span><br><span class="line">    .orderBy(...)</span><br><span class="line"><span class="comment"># Defines a Window Specification with a ROW frame.</span></span><br><span class="line">windowSpec.rowsBetween(start, end)</span><br><span class="line"><span class="comment"># Defines a Window Specification with a RANGE frame.</span></span><br><span class="line">windowSpec.rangeBetween(start, end)</span><br></pre></td></tr></table></figure></div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="mailto:undefined" target="_blank" rel="noopener">Tunan</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="http://yerias.github.io/2020/04/26/%E7%BF%BB%E8%AF%91/2/">http://yerias.github.io/2020/04/26/%E7%BF%BB%E8%AF%91/2/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%8E%9F%E6%96%87%E7%BF%BB%E8%AF%91/">原文翻译</a></div><div class="social-share" data-disabled="facebook,twitter,douban,linkedin,diandian"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js@1.0.16/dist/css/share.min.css"><script src="https://cdn.jsdelivr.net/npm/social-share.js@1.0.16/dist/js/social-share.min.js"></script><nav id="pagination"><div class="prev-post pull-left"><a href="/2020/04/27/error/7/"><i class="fa fa-chevron-left">  </i><span>error: object hadoop is not a member of packee com</span></a></div><div class="next-post pull-right"><a href="/2020/04/26/%E7%BF%BB%E8%AF%91/1/"><span>ORCFile in HDP 2: Better Compression, Better Performance</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer class="footer-bg" style="background-image: url(/img/soroush-golpoor-1497416-unsplash.jpg)"><div class="layout" id="footer"><div class="copyright">&copy;2018 - 2020 By Tunan</div><div class="framework-info"><span>Driven - </span><a href="#"><span>Hexo</span></a><span class="footer-separator">|</span><span>Theme - </span><a href="#"><span>Melody</span></a></div><div class="footer_custom_text">大家好，我是图南，很高兴认识你们！</div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file-o"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.6.1"></script><script src="/js/fancybox.js?version=1.6.1"></script><script src="/js/sidebar.js?version=1.6.1"></script><script src="/js/copy.js?version=1.6.1"></script><script src="/js/fireworks.js?version=1.6.1"></script><script src="/js/transition.js?version=1.6.1"></script><script src="/js/scroll.js?version=1.6.1"></script><script src="/js/head.js?version=1.6.1"></script><script src="/js/search/local-search.js"></script><script>if(/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+}</script><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">Local search</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="Search for Posts"></div></div></div><hr><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>Powered by</span> <a href="https://github.com/wzpan/hexo-generator-search" target="_blank" rel="noopener" style="color:#49B1F5;">hexo-generator-search</a></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div></body></html>

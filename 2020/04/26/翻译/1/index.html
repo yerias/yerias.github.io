@@ -1,0 +1,89 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="ORCFile in HDP 2: Better Compression, Better Performance"><meta name="keywords" content="原文翻译"><meta name="author" content="Tunan"><meta name="copyright" content="Tunan"><title>ORCFile in HDP 2: Better Compression, Better Performance | TUNANのBlog</title><link rel="shortcut icon" href="/melody-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.6.1"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.6.1"><link rel="dns-prefetch" href="https://cdn.staticfile.org"><link rel="dns-prefetch" href="https://cdn.bootcss.com"><link rel="dns-prefetch" href="https://creativecommons.org"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"We didn't find any results for the search: ${query}"}},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  }
+} </script></head><body><canvas class="fireworks"></canvas><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="toggle-sidebar-info text-center"><span data-toggle="Toggle article">Toggle site</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">Catalog</div><div class="sidebar-toc__progress"><span class="progress-notice">You've read</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#高压缩"><span class="toc-number">1.</span> <span class="toc-text">高压缩</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#谓词下推"><span class="toc-number">2.</span> <span class="toc-text">谓词下推</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ORCFile内联索引"><span class="toc-number">3.</span> <span class="toc-text">ORCFile内联索引</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用ORCFile"><span class="toc-number">4.</span> <span class="toc-text">使用ORCFile</span></a></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="/img/xiaoqi.jpg"></div><div class="author-info__name text-center">Tunan</div><div class="author-info__description text-center">BigData Developer</div><div class="follow-button"><a href="#">Follow Me</a></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">Articles</span><span class="pull-right">119</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">Tags</span><span class="pull-right">28</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">Categories</span><span class="pull-right">24</span></a></div><hr><div class="author-info-links"><div class="author-info-links__title text-center">Links</div><a class="author-info-links__name text-center" href="https://hadoop.apache.org/docs/r2.10.0/hadoop-project-dist/hadoop-common/SingleCluster.html" target="_blank" rel="noopener">HADOOP</a><a class="author-info-links__name text-center" href="https://cwiki.apache.org/confluence/display/Hive/" target="_blank" rel="noopener">HIVE</a><a class="author-info-links__name text-center" href="http://archive.cloudera.com/cdh5/cdh/5/" target="_blank" rel="noopener">CDH</a><a class="author-info-links__name text-center" href="http://flume.apache.org/" target="_blank" rel="noopener">FLUME</a><a class="author-info-links__name text-center" href="https://azkaban.github.io/" target="_blank" rel="noopener">AZKABAN</a><a class="author-info-links__name text-center" href="https://www.maxinhong.com/" target="_blank" rel="noopener">叶梨子</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/qingyunzong" target="_blank" rel="noopener">老铁</a><a class="author-info-links__name text-center" href="https://blog.csdn.net/jim8973/" target="_blank" rel="noopener">飞哥</a><a class="author-info-links__name text-center" href="https://vinxikk.github.io/" target="_blank" rel="noopener">vinx</a><a class="author-info-links__name text-center" href="http://dongxicheng.org/" target="_blank" rel="noopener">懂西成</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/xing901022/" target="_blank" rel="noopener">xingoo</a></div></div></div><div id="content-outer"><div id="top-container" style="background-image: url(/img/soroush-golpoor-1497416-unsplash.jpg)"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">TUNANのBlog</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> Search</span></a><a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/categories">Categories</a></span></div><div id="post-info"><div id="post-title">ORCFile in HDP 2: Better Compression, Better Performance</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-04-26</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/%E5%8E%9F%E6%96%87%E7%BF%BB%E8%AF%91/">原文翻译</a><div class="post-meta-wordcount"><span>Word count: </span><span class="word-count">1.5k</span><span class="post-meta__separator">|</span><span>Reading time: 4 min</span></div></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><p>原文：<a href="https://blog.cloudera.com/orcfile-in-hdp-2-better-compression-better-performance/" target="_blank" rel="noopener">https://blog.cloudera.com/orcfile-in-hdp-2-better-compression-better-performance/</a></p>
+<hr>
+<p>即将发布的Hive 0.12将在存储层带来一些新的重大改进，包括更高的压缩和更好的查询性能。</p>
+<h2 id="高压缩"><a href="#高压缩" class="headerlink" title="高压缩"></a>高压缩</h2><p>ORCFile是在Hive 0.11中引入的，提供了很好的压缩，通过一些技术来实现，包括运行长度编码、字符串字典编码和位图编码。</p>
+<p>这种对效率的关注导致了一些令人印象深刻的压缩比。这张图片显示了TPC-DS数据集在不同编码下的规模为500。该数据集包含随机生成的数据，包括字符串、浮点数和整数数据。</p>
+<p><img src="https://yerias.github.io/%E7%BF%BB%E8%AF%91/ORCFile.png" alt="ORCFile"></p>
+<p>我们已经看到，有些客户的集群已经从存储的角度扩展到了ORCFile，这是一种释放空间的方法，同时与现有的作业100%兼容。</p>
+<p>存储在ORCFile中的数据可以通过HCatalog读取或写入，因此任何Pig或Map/Reduce进程都可以无缝地运行。Hive 12 建立在这些令人印象深刻的压缩比上，并在Hive和执行层提供深度集成来加速查询，从处理更大的数据集和更低的延迟的角度来看都是如此。</p>
+<h2 id="谓词下推"><a href="#谓词下推" class="headerlink" title="谓词下推"></a>谓词下推</h2><p>SQL查询通常会有一些WHERE条件，可以用来方便地排除需要考虑的行。在旧版本的Hive中，在稍后通过SQL处理消除之前，将行从存储层中读取出来。有很多浪费的开销，Hive 12通过允许将谓词下推并在存储层本身进行计算来优化这一点。它是由环境控制的<code>hive.optimize.ppd=true</code>.</p>
+<p>这需要读者具有足够的智慧来理解谓词。幸运的是，ORC已经进行了相应的改进，允许将谓词推入其中，并利用其内联索引提供性能优势。</p>
+<p>例如，如果你有一个SQL查询:</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="keyword">COUNT</span>(*) <span class="keyword">FROM</span> CUSTOMER <span class="keyword">WHERE</span> CUSTOMER.state = ‘CA’;</span><br></pre></td></tr></table></figure>
+
+<p>ORCFile只返回与WHERE谓词实际匹配的行，而跳过驻留在任何其他状态的客户。从表中读取的列越多，要避免的数据封送处理就越多，速度也就越快。</p>
+<h2 id="ORCFile内联索引"><a href="#ORCFile内联索引" class="headerlink" title="ORCFile内联索引"></a>ORCFile内联索引</h2><p>在进入下一节之前，我们需要花一点时间讨论ORCFile如何将行分解为行组，并在这些行组中应用列式压缩和索引。</p>
+<p><img src="https://yerias.github.io/%E7%BF%BB%E8%AF%91/orc2.png" alt="orc2"></p>
+<p>ORC的谓词下推将参考内联索引，以尝试确定何时可以一次性跳过整个块。有时，您的数据集自然会促进这一点。例如，如果您的数据是一个时间序列，并且时间戳是单调递增的，那么当您在这个时间戳上加上where条件时，ORC将能够跳过许多行组。</p>
+<p>在其他情况下，可能需要对数据进行排序。如果对一列进行排序，相关记录将被限制在磁盘上的一个区域，其他部分将很快被跳过。</p>
+<p>对于数字类型和字符串类型，跳过可以工作。在这两个实例中，都是通过在内联索引中记录一个最小值和一个最大值并确定查找值是否落在这个范围之外来完成的。</p>
+<p>排序可以导致非常好的加速。这里有一个权衡，您需要提前决定对哪些列排序。决策过程在某种程度上类似于决定在传统SQL系统中索引哪些列。最好的回报是您拥有一个经常使用的列，并且在非常特定的条件下访问它，并且在很多查询中使用它。请记住，您可以在创建表时设置hive.enforce.sorting=true并使用SORT BY关键字强制Hive对列进行排序。</p>
+<p>ORCFile是我们的一个重要的刺激举措，以提高Hive性能100倍。为了显示影响，我们使用修改后的数据模式运行修改后的TPC-DS查询27。查询27在一个大型事实表上执行星型模式连接，访问4个独立的维度表。在修改后的模式中，销售的状态被反规范化为事实表，结果表按状态排序。通过这种方式，当查询扫描事实表时，它可以跳过整个行块，因为查询根据状态进行筛选。这导致了一些增量加速，正如您可以从下面的图表中看到的。</p>
+<p><img src="https://yerias.github.io/%E7%BF%BB%E8%AF%91/orc1.png" alt="orc1"></p>
+<p>这个功能给你最好的性价比时:</p>
+<ol>
+<li><p>在具有中等到较大基数的列上，您经常以一种精确的方式过滤大型事实表。</p>
+</li>
+<li><p>您可以选择大量的列，或者宽列。您保存的数据封送处理越多，您的加速就越大。</p>
+</li>
+</ol>
+<h2 id="使用ORCFile"><a href="#使用ORCFile" class="headerlink" title="使用ORCFile"></a>使用ORCFile</h2><p>使用ORCFile或将现有数据转换为ORCFile非常简单。要使用它，只需添加存储为orc到您的create table语句的结尾，如下所示:</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> mytable (</span><br><span class="line">...</span><br><span class="line">) <span class="keyword">STORED</span> <span class="keyword">AS</span> orc;</span><br></pre></td></tr></table></figure>
+
+<p>若要将现有数据转换为ORCFile，请创建一个与源表具有相同模式并存储为orc的表，然后可以使用如下查询:</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="keyword">TABLE</span> orctable <span class="keyword">SELECT</span> * <span class="keyword">FROM</span> oldtable;</span><br></pre></td></tr></table></figure>
+
+<p>Hive将处理所有细节的ORCFile转换，你可以自由删除旧表，以释放大量的空间。</p>
+<p>创建ORC表时，可以使用许多表属性进一步优化ORC的工作方式。</p>
+<table>
+<thead>
+<tr>
+<th><strong>Key</strong></th>
+<th><strong>Default</strong></th>
+<th><strong>Notes</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>orc.compress</code></td>
+<td><code>ZLIB</code></td>
+<td>压缩除使用列式压缩外，还可以使用NONE, ZLIB, SNAPPY</td>
+</tr>
+<tr>
+<td><code>orc.compress.size</code></td>
+<td><code>262,144 (= 256 KiB)</code></td>
+<td>每个压缩块中的字节数</td>
+</tr>
+<tr>
+<td>orc.stripe.size</td>
+<td><code>268,435,456 (= 256 MiB)</code></td>
+<td>每条数据中的字节数</td>
+</tr>
+<tr>
+<td><code>orc.row.index.stride</code></td>
+<td><code>10,000</code></td>
+<td>索引项之间的行数 (必须 &gt;= 1,000)</td>
+</tr>
+<tr>
+<td><code>orc.create.index</code></td>
+<td><code>true</code></td>
+<td>是否创建内联索引</td>
+</tr>
+</tbody></table>
+<p>例如，假设您想使用snappy压缩而不是zlib压缩。方法如下:</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> mytable (</span><br><span class="line">...</span><br><span class="line">) <span class="keyword">STORED</span> <span class="keyword">AS</span> orc tblproperties (<span class="string">"orc.compress"</span>=<span class="string">"SNAPPY"</span>);</span><br></pre></td></tr></table></figure>
+
+
+
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="mailto:undefined" target="_blank" rel="noopener">Tunan</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="http://yerias.github.io/2020/04/26/%E7%BF%BB%E8%AF%91/1/">http://yerias.github.io/2020/04/26/%E7%BF%BB%E8%AF%91/1/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%8E%9F%E6%96%87%E7%BF%BB%E8%AF%91/">原文翻译</a></div><div class="social-share" data-disabled="facebook,twitter,douban,linkedin,diandian"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js@1.0.16/dist/css/share.min.css"><script src="https://cdn.jsdelivr.net/npm/social-share.js@1.0.16/dist/js/social-share.min.js"></script><nav id="pagination"><div class="prev-post pull-left"><a href="/2020/04/26/%E7%BF%BB%E8%AF%91/2/"><i class="fa fa-chevron-left">  </i><span>Introducing Window Functions in Spark SQL</span></a></div><div class="next-post pull-right"><a href="/2020/04/24/spark/22/"><span>Kafka Offset管理</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer class="footer-bg" style="background-image: url(/img/soroush-golpoor-1497416-unsplash.jpg)"><div class="layout" id="footer"><div class="copyright">&copy;2018 - 2020 By Tunan</div><div class="framework-info"><span>Driven - </span><a href="#"><span>Hexo</span></a><span class="footer-separator">|</span><span>Theme - </span><a href="#"><span>Melody</span></a></div><div class="footer_custom_text">大家好，我是图南，很高兴认识你们！</div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file-o"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.6.1"></script><script src="/js/fancybox.js?version=1.6.1"></script><script src="/js/sidebar.js?version=1.6.1"></script><script src="/js/copy.js?version=1.6.1"></script><script src="/js/fireworks.js?version=1.6.1"></script><script src="/js/transition.js?version=1.6.1"></script><script src="/js/scroll.js?version=1.6.1"></script><script src="/js/head.js?version=1.6.1"></script><script src="/js/search/local-search.js"></script><script>if(/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+}</script><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">Local search</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="Search for Posts"></div></div></div><hr><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>Powered by</span> <a href="https://github.com/wzpan/hexo-generator-search" target="_blank" rel="noopener" style="color:#49B1F5;">hexo-generator-search</a></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div></body></html>
