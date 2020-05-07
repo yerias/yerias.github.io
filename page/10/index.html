@@ -1717,6 +1717,39 @@
 <li><p>使用压缩</p>
 <figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">#创建表：</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> page_views(</span><br><span class="line">track_time <span class="keyword">string</span>,</span><br><span class="line"><span class="keyword">url</span> <span class="keyword">string</span>,</span><br><span class="line">session_id <span class="keyword">string</span>,</span><br><span class="line">referer <span class="keyword">string</span>,</span><br><span class="line">ip <span class="keyword">string</span>,</span><br><span class="line">end_user_id <span class="keyword">string</span>,</span><br><span class="line">city_id <span class="keyword">string</span></span><br><span class="line">)<span class="keyword">ROW</span> <span class="keyword">FORMAT</span> <span class="keyword">DELIMITED</span> <span class="keyword">FIELDS</span> <span class="keyword">TERMINATED</span> <span class="keyword">BY</span> <span class="string">"\t"</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">#加载数据：</span></span><br><span class="line"><span class="keyword">load</span> <span class="keyword">data</span> <span class="keyword">local</span> inpath <span class="string">"/home/hadoop/data/page_views.dat"</span> overwrite <span class="keyword">into</span> <span class="keyword">table</span> page_views;  </span><br><span class="line"></span><br><span class="line"><span class="comment">#配置压缩格式</span></span><br><span class="line">hive：</span><br><span class="line"><span class="keyword">SET</span> hive.exec.compress.output=<span class="literal">true</span>;</span><br><span class="line"><span class="keyword">SET</span> mapreduce.output.fileoutputformat.compress.codec=org.apache.hadoop.io.compress.BZip2Codec;</span><br><span class="line"></span><br><span class="line"><span class="comment">#创建压缩表</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> page_views_bzip2 <span class="keyword">ROW</span> <span class="keyword">FORMAT</span> <span class="keyword">DELIMITED</span> <span class="keyword">FIELDS</span> <span class="keyword">TERMINATED</span> <span class="keyword">BY</span> <span class="string">"\t"</span> <span class="keyword">as</span> <span class="keyword">select</span> * <span class="keyword">from</span> page_views;</span><br></pre></td></tr></table></figure></li>
 </ol>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/10/15/hadoop/14/">MapReduce使用压缩以及在MR中的通用做法</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-10-15</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Hadoop/">Hadoop</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Hadoop/">Hadoop</a></span><div class="content"><p>上一步中我们在Hadoop中安装了lzo的压缩方式，现在将测试如何在MapReduce程序中使用压缩</p>
+<ol>
+<li><p>在MapReduce中使用压缩，要注意三个位置，分别是map输入文件的压缩格式，map输出的压缩格式，和reduce最终输出的压缩格式</p>
+<ul>
+<li><p>首先配置使用压缩</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">mapreduce.output.fileoutputformat.compress=<span class="keyword">true</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>第二步配置输入文件的压缩格式(如lzo):</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">mapreduce.job.inputformat<span class="class">.<span class="keyword">class</span></span>=com.hadoop.mapreduce.LzoTextInputFormat</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>第三步配置map输出的文件压缩格式(如snappy):</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">mapred.map.output.compression.codec=org.apache.hadoop.io.compress.SnappyCodec</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>第四步配置reduce输出的文件压缩格式(可不配置，这里配置lzo):</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">mapreduce.output.fileoutputformat.compress.codec=org.apache.hadoop.io.compress.BZip2Codec</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>我们随意找个表，查看表结构(这里只拿出来了我们想看的)</p>
+<p>desc formatted emp;</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"># Storage Information	 	 </span><br><span class="line">SerDe Library:      	org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe	 </span><br><span class="line">InputFormat:        	org.apache.hadoop.mapred.TextInputFormat	 </span><br><span class="line">OutputFormat:       	org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat</span><br></pre></td></tr></table></figure>
+
+<p>由于hive底层也是跑的MapReduce，现在我们就能知道为什么要设置InputFormat和OutputFormat了。</p>
+</li>
+<li><p>一般不固定写在配置文件中，而是提交作业的时候手动指定，通过-D 指定参数</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">hadoop jar hadoop-mapreduce-examples-<span class="number">2.6</span><span class="number">.0</span>-cdh5<span class="number">.16</span><span class="number">.2</span>.jar wordcount \</span><br><span class="line"> -D mapreduce.output.fileoutputformat.compress=<span class="keyword">true</span> \</span><br><span class="line"> -D io.compression.codec.lzo<span class="class">.<span class="keyword">class</span></span>=com.hadoop.compression.lzo.LzoCodec \</span><br><span class="line"> -D mapreduce.job.inputformat<span class="class">.<span class="keyword">class</span></span>=com.hadoop.mapreduce.LzoTextInputFormat \</span><br><span class="line"> -D mapreduce.output.fileoutputformat.compress.codec=com.hadoop.compression.lzo.LzopCodec \</span><br><span class="line"> /data/lzo-index/  /out</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>给.lzo文件创建索引</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">hadoop jar $HADOOP_HOME/share/hadoop/common/hadoop-lzo.jar com.hadoop.compression.lzo.DistributedLzoIndexer /data/lzo-index/large_wc.txt.lzo</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ol>
 </div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/10/15/hadoop/13/">HADOOP安装LZO压缩</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-10-15</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Hadoop/">Hadoop</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Hadoop/">Hadoop</a></span><div class="content"><h3 id="编译安装lzo与lzop"><a href="#编译安装lzo与lzop" class="headerlink" title="编译安装lzo与lzop"></a>编译安装lzo与lzop</h3><p> <strong>在集群的每一台主机上都需要编译安装！！！</strong></p>
 <ol>
 <li><p>下载编译安装lzo文件，<a href="http://www.oberhumer.com/opensource/lzo/download" target="_blank" rel="noopener"><strong>版本可以下载最新的</strong></a> </p>
@@ -1786,39 +1819,6 @@
 </li>
 <li><p>创建索引</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line">hadoop jar $HADOOP_HOME/share/hadoop/common/hadoop-lzo.jar com.hadoop.compression.lzo.DistributedLzoIndexer /data/lzo-index/large_wc.txt.lzo</span><br></pre></td></tr></table></figure>
-
-</li>
-</ol>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/10/15/hadoop/14/">MapReduce使用压缩以及在MR中的通用做法</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-10-15</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Hadoop/">Hadoop</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Hadoop/">Hadoop</a></span><div class="content"><p>上一步中我们在Hadoop中安装了lzo的压缩方式，现在将测试如何在MapReduce程序中使用压缩</p>
-<ol>
-<li><p>在MapReduce中使用压缩，要注意三个位置，分别是map输入文件的压缩格式，map输出的压缩格式，和reduce最终输出的压缩格式</p>
-<ul>
-<li><p>首先配置使用压缩</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">mapreduce.output.fileoutputformat.compress=<span class="keyword">true</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>第二步配置输入文件的压缩格式(如lzo):</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">mapreduce.job.inputformat<span class="class">.<span class="keyword">class</span></span>=com.hadoop.mapreduce.LzoTextInputFormat</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>第三步配置map输出的文件压缩格式(如snappy):</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">mapred.map.output.compression.codec=org.apache.hadoop.io.compress.SnappyCodec</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>第四步配置reduce输出的文件压缩格式(可不配置，这里配置lzo):</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">mapreduce.output.fileoutputformat.compress.codec=org.apache.hadoop.io.compress.BZip2Codec</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-</li>
-<li><p>我们随意找个表，查看表结构(这里只拿出来了我们想看的)</p>
-<p>desc formatted emp;</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"># Storage Information	 	 </span><br><span class="line">SerDe Library:      	org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe	 </span><br><span class="line">InputFormat:        	org.apache.hadoop.mapred.TextInputFormat	 </span><br><span class="line">OutputFormat:       	org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat</span><br></pre></td></tr></table></figure>
-
-<p>由于hive底层也是跑的MapReduce，现在我们就能知道为什么要设置InputFormat和OutputFormat了。</p>
-</li>
-<li><p>一般不固定写在配置文件中，而是提交作业的时候手动指定，通过-D 指定参数</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">hadoop jar hadoop-mapreduce-examples-<span class="number">2.6</span><span class="number">.0</span>-cdh5<span class="number">.16</span><span class="number">.2</span>.jar wordcount \</span><br><span class="line"> -D mapreduce.output.fileoutputformat.compress=<span class="keyword">true</span> \</span><br><span class="line"> -D io.compression.codec.lzo<span class="class">.<span class="keyword">class</span></span>=com.hadoop.compression.lzo.LzoCodec \</span><br><span class="line"> -D mapreduce.job.inputformat<span class="class">.<span class="keyword">class</span></span>=com.hadoop.mapreduce.LzoTextInputFormat \</span><br><span class="line"> -D mapreduce.output.fileoutputformat.compress.codec=com.hadoop.compression.lzo.LzopCodec \</span><br><span class="line"> /data/lzo-index/  /out</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>给.lzo文件创建索引</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">hadoop jar $HADOOP_HOME/share/hadoop/common/hadoop-lzo.jar com.hadoop.compression.lzo.DistributedLzoIndexer /data/lzo-index/large_wc.txt.lzo</span><br></pre></td></tr></table></figure>
-
 
 </li>
 </ol>
