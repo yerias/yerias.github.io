@@ -804,6 +804,53 @@
 <li><p>检查aliyun104上数据</p>
 </li>
 </ol>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/12/01/flume/1/">Flume架构摸排</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-12-01</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Flume/">Flume</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Flume/">Flume</a></span><div class="content"><h2 id="Flume定义"><a href="#Flume定义" class="headerlink" title="Flume定义"></a>Flume定义</h2><p>Flume是Cloudera提供的一个高可用的，高可靠的，分布式的海量日志采集、聚合和传输的系统。Flume基于流式架构，灵活简单。</p>
+<h2 id="Flume的优点"><a href="#Flume的优点" class="headerlink" title="Flume的优点"></a>Flume的优点</h2><ol>
+<li><p>可以和任意存储进程集成。</p>
+</li>
+<li><p>输入的的数据速率大于写入目的存储的速率，flume会进行缓冲，减小hdfs的压力。</p>
+</li>
+<li><p>flume中的事务基于channel，使用了两个事务模型（sender + receiver），确保消息被可靠发送。</p>
+</li>
+</ol>
+<p>Flume使用两个独立的事务分别负责从soucrce到channel，以及从channel到sink的事件传递。一旦事务中所有的数据全部成功提交到channel，那么source才认为该数据读取完成。同理，只有成功被sink写出去的数据，才会从channel中移除。</p>
+<h2 id="Flume组成架构"><a href="#Flume组成架构" class="headerlink" title="Flume组成架构"></a>Flume组成架构</h2><p><img src="https://yerias.github.io/flume_img/flume.jpg" alt="flume架构图"></p>
+<ul>
+<li><p>Agent</p>
+<p>Agent是一个JVM进程，它以事件的形式将数据从源头送至目的。</p>
+<p>Agent主要有3个部分组成，Source、Channel、Sink。</p>
+</li>
+<li><p>Source</p>
+<p>Source是负责接收数据到Flume Agent的组件。</p>
+<p>Source组件可以处理各种类型、各种格式的日志数据，包括avro、thrift、exec、jms、spooling directory、netcat、sequence generator、syslog、http、legacy。</p>
+</li>
+<li><p>Channel</p>
+<p>Channel是位于Source和Sink之间的缓冲区。因此，Channel允许Source和Sink运作在不同的速率上。Channel是线程安全的，可以同时处理几个Source的写入操作和几个Sink的读取操作。</p>
+<p>Flume自带两种Channel：Memory Channel和File Channel。</p>
+<ol>
+<li><p>Memory Channel是内存中的队列。Memory Channel在不需要关心数据丢失的情景下适用。如果需要关心数据丢失，那么Memory Channel就不应该使用，因为程序死亡、机器宕机或者重启都会导致数据丢失。</p>
+</li>
+<li><p>File Channel将所有事件写到磁盘。因此在程序关闭或机器宕机的情况下不会丢失数据。</p>
+</li>
+</ol>
+</li>
+<li><p>Sink</p>
+<p>Sink不断地轮询Channel中的事件且批量地移除它们，并将这些事件批量写入到存储或索引系统、或者被发送到另一个Flume Agent。</p>
+<p>Sink是完全事务性的。在从Channel批量删除数据之前，每个Sink用Channel启动一个事务。批量事件一旦成功写出到存储系统或下一个Flume Agent，Sink就利用Channel提交事务。事务一旦被提交，该Channel从自己的内部缓冲区删除事件。</p>
+<p>Sink组件目的地包括hdfs、logger、avro、thrift、ipc、file、null、HBase、solr、自定义。</p>
+</li>
+<li><p>Event</p>
+<p>传输单元，Flume数据传输的基本单元，以事件的形式将数据从源头送至目的地。 Event由可选的header和载有数据的一个byte array 构成。Header是容纳了key-value字符串对的HashMap。</p>
+</li>
+</ul>
+<h2 id="Flume拓扑结构"><a href="#Flume拓扑结构" class="headerlink" title="Flume拓扑结构"></a>Flume拓扑结构</h2><h3 id="Flume-Agent连接"><a href="#Flume-Agent连接" class="headerlink" title="Flume Agent连接"></a>Flume Agent连接</h3><p><img src="https://yerias.github.io/flume_img/flume2.jpg" alt="flume2"></p>
+<p>这种模式是将多个flume给顺序连接起来了，从最初的source开始到最终sink传送的目的存储系统。此模式不建议桥接过多的flume数量， flume数量过多不仅会影响传输速率，而且一旦传输过程中某个节点flume宕机，会影响整个传输系统。</p>
+<h3 id="单source，多channel、sink"><a href="#单source，多channel、sink" class="headerlink" title="单source，多channel、sink"></a>单source，多channel、sink</h3><p><img src="https://yerias.github.io/flume_img/flume3.jpg" alt="flume3"></p>
+<p>Flume支持将事件流向一个或者多个目的地。这种模式将数据源复制到多个channel中，每个channel都有相同的数据，sink可以选择传送的不同的目的地。</p>
+<h3 id="Flume负载均衡"><a href="#Flume负载均衡" class="headerlink" title="Flume负载均衡"></a>Flume负载均衡</h3><p><img src="https://yerias.github.io/flume_img/flume4.jpg" alt="flume4"></p>
+<p>Flume支持使用将多个sink逻辑上分到一个sink组，flume将数据发送到不同的sink，主要解决负载均衡和故障转移问题。</p>
+<h3 id="Flume-Agent聚合"><a href="#Flume-Agent聚合" class="headerlink" title="Flume Agent聚合"></a>Flume Agent聚合</h3><p><img src="https://yerias.github.io/flume_img/flume5.jpg" alt="flume5"></p>
+<p>这种模式是我们最常见的，也非常实用，日常web应用通常分布在上百个服务器，大者甚至上千个、上万个服务器。产生的日志，处理起来也非常麻烦。用flume的这种组合方式能很好的解决这一问题，每台服务器部署一个flume采集日志，传送到一个集中收集日志的flume，再由此flume上传到hdfs、hive、hbase、jms等，进行日志分析。</p>
 </div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/12/01/sqoop/1/">SQOOP安装&amp;RDBMS导入HDFS&amp;RDBMS导入HIVE&amp;HDFS导入RDBMS&amp;HIVE导入RDBMS&amp;SQOOP的ETL案例&amp;在SHELL中操作MYSQL</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-12-01</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Sqoop/">Sqoop</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Sqoop/">Sqoop</a></span><div class="content"><p>首先抛出两个场景</p>
 <ol>
 <li>数据数据在RDBMS中，你想使用Hive进行处理，怎么做</li>
@@ -1000,54 +1047,7 @@
 
 </li>
 </ol>
-<h2 id="shell操作数据库"><a href="#shell操作数据库" class="headerlink" title="shell操作数据库"></a>shell操作数据库</h2><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">mysql -uroot -pruozedata &lt;&lt;EOF</span><br><span class="line">	<span class="keyword">use</span> sqoop;</span><br><span class="line">	<span class="keyword">truncate</span> etl_result;</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure></div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/12/01/flume/1/">Flume架构摸排</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-12-01</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Flume/">Flume</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Flume/">Flume</a></span><div class="content"><h2 id="Flume定义"><a href="#Flume定义" class="headerlink" title="Flume定义"></a>Flume定义</h2><p>Flume是Cloudera提供的一个高可用的，高可靠的，分布式的海量日志采集、聚合和传输的系统。Flume基于流式架构，灵活简单。</p>
-<h2 id="Flume的优点"><a href="#Flume的优点" class="headerlink" title="Flume的优点"></a>Flume的优点</h2><ol>
-<li><p>可以和任意存储进程集成。</p>
-</li>
-<li><p>输入的的数据速率大于写入目的存储的速率，flume会进行缓冲，减小hdfs的压力。</p>
-</li>
-<li><p>flume中的事务基于channel，使用了两个事务模型（sender + receiver），确保消息被可靠发送。</p>
-</li>
-</ol>
-<p>Flume使用两个独立的事务分别负责从soucrce到channel，以及从channel到sink的事件传递。一旦事务中所有的数据全部成功提交到channel，那么source才认为该数据读取完成。同理，只有成功被sink写出去的数据，才会从channel中移除。</p>
-<h2 id="Flume组成架构"><a href="#Flume组成架构" class="headerlink" title="Flume组成架构"></a>Flume组成架构</h2><p><img src="https://yerias.github.io/flume_img/flume.jpg" alt="flume架构图"></p>
-<ul>
-<li><p>Agent</p>
-<p>Agent是一个JVM进程，它以事件的形式将数据从源头送至目的。</p>
-<p>Agent主要有3个部分组成，Source、Channel、Sink。</p>
-</li>
-<li><p>Source</p>
-<p>Source是负责接收数据到Flume Agent的组件。</p>
-<p>Source组件可以处理各种类型、各种格式的日志数据，包括avro、thrift、exec、jms、spooling directory、netcat、sequence generator、syslog、http、legacy。</p>
-</li>
-<li><p>Channel</p>
-<p>Channel是位于Source和Sink之间的缓冲区。因此，Channel允许Source和Sink运作在不同的速率上。Channel是线程安全的，可以同时处理几个Source的写入操作和几个Sink的读取操作。</p>
-<p>Flume自带两种Channel：Memory Channel和File Channel。</p>
-<ol>
-<li><p>Memory Channel是内存中的队列。Memory Channel在不需要关心数据丢失的情景下适用。如果需要关心数据丢失，那么Memory Channel就不应该使用，因为程序死亡、机器宕机或者重启都会导致数据丢失。</p>
-</li>
-<li><p>File Channel将所有事件写到磁盘。因此在程序关闭或机器宕机的情况下不会丢失数据。</p>
-</li>
-</ol>
-</li>
-<li><p>Sink</p>
-<p>Sink不断地轮询Channel中的事件且批量地移除它们，并将这些事件批量写入到存储或索引系统、或者被发送到另一个Flume Agent。</p>
-<p>Sink是完全事务性的。在从Channel批量删除数据之前，每个Sink用Channel启动一个事务。批量事件一旦成功写出到存储系统或下一个Flume Agent，Sink就利用Channel提交事务。事务一旦被提交，该Channel从自己的内部缓冲区删除事件。</p>
-<p>Sink组件目的地包括hdfs、logger、avro、thrift、ipc、file、null、HBase、solr、自定义。</p>
-</li>
-<li><p>Event</p>
-<p>传输单元，Flume数据传输的基本单元，以事件的形式将数据从源头送至目的地。 Event由可选的header和载有数据的一个byte array 构成。Header是容纳了key-value字符串对的HashMap。</p>
-</li>
-</ul>
-<h2 id="Flume拓扑结构"><a href="#Flume拓扑结构" class="headerlink" title="Flume拓扑结构"></a>Flume拓扑结构</h2><h3 id="Flume-Agent连接"><a href="#Flume-Agent连接" class="headerlink" title="Flume Agent连接"></a>Flume Agent连接</h3><p><img src="https://yerias.github.io/flume_img/flume2.jpg" alt="flume2"></p>
-<p>这种模式是将多个flume给顺序连接起来了，从最初的source开始到最终sink传送的目的存储系统。此模式不建议桥接过多的flume数量， flume数量过多不仅会影响传输速率，而且一旦传输过程中某个节点flume宕机，会影响整个传输系统。</p>
-<h3 id="单source，多channel、sink"><a href="#单source，多channel、sink" class="headerlink" title="单source，多channel、sink"></a>单source，多channel、sink</h3><p><img src="https://yerias.github.io/flume_img/flume3.jpg" alt="flume3"></p>
-<p>Flume支持将事件流向一个或者多个目的地。这种模式将数据源复制到多个channel中，每个channel都有相同的数据，sink可以选择传送的不同的目的地。</p>
-<h3 id="Flume负载均衡"><a href="#Flume负载均衡" class="headerlink" title="Flume负载均衡"></a>Flume负载均衡</h3><p><img src="https://yerias.github.io/flume_img/flume4.jpg" alt="flume4"></p>
-<p>Flume支持使用将多个sink逻辑上分到一个sink组，flume将数据发送到不同的sink，主要解决负载均衡和故障转移问题。</p>
-<h3 id="Flume-Agent聚合"><a href="#Flume-Agent聚合" class="headerlink" title="Flume Agent聚合"></a>Flume Agent聚合</h3><p><img src="https://yerias.github.io/flume_img/flume5.jpg" alt="flume5"></p>
-<p>这种模式是我们最常见的，也非常实用，日常web应用通常分布在上百个服务器，大者甚至上千个、上万个服务器。产生的日志，处理起来也非常麻烦。用flume的这种组合方式能很好的解决这一问题，每台服务器部署一个flume采集日志，传送到一个集中收集日志的flume，再由此flume上传到hdfs、hive、hbase、jms等，进行日志分析。</p>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/11/14/hive/14/">Idea加载Hive源码，并且在控制台查询SQL</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-11-14</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Hive/">Hive</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Hive/">Hive</a></span><div class="content"><h2 id="编译源码"><a href="#编译源码" class="headerlink" title="编译源码"></a>编译源码</h2><ol>
+<h2 id="shell操作数据库"><a href="#shell操作数据库" class="headerlink" title="shell操作数据库"></a>shell操作数据库</h2><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">mysql -uroot -pruozedata &lt;&lt;EOF</span><br><span class="line">	<span class="keyword">use</span> sqoop;</span><br><span class="line">	<span class="keyword">truncate</span> etl_result;</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure></div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/11/14/hive/14/">Idea加载Hive源码，并且在控制台查询SQL</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-11-14</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Hive/">Hive</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Hive/">Hive</a></span><div class="content"><h2 id="编译源码"><a href="#编译源码" class="headerlink" title="编译源码"></a>编译源码</h2><ol>
 <li><p>下载Hive源码:<a href="http://archive.cloudera.com/cdh5/cdh/5/hive-1.1.0-cdh5.16.2-src.tar.gz" target="_blank" rel="noopener">http://archive.cloudera.com/cdh5/cdh/5/hive-1.1.0-cdh5.16.2-src.tar.gz</a></p>
 </li>
 <li><p>编译Hive源码(切记不要idea里面执行命令)：mvn clean package -DskipTests=true -Phadoop-2</p>
