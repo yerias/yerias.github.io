@@ -1,35 +1,689 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="BigData Developer"><meta name="keywords" content="yerias,TUNANのBlog,BigData"><meta name="author" content="Tunan"><meta name="copyright" content="Tunan"><title>感谢若老、J哥、师兄、前辈、同学、朋友、陌生人，在我行走在大数据道路上给我的谆谆教诲，同时此博客仅作为学习笔记存在，严禁任何人以何种理由商用，作者QQ: 971118017 | TUNANのBlog</title><link rel="shortcut icon" href="/melody-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.6.1"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.6.1"><link rel="dns-prefetch" href="https://cdn.staticfile.org"><link rel="dns-prefetch" href="https://cdn.bootcss.com"><link rel="dns-prefetch" href="https://creativecommons.org"><script>var GLOBAL_CONFIG = { 
   root: '/',
   algolia: undefined,
-  localSearch: {"path":"search.xml","languages":{"hits_empty":"We didn't find any results for the search: ${query}"}},
+  localSearch: undefined,
   copy: {
     success: 'Copy successfully',
     error: 'Copy error',
     noSupport: 'The browser does not support'
   }
-} </script></head><body><canvas class="fireworks"></canvas><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="author-info"><div class="author-info__avatar text-center"><img src="/img/xiaoqi.jpg"></div><div class="author-info__name text-center">Tunan</div><div class="author-info__description text-center">BigData Developer</div><div class="follow-button"><a href="#">Follow Me</a></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">Articles</span><span class="pull-right">128</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">Tags</span><span class="pull-right">30</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">Categories</span><span class="pull-right">26</span></a></div><hr><div class="author-info-links"><div class="author-info-links__title text-center">Links</div><a class="author-info-links__name text-center" href="https://hadoop.apache.org/docs/r2.10.0/hadoop-project-dist/hadoop-common/SingleCluster.html" target="_blank" rel="noopener">HADOOP</a><a class="author-info-links__name text-center" href="https://cwiki.apache.org/confluence/display/Hive/" target="_blank" rel="noopener">HIVE</a><a class="author-info-links__name text-center" href="http://archive.cloudera.com/cdh5/cdh/5/" target="_blank" rel="noopener">CDH</a><a class="author-info-links__name text-center" href="http://flume.apache.org/" target="_blank" rel="noopener">FLUME</a><a class="author-info-links__name text-center" href="https://azkaban.github.io/" target="_blank" rel="noopener">AZKABAN</a><a class="author-info-links__name text-center" href="https://www.maxinhong.com/" target="_blank" rel="noopener">叶梨子</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/qingyunzong" target="_blank" rel="noopener">老铁</a><a class="author-info-links__name text-center" href="https://blog.csdn.net/jim8973/" target="_blank" rel="noopener">飞哥</a><a class="author-info-links__name text-center" href="https://vinxikk.github.io/" target="_blank" rel="noopener">vinx</a><a class="author-info-links__name text-center" href="http://dongxicheng.org/" target="_blank" rel="noopener">懂西成</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/xing901022/" target="_blank" rel="noopener">xingoo</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/itboys/tag/" target="_blank" rel="noopener">大葱拌豆腐</a></div></div></div><nav id="nav" style="background-image: url(/img/soroush-golpoor-1497416-unsplash.jpg)"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">TUNANのBlog</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> Search</span></a><a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/categories">Categories</a></span></div><div id="site-info"><div id="site-title">TUNANのBlog</div><div id="site-sub-title">感谢若老、J哥、师兄、前辈、同学、朋友、陌生人，在我行走在大数据道路上给我的谆谆教诲，同时此博客仅作为学习笔记存在，严禁任何人以何种理由商用，作者QQ: 971118017</div><div id="site-social-icons"><a class="social-icon" href="https://github.com/yerias" target="_blank" rel="noopener"><i class="fa-github fa"></i></a><a class="social-icon search"><i class="fa fa-search"></i></a></div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><div class="recent-post-item article-container"><a class="article-title" href="/2020/05/04/presto/3/">PrestoUDF开发</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-05-04</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Presto/">Presto</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Presto/">Presto</a></span><div class="content">Presto函数在 Presto 中，函数大体分为三种：scalar，aggregation 和 window 类型。分别如下：
-1）scalar标量函数，简单来说就是 Java 中的一个静态方法，本身没有任何状态。
-2）aggregation累积状态的函数，或聚集函数，如count，avg。如果只 ...</div><a class="more" href="/2020/05/04/presto/3/#more" style="margin-top: 14px">Read more</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2020/05/03/presto/2/">Presto部署</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-05-03</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Presto/">Presto</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Presto/">Presto</a></span><div class="content">安装Presto1.下载
-wget https://repo1.maven.org/maven2/com/facebook/presto/presto-server/0.200/presto-server-0.200.tar.gz
+} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="author-info"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">Tunan</div><div class="author-info__description text-center">BigData Developer</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">Articles</span><span class="pull-right">129</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">Tags</span><span class="pull-right">30</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">Categories</span><span class="pull-right">26</span></a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">TUNANのBlog</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/categories">Categories</a></span></div><div id="site-info"><div id="site-title">TUNANのBlog</div><div id="site-sub-title">感谢若老、J哥、师兄、前辈、同学、朋友、陌生人，在我行走在大数据道路上给我的谆谆教诲，同时此博客仅作为学习笔记存在，严禁任何人以何种理由商用，作者QQ: 971118017</div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><div class="recent-post-item article-container"><a class="article-title" href="/2020/05/06/spark/25/">Spark各个版本特性</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-05-06</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Spark/">Spark</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Spark/">Spark</a></span><div class="content"><p>源博：<a href="https://www.maxinhong.com/2020/04/03/68.spark各个版本特性/#more" target="_blank" rel="noopener">https://www.maxinhong.com/2020/04/03/68.spark%E5%90%84%E4%B8%AA%E7%89%88%E6%9C%AC%E7%89%B9%E6%80%A7/#more</a></p>
+<hr>
+<h1 id="各个版本特性（官方文档）"><a href="#各个版本特性（官方文档）" class="headerlink" title="各个版本特性（官方文档）"></a>各个版本特性（官方文档）</h1><p><a href="https://spark.apache.org/releases/" target="_blank" rel="noopener">https://spark.apache.org/releases/</a><br><a href="https://spark.apache.org/news/index.html" target="_blank" rel="noopener">https://spark.apache.org/news/index.html</a></p>
+<h2 id="Spark-0-6-x"><a href="#Spark-0-6-x" class="headerlink" title="Spark 0.6.x"></a>Spark 0.6.x</h2><ul>
+<li>Standalone部署模式进行了简化</li>
+</ul>
+<h2 id="Spark-0-7"><a href="#Spark-0-7" class="headerlink" title="Spark 0.7"></a>Spark 0.7</h2><ul>
+<li>Python API</li>
+<li>增加Spark Streaming</li>
+<li>支持maven build</li>
+</ul>
+<h2 id="Spark-0-8"><a href="#Spark-0-8" class="headerlink" title="Spark 0.8"></a>Spark 0.8</h2><ul>
+<li>支持MLlib库</li>
+<li>hadoop yarn正式支持</li>
+</ul>
+<h2 id="Spark-0-9"><a href="#Spark-0-9" class="headerlink" title="Spark 0.9"></a>Spark 0.9</h2><ul>
+<li>用SparkConf类来配置SparkContext</li>
+<li>spark streaming正式版发布</li>
+<li>GraphX的测试版出现</li>
+<li>mllib库升级，支持python</li>
+<li>core升级</li>
+</ul>
+<h2 id="Spark-1-0"><a href="#Spark-1-0" class="headerlink" title="Spark 1.0"></a>Spark 1.0</h2><ul>
+<li>提出spark-submit脚本和history-server</li>
+<li>yarn安全模式整合</li>
+<li>spark sql被提出</li>
+<li>java8的支持</li>
+</ul>
+<h2 id="Spark-1-1"><a href="#Spark-1-1" class="headerlink" title="Spark 1.1"></a>Spark 1.1</h2><ul>
+<li>spark增强了磁盘（非内存）的排序的速率</li>
+</ul>
+<h2 id="Spark-1-2"><a href="#Spark-1-2" class="headerlink" title="Spark 1.2"></a>Spark 1.2</h2><ul>
+<li>shuffle大升级</li>
+<li>Graphx正式版发布</li>
+</ul>
+<h2 id="Spark-1-3"><a href="#Spark-1-3" class="headerlink" title="Spark 1.3"></a>Spark 1.3</h2><ul>
+<li>新增DataFrame API</li>
+<li>Spark SQL正式脱离alpha版本</li>
+</ul>
+<h2 id="Spark-1-4"><a href="#Spark-1-4" class="headerlink" title="Spark 1.4"></a>Spark 1.4</h2><ul>
+<li>正式引入SparkR</li>
+<li>Spark Core为应用提供了REST API来获取各种信息</li>
+</ul>
+<h2 id="Spark-1-5"><a href="#Spark-1-5" class="headerlink" title="Spark 1.5"></a>Spark 1.5</h2><ul>
+<li>Spark1.5重点是对性能的提升，引入钨丝项目，该项目通过对几个底层框架的重构进一步优化Spark性能</li>
+</ul>
+<h2 id="Spark-1-6"><a href="#Spark-1-6" class="headerlink" title="Spark 1.6"></a>Spark 1.6</h2><ul>
+<li>新增Dataset API</li>
+</ul>
+<h2 id="Spark-2-0"><a href="#Spark-2-0" class="headerlink" title="Spark 2.0"></a>Spark 2.0</h2><ul>
+<li>用sparksession实现hivecontext和sqlcontext统一</li>
+<li>合并dataframe和datasets</li>
+</ul>
+<h2 id="Spark-2-1"><a href="#Spark-2-1" class="headerlink" title="Spark 2.1"></a>Spark 2.1</h2><ul>
+<li>提升ORC格式文件的读写性能</li>
+</ul>
+<h2 id="Spark-2-2"><a href="#Spark-2-2" class="headerlink" title="Spark 2.2"></a>Spark 2.2</h2><ul>
+<li>Structured Streaming的生产环境支持已经就绪</li>
+</ul>
+<h2 id="Spark-2-3"><a href="#Spark-2-3" class="headerlink" title="Spark 2.3"></a>Spark 2.3</h2><ul>
+<li>Structured Streaming 引入了低延迟的连续处理</li>
+<li>支持 stream-to-stream joins</li>
+</ul>
+<h2 id="Spark-2-4"><a href="#Spark-2-4" class="headerlink" title="Spark 2.4"></a>Spark 2.4</h2><ul>
+<li>Scala 2.12</li>
+<li>添加了35个高阶函数</li>
+</ul>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2020/05/04/presto/3/">PrestoUDF开发</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-05-04</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Presto/">Presto</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Presto/">Presto</a></span><div class="content"><h2 id="Presto函数"><a href="#Presto函数" class="headerlink" title="Presto函数"></a>Presto函数</h2><p>在 Presto 中，函数大体分为三种：scalar，aggregation 和 window 类型。分别如下：</p>
+<p>1）scalar标量函数，简单来说就是 Java 中的一个静态方法，本身没有任何状态。</p>
+<p>2）aggregation累积状态的函数，或聚集函数，如count，avg。如果只是单节点，单机状态可以直接用一个变量存储即可，但是presto是分布式计算引擎，状态数据会在多个节点之间传输，因此状态数据需要被序列化成 Presto 的内部格式才可以被传输。</p>
+<p>3）window 窗口函数，如同sparkSQL中的窗口函数类似</p>
+<p>官网地址：<a href="https://prestodb.github.io/docs/current/develop/functions.html" target="_blank" rel="noopener">https://prestodb.github.io/docs/current/develop/functions.html</a></p>
+<h2 id="自定义Scalar函数的实现"><a href="#自定义Scalar函数的实现" class="headerlink" title="自定义Scalar函数的实现"></a>自定义Scalar函数的实现</h2><h3 id="定义一个java类"><a href="#定义一个java类" class="headerlink" title="定义一个java类"></a>定义一个java类</h3><ol>
+<li><p>用 @ScalarFunction 的 Annotation 标记实现业务逻辑的静态方法。</p>
+</li>
+<li><p>用 @Description 描述函数的作用，这里的内容会在 SHOW FUNCTIONS 中显示。</p>
+</li>
+<li><p>用@SqlType 标记函数的返回值类型，如返回字符串，因此是 StandardTypes.VARCHAR。</p>
+</li>
+<li><p>Java 方法的返回值必须使用 Presto 内部的序列化方式，因此字符串类型必须返回 Slice， 使用 Slices.utf8Slice 方法可以方便的将 String 类型转换成 Slice 类型</p>
+</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> com.tunna.spark.presto.udf;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.facebook.presto.spi.function.Description;</span><br><span class="line"><span class="keyword">import</span> com.facebook.presto.spi.function.ScalarFunction;</span><br><span class="line"><span class="keyword">import</span> com.facebook.presto.spi.function.SqlType;</span><br><span class="line"><span class="keyword">import</span> com.facebook.presto.spi.type.StandardTypes;</span><br><span class="line"><span class="keyword">import</span> io.airlift.slice.Slice;</span><br><span class="line"><span class="keyword">import</span> io.airlift.slice.Slices;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PrefixUDF</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Description</span>(<span class="string">"输入的数据加上前缀"</span>)      <span class="comment">//描述</span></span><br><span class="line">    <span class="meta">@ScalarFunction</span>(<span class="string">"tunan_prefix"</span>)       <span class="comment">//方法名称</span></span><br><span class="line">    <span class="meta">@SqlType</span>(StandardTypes.VARCHAR)       <span class="comment">//返回类型</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Slice <span class="title">prefix</span><span class="params">(@SqlType(StandardTypes.VARCHAR)</span>Slice input)</span>&#123;</span><br><span class="line">        <span class="comment">// Slices.utf8Slice 方法可以方便的将 String 类型转换成 Slice 类型</span></span><br><span class="line">        <span class="keyword">return</span> Slices.utf8Slice(<span class="string">"tunan_prefix_"</span>+input.toStringUtf8());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-官网下载最新版本: 点我进入官网下载 ，注意选择presto-se ...</div><a class="more" href="/2020/05/03/presto/2/#more" style="margin-top: 14px">Read more</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2020/05/02/spark/24/">SS+Kafka提交服务器&amp;窗口函数&amp;SS调优</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-05-02</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Spark/">Spark</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Spark/">Spark</a></span><div class="content">目录
-SS+Kafka提交服务器
-窗口函数
-SS调优
+<h3 id="Presto插件机制"><a href="#Presto插件机制" class="headerlink" title="Presto插件机制"></a>Presto插件机制</h3><p>presto不能像hive那样配置自定义的udf，要采用这种插件机制实现。Presto 的插件(Plugin)机制，是 Presto 能够整合多种数据源的核心。通过实现不同的 Plugin，Presto 允许用户在不同类型的数据源之间进行 JOIN 等计算。Presto 内部的所有数据源都是通过插件机制实现， 例如 MySQL、Hive、HBase等。Presto 插件机制不仅通过加载 Connector 来实现不同数据源的访问，还通过加载 FunctionFactory 来实现 UDF 的加载。 Presto 的 Plugin 遵循 Java 中的 ServiceLoader 规范， 实现非常简单。</p>
+<p>实现一个plugin接口如：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> com.tunna.spark.presto.udf;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.facebook.presto.spi.Plugin;</span><br><span class="line"><span class="keyword">import</span> com.google.common.collect.ImmutableSet;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.Set;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ProstoUDFPlugin</span> <span class="keyword">implements</span> <span class="title">Plugin</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> Set&lt;Class&lt;?&gt;&gt; getFunctions() &#123;</span><br><span class="line">        <span class="keyword">return</span> ImmutableSet.&lt;Class&lt;?&gt;&gt;builder()</span><br><span class="line">                .add(PrefixUDF<span class="class">.<span class="keyword">class</span>)</span></span><br><span class="line"><span class="class">                .<span class="title">build</span>()</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-SS+Kafka提交服务器由于Spark自身没有spark-streaming-kafka的依赖，所以Spark Streaming+Kafka的Application跑在服务器上需要添加spark-streaming-kafka的依赖，共有三 ...</div><a class="more" href="/2020/05/02/spark/24/#more" style="margin-top: 14px">Read more</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2020/05/02/presto/1/">Presto扫盲</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-05-02</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Presto/">Presto</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Presto/">Presto</a></span><div class="content">Presto简介不是什么虽然Presto可以解析SQL，但它不是一个标准的数据库。不是MySQL、PostgreSQL或者Oracle的代替品，也不能用来处理在线事务（OLTP）
-是什么Presto通过使用分布式查询，可以快速高效的完成海量数据的查询。作为Hive和Pig的补充，Presto不仅能访 ...</div><a class="more" href="/2020/05/02/presto/1/#more" style="margin-top: 14px">Read more</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2020/04/29/spark/23/">Spark 读写压缩文件的一次简单尝试</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-04-29</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Spark/">Spark</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Spark/">Spark</a></span><div class="content">前言我认为以节省存储空间为角度出发，Spark作业中的读写压缩文件是必不可少的话题，当然这在MR作业中也有体现和实际解决这种问题，现在我们就要在Spark中解决这种问题。
-如果需要安装Lzo可以看我的其他文章
-源文件是一份access的原始数据
+<h3 id="注册函数"><a href="#注册函数" class="headerlink" title="注册函数"></a>注册函数</h3><p>在resources下创建META-INF/services目录，创建文件com.facebook.presto.spi.Plugin，拷贝Plugin的全限定名</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">com.tunna.spark.presto.udf.ProstoUDFPlugin</span><br></pre></td></tr></table></figure>
 
-我们在上传到服务器上的时候，使用lzop命令压缩该文 ...</div><a class="more" href="/2020/04/29/spark/23/#more" style="margin-top: 14px">Read more</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2020/04/29/kafka/3/">kafka eagle安装部署</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-04-29</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Kakfa/">Kakfa</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Kakfa/">Kakfa</a></span><div class="content">1.kafka+zookeeper准备这里假设你已经把kafka+zookeeper安装完成，但是需要注意的几点是：1.kafka需要开启JMX端口    找到kafka安装路径，进入到bin文件夹，修改下面的地方。    vi kafka-server-start.sh...if [ "x$KAF ...</div><a class="more" href="/2020/04/29/kafka/3/#more" style="margin-top: 14px">Read more</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2020/04/28/error/8/">FileNotFountException: file:/home/hadoop/lib/tunan-spark-core-1.0.jar!/ip2region.db</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-04-28</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Error/">Error</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Error/">Error</a></span><div class="content">以后看到标题这种Error，先别管其他的，首先看看代码中有没有把Master注释掉，不然jar包中的文件永远到不了服务器的环境中去，就算把文件在服务器上的路径写死都没用。
-由于Spark不会自动清理–files和–jars传到服务器中的文件，因此只要我们传上去的jar包运行通一次，后面不管代码中有没 ...</div><a class="more" href="/2020/04/28/error/8/#more" style="margin-top: 14px">Read more</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2020/04/27/error/7/">error: object hadoop is not a member of packee com</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-04-27</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Error/">Error</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Error/">Error</a></span><div class="content">这个问题是在Spark读取Lzo压缩文件的时候碰见的，Spark读取Lzo压缩文件的时候，就算文件添加了索引，也不能分片，原因是要在获取文件的时候使用newAPIHadoopFile算子读取文件获取rdd
-val rdd = sc.newAPIHadoopFile(in, classOf[LzoTe ...</div><a class="more" href="/2020/04/27/error/7/#more" style="margin-top: 14px">Read more</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2020/04/26/%E7%BF%BB%E8%AF%91/2/">Introducing Window Functions in Spark SQL</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-04-26</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/%E5%8E%9F%E6%96%87%E7%BF%BB%E8%AF%91/">原文翻译</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/%E5%8E%9F%E6%96%87%E7%BF%BB%E8%AF%91/">原文翻译</a></span><div class="content">原文：https://databricks.com/blog/2015/07/15/introducing-window-functions-in-spark-sql.html
+<p>最后在presto的plugin目录下创建我们自己的目录，并且打包上传到我们自己的目录下，需要重启presto才能将jar中的自定义函数加载进去，如果有多个依赖，都需要放在我们创建的目录下</p>
+<h2 id="自定义Aggregation函数的实现"><a href="#自定义Aggregation函数的实现" class="headerlink" title="自定义Aggregation函数的实现"></a>自定义Aggregation函数的实现</h2><h3 id="实现原理步骤"><a href="#实现原理步骤" class="headerlink" title="实现原理步骤"></a>实现原理步骤</h3><p>Presto 把 Aggregation 函数分解成三个步骤执行：</p>
+<ol>
+<li><p>input(state, data): 针对每条数据，执行 input 函数。这个过程是并行执行的，因此在每个有数据的节点都会执行，最终得到多个累积的状态数据。</p>
+</li>
+<li><p>combine(state1, state2)：将所有节点的状态数据聚合起来，多次执行，直至所有状态数据被聚合成一个最终状态，也就是 Aggregation 函数的输出结果。</p>
+</li>
+<li><p>output(final_state, out)：最终输出结果到一个 BlockBuilder。</p>
+</li>
+</ol>
+<h3 id="具体代码实现过程"><a href="#具体代码实现过程" class="headerlink" title="具体代码实现过程"></a>具体代码实现过程</h3><ol>
+<li>一个继承AccumulatorState的State接口，自定义get和set方法</li>
+<li>定义一个 Java 类，使用 @AggregationFunction 标记为 Aggregation 函数</li>
+<li>使用 @InputFunction、 @CombineFunction、@OutputFunction 分别标记计算函数、合并结果函数和最终输出函数在 Plugin 处注册 Aggregation 函数</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> com.tunna.spark.presto.aggudf;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.facebook.presto.spi.block.BlockBuilder;</span><br><span class="line"><span class="keyword">import</span> com.facebook.presto.spi.function.*;</span><br><span class="line"><span class="keyword">import</span> com.facebook.presto.spi.type.StandardTypes;</span><br><span class="line"><span class="keyword">import</span> io.airlift.slice.Slice;</span><br><span class="line"><span class="keyword">import</span> io.airlift.slice.Slices;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="keyword">static</span> com.facebook.presto.spi.type.VarcharType.VARCHAR;</span><br><span class="line"></span><br><span class="line"><span class="meta">@AggregationFunction</span>(<span class="string">"tunan_concat"</span>)    <span class="comment">// Agg方法名</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TunanAggregationUDF</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@InputFunction</span>  <span class="comment">//输入函数</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">input</span><span class="params">(StringValueState state,@SqlType(StandardTypes.VARCHAR)</span> Slice value)</span>&#123;</span><br><span class="line"></span><br><span class="line">        state.setStringValue(Slices.utf8Slice(isNull(state.getStringValue())+<span class="string">"|"</span>+value.toStringUtf8()));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@CombineFunction</span>    <span class="comment">//合并函数</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">combine</span><span class="params">(StringValueState state1,StringValueState state2)</span></span>&#123;</span><br><span class="line">        state1.setStringValue(Slices.utf8Slice(isNull(state1.getStringValue())+<span class="string">"|"</span>+isNull(state2.getStringValue())));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@OutputFunction</span>(StandardTypes.VARCHAR)  <span class="comment">//输出函数</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">output</span><span class="params">(StringValueState state, BlockBuilder builder)</span></span>&#123;</span><br><span class="line">        VARCHAR.writeSlice(builder,state.getStringValue());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 判断null值</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">isNull</span><span class="params">(Slice slice)</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> slice ==<span class="keyword">null</span>?<span class="string">""</span>:slice.toStringUtf8();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-在这篇博客文章中，我们将介绍Apache Spark 1.4中添加的新窗口函数特性。窗口函数允许Spark SQL的用户 ...</div><a class="more" href="/2020/04/26/%E7%BF%BB%E8%AF%91/2/#more" style="margin-top: 14px">Read more</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2020/04/26/%E7%BF%BB%E8%AF%91/1/">ORCFile in HDP 2: Better Compression, Better Performance</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-04-26</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/%E5%8E%9F%E6%96%87%E7%BF%BB%E8%AF%91/">原文翻译</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/%E5%8E%9F%E6%96%87%E7%BF%BB%E8%AF%91/">原文翻译</a></span><div class="content">原文：https://blog.cloudera.com/orcfile-in-hdp-2-better-compression-better-performance/
+<h3 id="注册函数-1"><a href="#注册函数-1" class="headerlink" title="注册函数"></a>注册函数</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ProstoUDFPlugin</span> <span class="keyword">implements</span> <span class="title">Plugin</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> Set&lt;Class&lt;?&gt;&gt; getFunctions() &#123;</span><br><span class="line">        <span class="keyword">return</span> ImmutableSet.&lt;Class&lt;?&gt;&gt;builder()</span><br><span class="line">                .add(PrefixUDF<span class="class">.<span class="keyword">class</span>)</span></span><br><span class="line"><span class="class">                .<span class="title">add</span>(<span class="title">TunanAggregationUDF</span>.<span class="title">class</span>) // 新加的</span></span><br><span class="line"><span class="class">                .<span class="title">build</span>()</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-即将发布的Hive 0.12将在存储层带来一些新的重大改进，包括更高的压缩和更好的查询性能。
-高压缩ORCFile是在Hive  ...</div><a class="more" href="/2020/04/26/%E7%BF%BB%E8%AF%91/1/#more" style="margin-top: 14px">Read more</a><hr></div><nav id="pagination"><div class="pagination"><span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/13/">13</a><a class="extend next" rel="next" href="/page/2/">&gt;&gt;</a></div></nav></div></div><footer class="footer-bg" style="background-image: url(/img/soroush-golpoor-1497416-unsplash.jpg)"><div class="layout" id="footer"><div class="copyright">&copy;2018 - 2020 By Tunan</div><div class="framework-info"><span>Driven - </span><a href="#"><span>Hexo</span></a><span class="footer-separator">|</span><span>Theme - </span><a href="#"><span>Melody</span></a></div><div class="footer_custom_text">大家好，我是图南，很高兴认识你们！</div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_site_uv"><i class="fa fa-user"></i><span id="busuanzi_value_site_uv"></span><span></span></span><span class="footer-separator">|</span><span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i><span id="busuanzi_value_site_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.6.1"></script><script src="/js/fancybox.js?version=1.6.1"></script><script src="/js/sidebar.js?version=1.6.1"></script><script src="/js/copy.js?version=1.6.1"></script><script src="/js/fireworks.js?version=1.6.1"></script><script src="/js/transition.js?version=1.6.1"></script><script src="/js/scroll.js?version=1.6.1"></script><script src="/js/head.js?version=1.6.1"></script><script src="/js/search/local-search.js"></script><script>if(/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+<p><img src="https://yerias.github.io/presto/udf.jpg" alt=""></p>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2020/05/03/presto/2/">Presto部署</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-05-03</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Presto/">Presto</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Presto/">Presto</a></span><div class="content"><h2 id="安装Presto"><a href="#安装Presto" class="headerlink" title="安装Presto"></a>安装Presto</h2><p>1.下载</p>
+<figure class="highlight properties"><table><tr><td class="code"><pre><span class="line"><span class="attr">wget</span> <span class="string">https://repo1.maven.org/maven2/com/facebook/presto/presto-server/0.200/presto-server-0.200.tar.gz</span></span><br></pre></td></tr></table></figure>
+
+<p>官网下载最新版本: <a href="https://repo1.maven.org/maven2/com/facebook/presto/presto-server" target="_blank" rel="noopener">点我进入官网下载</a> ，注意选择presto-server</p>
+<p>2.解压</p>
+<figure class="highlight properties"><table><tr><td class="code"><pre><span class="line"><span class="attr">tar</span> <span class="string">-zxvf presto-server-0.200.tar.gz -C /usr/local/</span></span><br></pre></td></tr></table></figure>
+
+<p>/usr/local/presto-server-0.200则为安装目录，另外Presto还需要数据目录，数据目录最好不要在安装目录里面，方便后面Presto的版本升级。</p>
+<h2 id="配置Presto"><a href="#配置Presto" class="headerlink" title="配置Presto"></a>配置Presto</h2><p>在安装目录里创建etc目录。这目录会有以下配置：</p>
+<ul>
+<li>结点属性（Node Properties）：每个结点的环境配置</li>
+<li>JVM配置（JVM Config）：Java虚拟机的命令行选项</li>
+<li>配置属性（Config Properties）：Persto server的配置</li>
+<li>Catelog属性（Catalog Properties）：配置Connector（数据源）</li>
+</ul>
+<h3 id="结点属性（Node-Properties）"><a href="#结点属性（Node-Properties）" class="headerlink" title="结点属性（Node Properties）"></a>结点属性（Node Properties）</h3><p>结点属性文件etc/node.properties，包含每个结点的配置。一个结点是一个Presto实例。这文件一般是在Presto第一次安装时创建的。以下是最小配置：</p>
+<figure class="highlight properties"><table><tr><td class="code"><pre><span class="line"><span class="meta">node.environment</span>=<span class="string">production</span></span><br><span class="line"><span class="meta">node.id</span>=<span class="string">ffffffff-ffff-ffff-ffff-ffffffffffff</span></span><br><span class="line"><span class="meta">node.data-dir</span>=<span class="string">/var/presto/data</span></span><br></pre></td></tr></table></figure>
+
+<p><code>node.environment</code>: 环境名字，Presto集群中的结点的环境名字都必须是一样的。<br><code>node.id</code>: 唯一标识，每个结点的标识都必须是为一的。就算重启或升级Presto都必须还保持原来的标识。<br><code>node.data-dir</code>: 数据目录，Presto用它来保存log和其他数据，<strong>建议放在自己定义的目录下</strong>。</p>
+<h3 id="JVM配置（JVM-Config）"><a href="#JVM配置（JVM-Config）" class="headerlink" title="JVM配置（JVM Config）"></a>JVM配置（JVM Config）</h3><p>JVM配置文件etc/jvm.config，包含启动Java虚拟机时的命令行选项。格式是每一行是一个命令行选项。此文件数据是由shell解析，所以选项中包含空格或特殊字符会被忽略。</p>
+<p>以下是参考配置：</p>
+<figure class="highlight properties"><table><tr><td class="code"><pre><span class="line"><span class="attr">-server</span></span><br><span class="line"><span class="attr">-Xmx16G</span></span><br><span class="line"><span class="meta">-XX</span>:<span class="string">+UseG1GC</span></span><br><span class="line"><span class="meta">-XX</span>:<span class="string">G1HeapRegionSize=32M</span></span><br><span class="line"><span class="meta">-XX</span>:<span class="string">+UseGCOverheadLimit</span></span><br><span class="line"><span class="meta">-XX</span>:<span class="string">+ExplicitGCInvokesConcurrent</span></span><br><span class="line"><span class="meta">-XX</span>:<span class="string">+HeapDumpOnOutOfMemoryError</span></span><br><span class="line"><span class="meta">-XX</span>:<span class="string">+ExitOnOutOfMemoryError</span></span><br></pre></td></tr></table></figure>
+
+<p>注意：如果<code>ExitOnOutOfMemoryError</code>报错，注释即可</p>
+<p>因为<code>OutOfMemoryError</code>会导致JVM存在不一致状态，所以用heap dump来debug，来找出进程为什么崩溃的原因。</p>
+<h3 id="配置属性（Config-Properties）"><a href="#配置属性（Config-Properties）" class="headerlink" title="配置属性（Config Properties）"></a>配置属性（Config Properties）</h3><p>配置属性文件etc/config.properties，包含Presto server的配置。Presto server可以同时为coordinator和worker，但一个大集群里最好就是只指定一台机器为coordinator。<br>以下是coordinator的最小配置：</p>
+<figure class="highlight properties"><table><tr><td class="code"><pre><span class="line"><span class="attr">coordinator</span>=<span class="string">true</span></span><br><span class="line"><span class="meta">node-scheduler.include-coordinator</span>=<span class="string">false</span></span><br><span class="line"><span class="meta">http-server.http.port</span>=<span class="string">8080</span></span><br><span class="line"><span class="meta">query.max-memory</span>=<span class="string">50GB</span></span><br><span class="line"><span class="meta">query.max-memory-per-node</span>=<span class="string">1GB</span></span><br><span class="line"><span class="meta">discovery-server.enabled</span>=<span class="string">true</span></span><br><span class="line"><span class="meta">discovery.uri</span>=<span class="string">http://example.net:8080</span></span><br></pre></td></tr></table></figure>
+
+<p>以下是worker的最小配置：</p>
+<figure class="highlight properties"><table><tr><td class="code"><pre><span class="line"><span class="attr">coordinator</span>=<span class="string">false</span></span><br><span class="line"><span class="meta">http-server.http.port</span>=<span class="string">8080</span></span><br><span class="line"><span class="meta">query.max-memory</span>=<span class="string">50GB</span></span><br><span class="line"><span class="meta">query.max-memory-per-node</span>=<span class="string">1GB</span></span><br><span class="line"><span class="meta">discovery.uri</span>=<span class="string">http://example.net:8080</span></span><br></pre></td></tr></table></figure>
+
+<p>如果适用于测试目的，需要将一台机器同时配置为coordinator和worker，则使用以下配置：</p>
+<figure class="highlight properties"><table><tr><td class="code"><pre><span class="line"><span class="attr">coordinator</span>=<span class="string">true</span></span><br><span class="line"><span class="meta">node-scheduler.include-coordinator</span>=<span class="string">true</span></span><br><span class="line"><span class="meta">http-server.http.port</span>=<span class="string">8080</span></span><br><span class="line"><span class="meta">query.max-memory</span>=<span class="string">2GB</span></span><br><span class="line"><span class="meta">query.max-memory-per-node</span>=<span class="string">512MB</span></span><br><span class="line"><span class="meta">discovery-server.enabled</span>=<span class="string">true</span></span><br><span class="line"><span class="meta">discovery.uri</span>=<span class="string">http://example.net:8080</span></span><br></pre></td></tr></table></figure>
+
+<p><code>coordinator</code>： 是否运行该实例为coordinator（接受client的查询和管理查询执行）。<br><code>node-scheduler.include-coordinator:coordinator</code>: 是否也作为work。对于大型集群来说，在coordinator里做worker的工作会影响查询性能。<br><code>http-server.http.port</code>:指定HTTP端口。Presto使用HTTP来与外部和内部进行交流。<br><code>query.max-memory</code>: 查询能用到的最大总内存<br><code>query.max-memory-per-node</code>: 查询能用到的最大单结点内存<br><code>discovery-server.enabled</code>: Presto使用Discovery服务去找到集群中的所有结点。每个Presto实例在启动时都会在Discovery服务里注册。这样可以简化部署，不需要额外的服务，Presto的coordinator内置一个Discovery服务。也是使用HTTP端口。<br><code>discovery.uri</code>: Discovery服务的URI。将example.net:8080替换为coordinator的host和端口。<strong>这个URI不能以斜杠结尾，这个错误需特别注意，不然会报404错误</strong>。</p>
+<p>另外还有以下属性：<br><code>jmx.rmiregistry.port</code>: 指定JMX RMI的注册。JMX client可以连接此端口<br><code>jmx.rmiserver.port</code>: 指定JXM RMI的服务器。可通过JMX监听。</p>
+<p>详情请查看<a href="https://prestodb.io/docs/current/admin/resource-groups.html" target="_blank" rel="noopener">Resource Groups</a></p>
+<h3 id="Catelog属性（Catalog-Properties）"><a href="#Catelog属性（Catalog-Properties）" class="headerlink" title="Catelog属性（Catalog Properties）"></a>Catelog属性（Catalog Properties）</h3><p>Presto通过connector访问数据。而connector是挂载（mount）在catelog中。connector支持catelog里所有的schema和table。举个例子，Hive connector映射每个Hive数据库到schema，因此Hive connector挂载在hive catelog（所以可以把catelog理解为目录，挂载），而且Hive包含table clicks在数据库web，所以这个table在Presto是hive.web.clicks。<br>Catalog的注册是通过etc/catalog目录下的catalog属性文件。例如，创建etc/catalog/jmx.properties，将jmxconnector挂载在jmx catelog：</p>
+<figure class="highlight properties"><table><tr><td class="code"><pre><span class="line"><span class="meta">connector.name</span>=<span class="string">jmx</span></span><br></pre></td></tr></table></figure>
+
+<p>查看<a href="https://prestodb.io/docs/current/connector.html" target="_blank" rel="noopener">Connectors</a>查看更多信息。</p>
+<p>启动命令：</p>
+<figure class="highlight properties"><table><tr><td class="code"><pre><span class="line"><span class="meta">bin/launcher</span> <span class="string">start</span></span><br></pre></td></tr></table></figure>
+
+<p>日志在val/log目录下：<br><code>launcher.log</code>: 记录服务初始化情况和一些JVM的诊断。<br><code>server.log: Presto</code>: 的主要日志文件。会自动被压缩。<br><code>http-request.log</code>: 记录HTTP请求。会自动被压缩。</p>
+<h2 id="配置MySQL-Connector"><a href="#配置MySQL-Connector" class="headerlink" title="配置MySQL Connector"></a>配置<a href="https://prestodb.io/docs/current/connector/mysql.html" target="_blank" rel="noopener">MySQL Connector</a></h2><p>创建<code>etc/catalog/mysql.properties</code></p>
+<figure class="highlight properties"><table><tr><td class="code"><pre><span class="line"><span class="meta">connector.name</span>=<span class="string">mysql</span></span><br><span class="line"><span class="meta">connection-url</span>=<span class="string">jdbc:mysql://example.net:3306</span></span><br><span class="line"><span class="meta">connection-user</span>=<span class="string">root</span></span><br><span class="line"><span class="meta">connection-password</span>=<span class="string">secret</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="配置Hive-Connector"><a href="#配置Hive-Connector" class="headerlink" title="配置Hive Connector"></a>配置<a href="https://prestodb.io/docs/current/connector/hive.html" target="_blank" rel="noopener">Hive Connector</a></h2><p>创建<code>etc/catalog/hive.properties</code></p>
+<figure class="highlight properties"><table><tr><td class="code"><pre><span class="line"><span class="meta">connector.name</span>=<span class="string">hive-hadoop2</span></span><br><span class="line"><span class="meta">hive.metastore.uri</span>=<span class="string">thrift://example.net:9083</span></span><br><span class="line"><span class="meta">hive.config.resources</span>=<span class="string">/etc/hadoop/conf/core-site.xml,/etc/hadoop/conf/hdfs-site.xml</span></span><br></pre></td></tr></table></figure>
+
+<p>还可以在<code>jvm.config</code>中Hadoop的代理用户</p>
+<figure class="highlight properties"><table><tr><td class="code"><pre><span class="line"><span class="meta">-DHADOOP_USER_NAME</span>=<span class="string">hdfs_user</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="运行Presto命令行界面"><a href="#运行Presto命令行界面" class="headerlink" title="运行Presto命令行界面"></a>运行Presto命令行界面</h2><p>1.下载 presto-cli-0.200-executable.jar(<a href="https://repo1.maven.org/maven2/com/facebook/presto/presto-cli/" target="_blank" rel="noopener">下载最新版</a>),<br>2.修改名字 presto-cli-0.200-executable.jar为 presto<br>3.修改执行权限chmod +x<br>4.运行</p>
+<p>指定catelog</p>
+<figure class="highlight properties"><table><tr><td class="code"><pre><span class="line"><span class="meta">./presto</span> <span class="string">--server localhost:8080 --catalog hive --schema default</span></span><br></pre></td></tr></table></figure>
+
+<p>不指定catelog，可在命令行使用多个catalog</p>
+<figure class="highlight properties"><table><tr><td class="code"><pre><span class="line"><span class="meta">./presto</span> <span class="string">--server localhost:8080</span></span><br></pre></td></tr></table></figure>
+
+<p>注意: JDK必须大于<code>jdk-8u151</code></p>
+<p><strong>hive join mysql</strong></p>
+<p><code>select * from hive.default.emp a join mysql.tunan.dept b on a.deptno = b.deptno;</code></p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"> empno | ename  |    job    | jno  |    date    |  sal   | prize  | deptno | deptno |   dname    | level </span><br><span class="line"><span class="comment">-------+--------+-----------+------+------------+--------+--------+--------+--------+------------+-------</span></span><br><span class="line"> 7369  | SMITH  | CLERK     | 7902 | 1980-12-17 |  800.0 | NULL   | 20     | 20     | RESEARCH   |  1800 </span><br><span class="line"> 7499  | ALLEN  | SALESMAN  | 7698 | 1981-2-20  | 1600.0 |  300.0 | 30     | 30     | SALES      |  1900 </span><br><span class="line"> 7521  | WARD   | SALESMAN  | 7698 | 1981-2-22  | 1250.0 |  500.0 | 10     | 10     | ACCOUNTING |  1700 </span><br><span class="line"> 7566  | JONES  | MANAGER   | 7839 | 1981-4-2   | 2975.0 | NULL   | 10     | 10     | ACCOUNTING |  1700 </span><br><span class="line"> 7654  | MARTIN | SALESMAN  | 7698 | 1981-9-28  | 1250.0 | 1400.0 | 30     | 30     | SALES      |  1900</span><br></pre></td></tr></table></figure>
+
+<p>命令帮助: help</p>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2020/05/02/spark/24/">SS+Kafka提交服务器&amp;窗口函数&amp;SS调优</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-05-02</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Spark/">Spark</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Spark/">Spark</a></span><div class="content"><h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><ol>
+<li>SS+Kafka提交服务器</li>
+<li>窗口函数</li>
+<li>SS调优</li>
+</ol>
+<h2 id="SS-Kafka提交服务器"><a href="#SS-Kafka提交服务器" class="headerlink" title="SS+Kafka提交服务器"></a>SS+Kafka提交服务器</h2><p>由于Spark自身没有spark-streaming-kafka的依赖，所以Spark Streaming+Kafka的Application跑在服务器上需要添加spark-streaming-kafka的依赖，共有三种添加依赖的方式</p>
+<ol>
+<li>直接在IDEA中打胖包，但是服务器上有的东西需要标识为privated，不然依赖重复了，这种方式不推介</li>
+<li>提交Application的时候使用–packages参数，格式为: <code>groupId:artifactId:version</code>，这种方式需要在有网络的情况下才能使用</li>
+<li>使用–jars 传入依赖，推介，这里有个技巧，可以将需要的 jar 包放在固定目录下，需要传入依赖的时候只需要使用 $(echo /home/hadoop/lib/*.jar | tr ‘ ‘ ‘,’)即可以将目录下的 jar 包全都拼接上去</li>
+</ol>
+<p>简单的WC案例</p>
+<figure class="highlight scala"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">wc_ss_kafka</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">var</span> groupId:<span class="type">String</span> = _</span><br><span class="line">  <span class="keyword">var</span> topic:<span class="type">String</span> = _</span><br><span class="line">  <span class="keyword">var</span> brokers:<span class="type">String</span> = _</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">main</span></span>(args: <span class="type">Array</span>[<span class="type">String</span>]): <span class="type">Unit</span> = &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">val</span> conf = <span class="keyword">new</span> <span class="type">SparkConf</span>().setMaster(<span class="string">"local[2]"</span>).setAppName(<span class="keyword">this</span>.getClass.getSimpleName)</span><br><span class="line">    <span class="keyword">val</span> ssc = <span class="keyword">new</span> <span class="type">StreamingContext</span>(conf, <span class="type">Seconds</span>(<span class="number">5</span>))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (args.length&lt;<span class="number">3</span>)&#123;</span><br><span class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> <span class="type">IllegalArgumentException</span>(<span class="string">"Usage: com.tunan.spark.streming.kafka.wc.wc_ss_kafka &lt;groupId&gt; &lt;topic&gt; &lt;brokers&gt;"</span>)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    groupId = args(<span class="number">0</span>)</span><br><span class="line">    topic = args(<span class="number">1</span>)</span><br><span class="line">    brokers = args(<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">val</span> kafkaParams = <span class="type">Map</span>[<span class="type">String</span>, <span class="type">Object</span>](</span><br><span class="line">      <span class="string">"bootstrap.servers"</span> -&gt; brokers,</span><br><span class="line">      <span class="string">"key.deserializer"</span> -&gt; classOf[<span class="type">StringDeserializer</span>],</span><br><span class="line">      <span class="string">"value.deserializer"</span> -&gt; classOf[<span class="type">StringDeserializer</span>],</span><br><span class="line">      <span class="string">"group.id"</span> -&gt; groupId,</span><br><span class="line">      <span class="string">"auto.offset.reset"</span> -&gt; <span class="string">"earliest"</span>, <span class="comment">//latest</span></span><br><span class="line">      <span class="string">"enable.auto.commit"</span> -&gt; (<span class="literal">false</span>: java.lang.<span class="type">Boolean</span>)</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    <span class="keyword">val</span> topics = <span class="type">Array</span>(topic)</span><br><span class="line">    <span class="keyword">val</span> stream = <span class="type">KafkaUtils</span>.createDirectStream[<span class="type">String</span>, <span class="type">String</span>](</span><br><span class="line">      ssc,</span><br><span class="line">      <span class="type">PreferConsistent</span>,</span><br><span class="line">      <span class="type">Subscribe</span>[<span class="type">String</span>, <span class="type">String</span>](topics, kafkaParams)</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    stream.map(x=&gt;(x.value(),<span class="number">1</span>)).reduceByKey(_+_).foreachRDD(rdd =&gt;&#123;</span><br><span class="line">      rdd.foreach(println)</span><br><span class="line">    &#125;)</span><br><span class="line"></span><br><span class="line">    ssc.start()</span><br><span class="line">    ssc.awaitTermination()</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>作业提交</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">spark-submit \</span><br><span class="line">  --class com.tunan.spark.streming.kafka.wc.wc_ss_kafka \</span><br><span class="line">  --master yarn \</span><br><span class="line">  --deploy-mode client \</span><br><span class="line">  --jars $(echo /home/hadoop/lib/*.jar | tr ' ' ',') \</span><br><span class="line">  /home/hadoop/jar/tunan-spark-streaming-kafka-1.0.jar \</span><br><span class="line">  wc_group_id_for_each_stream test hadoop:9090,hadoop:9091,hadoop:9092</span><br></pre></td></tr></table></figure>
+
+<p>查看结果<img src="https://yerias.github.io/spark_img/ss_kafka_submit.png" alt=""></p>
+<h2 id="窗口函数"><a href="#窗口函数" class="headerlink" title="窗口函数"></a>窗口函数</h2><p>前面有介绍窗口函数，现在我们来看一下如何使用</p>
+<p>在工作中常常有这样的需求:</p>
+<ol>
+<li>每隔5秒钟统计前10秒钟的数据</li>
+<li>每隔1分钟统计前05分钟的数据</li>
+</ol>
+<p>这类每隔多少统计前多少时间的操作就时窗口操作</p>
+<p>我们以一个例子来说明窗口操作。 对之前的单词计数的示例进行扩展，每10秒钟对过去30秒的数据进行wordcount。为此，我们必须在最近30秒的DStream数据中对键值对应用<code>reduceByKey</code>操作。这是通过使用<code>reduceByKeyAndWindow</code>操作完成的。</p>
+<figure class="highlight scala"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 每隔10秒统计前30秒的数据</span></span><br><span class="line">stream.map(x=&gt;(x.value(),<span class="number">1</span>)).reduceByKeyAndWindow((a:<span class="type">Int</span>,b:<span class="type">Int</span>)=&gt;a+b,<span class="type">Seconds</span>(<span class="number">30</span>),<span class="type">Seconds</span>(<span class="number">10</span>))</span><br><span class="line">.foreachRDD(rdd =&gt;&#123;</span><br><span class="line">    rdd.foreach(println)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>一些常见的窗口操作如下表所示。所有这些操作都用到了上述两个参数：<code>windowLength</code>和<code>slideInterval</code>。</p>
+<ul>
+<li><p><code>window(windowLength, slideInterval)</code></p>
+<p>基于源DStream产生的窗口化的批数据计算一个新的DStream</p>
+</li>
+<li><p><code>countByWindow(windowLength, slideInterval)</code></p>
+<p>返回流中元素的一个滑动窗口数</p>
+</li>
+<li><p><code>reduceByWindow(func, windowLength, slideInterval)</code></p>
+<p>返回一个单元素流。利用函数func聚集滑动时间间隔的流的元素创建这个单元素流。函数必须是相关联的以使计算能够正确的并行计算。</p>
+</li>
+<li><p><code>reduceByKeyAndWindow(func, windowLength, slideInterval, [numTasks])</code></p>
+<p>应用到一个(K,V)对组成的DStream上，返回一个由(K,V)对组成的新的DStream。每一个key的值均由给定的reduce函数聚集起来。注意：在默认情况下，这个算子利用了Spark默认的并发任务数去分组。你可以用numTasks参数设置不同的任务数</p>
+</li>
+<li><p><code>reduceByKeyAndWindow(func, invFunc, windowLength, slideInterval, [numTasks])</code></p>
+<p>上述<code>reduceByKeyAndWindow()</code>的更高效的版本，其中使用前一窗口的reduce计算结果递增地计算每个窗口的reduce值。这是通过对进入滑动窗口的新数据进行reduce操作，以及“逆减（inverse reducing）”离开窗口的旧数据来完成的。一个例子是当窗口滑动时对键对应的值进行“一加一减”操作。但是，它仅适用于“可逆减函数（invertible reduce functions）”，即具有相应“反减”功能的减函数（作为参数invFunc）。 像<code>reduceByKeyAndWindow</code>一样，通过可选参数可以配置reduce任务的数量。 请注意，使用此操作必须启用检查点。</p>
+</li>
+<li><p><code>countByValueAndWindow(windowLength, slideInterval, [numTasks])</code></p>
+<p>应用到一个(K,V)对组成的DStream上，返回一个由(K,V)对组成的新的DStream。每个key的值都是它们在滑动窗口中出现的频率。</p>
+</li>
+</ul>
+<h2 id="SS调优"><a href="#SS调优" class="headerlink" title="SS调优"></a>SS调优</h2><p>通过spark-shell运行Spark Streaming + Kafka程序，查看Web UI界面</p>
+<p><img src="https://yerias.github.io/spark_img/Web_UI_2.jpg" alt=""></p>
+<p>我们需要作业的性能最高，那么需要一个最佳时间</p>
+<ol>
+<li>在下一个批次启动作业之前一定要运行完前一个批次数据的处理</li>
+<li>batch time: 根据需求来定的</li>
+</ol>
+<p>影响任务运行时长的要素：</p>
+<ol>
+<li>数据规模(增加kafka分区数==&gt;增加Spark分区==&gt;增加task)</li>
+<li>batch time</li>
+<li>业务复杂度</li>
+</ol>
+<p>kafka限速</p>
+<p><img src="https://yerias.github.io/spark_img/Web_UI_1.jpg" alt=""></p>
+<p>我们看到在设置auto.offset.reset = earliest后，即从头消费，如果累积的数据量特别大，那么在第一次消费的就会撑爆Kafka，必须限制每秒多少条数据</p>
+<table>
+<thead>
+<tr>
+<th>Property Name</th>
+<th>Default</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>spark.streaming.kafka.maxRatePerPartition</code></td>
+<td>not set</td>
+<td>每个Kafka分区读取数据的最大速率</td>
+</tr>
+</tbody></table>
+<p>在设置maxRatePerPartition的值时，数据量=设置的值*分区数*读取时间，加入设置的值为10,分区为3，读取时间为10s，那么每次出来的数据量: 10*3*10=300</p>
+<p><strong>优点</strong></p>
+<ol>
+<li>如果有很多数据量没有处理，并且从头开始，为了防止过载</li>
+<li>高峰期限速，防止Kafka处理能力不够挂掉</li>
+</ol>
+<p><strong>缺点</strong></p>
+<ol>
+<li>是个固定值 ==&gt; 背压(backpressure 1.5版本引入)</li>
+</ol>
+<p>背压(backpressure )，在Spark1.5引入，它可以在运行时根据前一个批次数据的运行情况动态调整后续批次读入的数据量</p>
+<p>打开参数：spark.streaming.backpressure.enabled </p>
+<p>上限参数：spark.streaming.kafka.maxRatePerPartition</p>
+<p>初始参数：spark.streaming.backpressure.initialRate</p>
+<table>
+<thead>
+<tr>
+<th align="left">Property Name</th>
+<th align="left">Default</th>
+<th align="left">Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>spark.streaming.backpressure.enabled</code></td>
+<td align="left">false</td>
+<td align="left">使Spark流能够根据当前的批调度延迟和处理时间来控制接收速率，从而使系统接收的速度只取决于系统能够处理的速度。</td>
+</tr>
+<tr>
+<td align="left"><code>spark.streaming.kafka.maxRatePerPartition</code></td>
+<td align="left">not set</td>
+<td align="left">每个Kafka分区读取数据的最大速率</td>
+</tr>
+<tr>
+<td align="left"><code>spark.streaming.backpressure.initialRate</code></td>
+<td align="left">not set</td>
+<td align="left">启用背压机制时每个接收器接收第一批数据的初始最大接收速率</td>
+</tr>
+</tbody></table>
+<p>到此，Kafka数据量过载的问题完全解决</p>
+<p>最后引入一个关于StreamingContext关闭时的参数</p>
+<table>
+<thead>
+<tr>
+<th>Property Name</th>
+<th>Default</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>spark.streaming.stopGracefullyOnShutdown</code></td>
+<td>false</td>
+<td>如果是“true”，Spark会在JVM关闭时优雅地关闭“StreamingContext”，而不是立即关闭。</td>
+</tr>
+</tbody></table>
+<p>其他调优可参考官网或者<a href="https://blog.csdn.net/Johnson8702/article/details/88944368" target="_blank" rel="noopener">博客</a></p>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2020/05/02/presto/1/">Presto扫盲</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-05-02</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Presto/">Presto</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Presto/">Presto</a></span><div class="content"><h2 id="Presto简介"><a href="#Presto简介" class="headerlink" title="Presto简介"></a>Presto简介</h2><h3 id="不是什么"><a href="#不是什么" class="headerlink" title="不是什么"></a>不是什么</h3><p>虽然Presto可以解析SQL，但它不是一个标准的数据库。不是MySQL、PostgreSQL或者Oracle的代替品，也不能用来处理在线事务（OLTP）</p>
+<h3 id="是什么"><a href="#是什么" class="headerlink" title="是什么"></a>是什么</h3><p>Presto通过使用分布式查询，可以快速高效的完成海量数据的查询。作为Hive和Pig的补充，Presto不仅能访问HDFS，也能访问不同的数据源，包括：RDBMS和其他数据源（如Cassandra）。</p>
+<h3 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h3><p><img src="https://yerias.github.io/presto/20200502161939.jpg" alt=""></p>
+<p>图中各个组件的概念及作用会在下文讲述。</p>
+<h3 id="Presto中SQL运行过程：MapReduce-vs-Presto"><a href="#Presto中SQL运行过程：MapReduce-vs-Presto" class="headerlink" title="Presto中SQL运行过程：MapReduce vs Presto"></a>Presto中SQL运行过程：MapReduce vs Presto</h3><p><img src="https://yerias.github.io/presto/3280890894-5af69697e1249_articlex.png" alt=""></p>
+<p>使用内存计算，减少与硬盘交互。</p>
+<h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
+<li>Presto与hive对比，都能够处理PB级别的海量数据分析，但Presto是基于内存运算，减少没必要的硬盘IO，所以更快。</li>
+<li>能够连接多个数据源，跨数据源连表查，如从hive查询大量网站访问记录，然后从mysql中匹配出设备信息。</li>
+<li>部署也比hive简单，因为hive是基于HDFS的，需要先部署HDFS。</li>
+</ol>
+<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ol>
+<li>虽然能够处理PB级别的海量数据分析，但不是代表Presto把PB级别都放在内存中计算的。而是根据场景，如count，avg等聚合运算，是边读数据边计算，再清内存，再读数据再计算，这种耗的内存并不高。但是连表查，就可能产生大量的临时数据，因此速度会变慢，反而hive此时会更擅长。</li>
+<li>为了达到实时查询，可能会想到用它直连MySQL来操作查询，这效率并不会提升，瓶颈依然在MySQL，此时还引入网络瓶颈，所以会比原本直接操作数据库要慢。</li>
+</ol>
+<h2 id="Presto概念"><a href="#Presto概念" class="headerlink" title="Presto概念"></a>Presto概念</h2><h3 id="服务器类型（Server-Types）"><a href="#服务器类型（Server-Types）" class="headerlink" title="服务器类型（Server Types）"></a>服务器类型（Server Types）</h3><p>Presto有两类服务器：coordinator和worker。</p>
+<h4 id="Coordinator"><a href="#Coordinator" class="headerlink" title="Coordinator"></a>Coordinator</h4><p>Coordinator服务器是用来解析语句，执行计划分析和管理Presto的worker结点。Presto安装必须有一个Coordinator和多个worker。如果用于开发环境和测试，则一个Presto实例可以同时担任这两个角色。</p>
+<p>Coordinator跟踪每个work的活动情况并协调查询语句的执行。 Coordinator为每个查询建立模型，模型包含多个stage，每个stage再转为task分发到不同的worker上执行。</p>
+<p>Coordinator与Worker、client通信是通过REST API。</p>
+<h4 id="Worker"><a href="#Worker" class="headerlink" title="Worker"></a>Worker</h4><p>Worker是负责执行任务和处理数据。Worker从connector获取数据。Worker之间会交换中间数据。Coordinator是负责从Worker获取结果并返回最终结果给client。</p>
+<p>当Worker启动时，会广播自己去发现 Coordinator，并告知 Coordinator它是可用，随时可以接受task。</p>
+<p>Worker与Coordinator、Worker通信是通过REST API。</p>
+<h3 id="数据源"><a href="#数据源" class="headerlink" title="数据源"></a>数据源</h3><p>贯穿全文，你会看到一些术语：connector、catelog、schema和table。这些是Presto特定的数据源</p>
+<h4 id="Connector"><a href="#Connector" class="headerlink" title="Connector"></a>Connector</h4><p>Connector是适配器，用于Presto和数据源（如Hive、RDBMS）的连接。你可以认为类似JDBC那样，但却是Presto的SPI的实现，使用标准的API来与不同的数据源交互。</p>
+<p>Presto有几个内建Connector：JMX的Connector、System Connector（用于访问内建的System table）、Hive的Connector、TPCH（用于TPC-H基准数据）。还有很多第三方的Connector，所以Presto可以访问不同数据源的数据。</p>
+<p>每个catalog都有一个特定的Connector。如果你使用catelog配置文件，你会发现每个文件都必须包含connector.name属性，用于指定catelog管理器（创建特定的Connector使用）。一个或多个catelog用同样的connector是访问同样的数据库。例如，你有两个Hive集群。你可以在一个Presto集群上配置两个catelog，两个catelog都是用Hive Connector，从而达到可以查询两个Hive集群。</p>
+<h4 id="Catelog"><a href="#Catelog" class="headerlink" title="Catelog"></a>Catelog</h4><p>一个Catelog包含Schema和Connector。例如，你配置JMX的catelog，通过JXM Connector访问JXM信息。当你执行一条SQL语句时，可以同时运行在多个catelog。</p>
+<p>Presto处理table时，是通过表的完全限定（fully-qualified）名来找到catelog。例如，一个表的权限定名是hive.test_data.test，则test是表名，test_data是schema，hive是catelog。</p>
+<p>Catelog的定义文件是在Presto的配置目录中。</p>
+<h4 id="Schema"><a href="#Schema" class="headerlink" title="Schema"></a>Schema</h4><p>Schema是用于组织table。把catelog好schema结合在一起来包含一组的表。当通过Presto访问hive或Mysq时，一个schema会同时转为hive和mysql的同等概念。</p>
+<h4 id="Table"><a href="#Table" class="headerlink" title="Table"></a>Table</h4><p>Table跟关系型的表定义一样，但数据和表的映射是交给Connector。</p>
+<h3 id="执行查询的模型（Query-Execution-Model）"><a href="#执行查询的模型（Query-Execution-Model）" class="headerlink" title="执行查询的模型（Query Execution Model）"></a>执行查询的模型（Query Execution Model）</h3><h4 id="语句（Statement）"><a href="#语句（Statement）" class="headerlink" title="语句（Statement）"></a>语句（Statement）</h4><p>Presto执行ANSI兼容的SQL语句。当Presto提起语句时，指的就是ANSI标准的SQL语句，包含着列名、表达式和谓词。</p>
+<p>之所以要把语句和查询分开说，是因为Presto里，语句只是简单的文本SQL语句。而当语句执行时，Presto则会创建查询和分布式查询计划并在Worker上运行。</p>
+<h4 id="查询（Query）"><a href="#查询（Query）" class="headerlink" title="查询（Query）"></a>查询（Query）</h4><p>当Presto解析一个语句时，它将其转换为一个查询，并创建一个分布式查询计划（多个互信连接的stage，运行在Worker上）。如果想获取Presto的查询情况，则获取每个组件（正在执行这语句的结点）的快照。</p>
+<p>查询和语句的区别是，语句是存SQL文本，而查询是配置和实例化的组件。一个查询包含：stage、task、split、connector、其他组件和数据源。</p>
+<h4 id="Stage"><a href="#Stage" class="headerlink" title="Stage"></a>Stage</h4><p>当Presto执行查询时，会将执行拆分为有层次结构的stage。例如，从hive中的10亿行数据中聚合数据，此时会创建一个用于聚合的根stage，用于聚合其他stage的数据。</p>
+<p>层次结构的stage类似一棵树。每个查询都由一个根stage，用于聚合其他stage的数据。stage是Coordinator的分布式查询计划（distributed query plan）的模型，stage不是在worker上运行。</p>
+<h4 id="Task"><a href="#Task" class="headerlink" title="Task"></a>Task</h4><p>由于stage不是在worker上运行。stage又会被分为多个task，在不同的work上执行。<br>Task是Presto结构里是“work horse”。一个分布式查询计划会被拆分为多个stage，并再转为task，然后task就运行或处理split。Task有输入和输出，一个stage可以分为多个并行执行的task，一个task可以分为多个并行执行的driver。</p>
+<h4 id="Split"><a href="#Split" class="headerlink" title="Split"></a>Split</h4><p>Task运行在split上。split是一个大数据集合中的一块。分布式查询计划最底层的stage是通过split从connector上获取数据，分布式查询计划中间层或顶层则是从它们下层的stage获取数据。</p>
+<p>Presto调度查询，coordinator跟踪每个机器运行什么任务，那些split正在被处理。</p>
+<h4 id="Driver"><a href="#Driver" class="headerlink" title="Driver"></a>Driver</h4><p>Task包含一个或多个并行的driver。Driver在数据上处理，并生成输出，然后由Task聚合，最后传送给stage的其他task。一个driver是Operator的序列。driver是Presto最最低层的并行机制。一个driver有一个输出和一个输入。</p>
+<h4 id="Operator"><a href="#Operator" class="headerlink" title="Operator"></a>Operator</h4><p>Operator用来消费，传送和生产数据。如一个Operator从connector中扫表获取数据，然后生产数据给其他Operator消费。一个过滤Operator消费数据，并应用谓词，最后生产出子集数据。</p>
+<h4 id="Exchange"><a href="#Exchange" class="headerlink" title="Exchange"></a>Exchange</h4><p>Exchange在Presto结点的不同stage之间传送数据。Task生产和消费数据是通过Exchange客户端。</p>
+<hr>
+<p>参考：<a href="https://prestodb.io/docs/current/overview/concepts.html" target="_blank" rel="noopener">https://prestodb.io/docs/current/overview/concepts.html</a></p>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2020/04/29/spark/23/">Spark 读写压缩文件的一次简单尝试</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-04-29</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Spark/">Spark</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Spark/">Spark</a></span><div class="content"><h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>我认为以节省存储空间为角度出发，Spark作业中的读写压缩文件是必不可少的话题，当然这在MR作业中也有体现和实际解决这种问题，现在我们就要在Spark中解决这种问题。</p>
+<p>如果需要安装Lzo可以看我的其他<a href="https://yerias.github.io/2018/10/15/hadoop/13/">文章</a></p>
+<p>源文件是一份access的原始数据</p>
+<p><img src="https://yerias.github.io/spark_img/access.log.png" alt=""></p>
+<p>我们在上传到服务器上的时候，使用lzop命令压缩该文件，得到压缩后的文件，上传HDFSF并对该文件创建索引，得到我们代码中需要处理的源文件</p>
+<p><img src="https://yerias.github.io/spark_img/compress-1.png" alt=""></p>
+<p>需要注意的是未压缩的文件是1G，压缩后为314M</p>
+<p>下图是我们想要做的事情</p>
+<p><img src="https://yerias.github.io/spark_img/format%E8%AF%BB%E5%86%99.jpg" alt=""></p>
+<p><strong>各种压缩格式的性能比较</strong></p>
+<table>
+<thead>
+<tr>
+<th>压缩格式</th>
+<th>工具</th>
+<th>算法</th>
+<th>扩展名</th>
+<th>是否支持分割</th>
+<th>Hadoop编码/解码器</th>
+<th>hadoop自带</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>DEFLATE</td>
+<td>N/A</td>
+<td>DEFLATE</td>
+<td>.deflate</td>
+<td>No</td>
+<td>org.apache.hadoop.io.compress.DefalutCodec</td>
+<td>是</td>
+</tr>
+<tr>
+<td>gzip</td>
+<td>gzip</td>
+<td>DEFLATE</td>
+<td>.gz</td>
+<td>No</td>
+<td>org.apache.hadoop.io.compress.GzipCodec</td>
+<td>是</td>
+</tr>
+<tr>
+<td>bzip2</td>
+<td>bzip2</td>
+<td>bzip2</td>
+<td>.bz2</td>
+<td>yes</td>
+<td>org.apache.hadoop.io.compress.Bzip2Codec</td>
+<td>是</td>
+</tr>
+<tr>
+<td>LZO</td>
+<td>Lzop</td>
+<td>LZO</td>
+<td>.lzo</td>
+<td>yes(建索引)</td>
+<td>com.hadoop.compression.lzo.LzoCodec</td>
+<td>是</td>
+</tr>
+<tr>
+<td>LZ4</td>
+<td>N/A</td>
+<td>LZ4</td>
+<td>.lz4</td>
+<td>No</td>
+<td>org.apache.hadoop.io.compress.Lz4Codec</td>
+<td>否</td>
+</tr>
+<tr>
+<td>Snappy</td>
+<td>N/A</td>
+<td>Snappy</td>
+<td>.snappy</td>
+<td>No</td>
+<td>org.apache.hadoop.io.compress.SnappyCodec</td>
+<td>否</td>
+</tr>
+</tbody></table>
+<p>压缩比：Snappy&lt;LZ4&lt;LZO&lt;GZIP&lt;BZIP2</p>
+<p><strong>各种压缩格式的性能优缺点</strong></p>
+<table>
+<thead>
+<tr>
+<th>压缩格式</th>
+<th>特点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>lzo</td>
+<td>优点：压缩比在四种压缩方式中较高；hadoop本身支持，在应用中处理gzip格式的文件就和直接处理文本一样；有hadoop native库；大部分linux系统都自带gzip命令，使用方便<br/>缺点：不支持split</td>
+</tr>
+<tr>
+<td>snappy</td>
+<td>优点：压缩/解压速度也比较快，合理的压缩率；支持split，是hadoop中最流行的压缩格式；支持hadoop native库；需要在linux系统下自行安装lzop命令，使用方便<br/>缺点：压缩率比gzip要低；hadoop本身不支持，需要安装；lzo虽然支持split，但需要对lzo文件建索引，否则hadoop也是会把lzo文件看成一个普通文件（为了支持split需要建索引，需要指定inputformat为lzo格式）</td>
+</tr>
+<tr>
+<td>gzip</td>
+<td>优点：压缩速度快；支持hadoop native库<br/>缺点：不支持split；压缩比低；hadoop本身不支持，需要安装；linux系统下没有对应的命令</td>
+</tr>
+<tr>
+<td>bzip2</td>
+<td>优点：支持split；具有很高的压缩率，比gzip压缩率都高；hadoop本身支持，但不支持native；在linux系统下自带bzip2命令，使用方便<br/>缺点：压缩/解压速度慢；不支持native</td>
+</tr>
+</tbody></table>
+<h3 id="读LZO文件写HDFS"><a href="#读LZO文件写HDFS" class="headerlink" title="读LZO文件写HDFS"></a>读LZO文件写HDFS</h3><p>需要注意的是在Spark中读取HDFS上的压缩文件，需要使用newAPIHadoopFile接口，并且传入LzoTextInputFormat，这个依赖不好解决，仓库是twitter的，下载不了，最好的办法是去github下载源码，install到本地</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.hadoop.gplcompression<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>hadoop-lzo<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>0.4.20<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>读取文件的具体代码</p>
+<figure class="highlight scala"><table><tr><td class="code"><pre><span class="line"><span class="keyword">val</span> linesRDD: <span class="type">RDD</span>[<span class="type">String</span>] = sc.newAPIHadoopFile(in, classOf[<span class="type">LzoTextInputFormat</span>], classOf[<span class="type">LongWritable</span>], classOf[<span class="type">Text</span>])  .map(x =&gt; x._2.toString)</span><br></pre></td></tr></table></figure>
+
+<p>现在我们已经读进来了，可以实现我们的业务逻辑，那么最后在Spark Core中如何写出去呢? 只需要使用saveAsTextFile</p>
+<figure class="highlight scala"><table><tr><td class="code"><pre><span class="line">etl(linesRDD,hashMap)  .filter(x =&gt; x.responseSize != <span class="number">0</span>).saveAsTextFile(out)</span><br></pre></td></tr></table></figure>
+
+<h3 id="读LZO文件写HDFS也为LZO文件"><a href="#读LZO文件写HDFS也为LZO文件" class="headerlink" title="读LZO文件写HDFS也为LZO文件"></a>读LZO文件写HDFS也为LZO文件</h3><p>读LZO文件上面的方法同样适用，而写为LZO文件只需要在saveAsTextFile中指定LzopCodec即可，适用于所有的格式压缩</p>
+<figure class="highlight scala"><table><tr><td class="code"><pre><span class="line">etl(linesRDD,hashMap)  .filter(x =&gt; x.responseSize != <span class="number">0</span>).saveAsTextFile(out,classOf[<span class="type">LzopCodec</span>])</span><br></pre></td></tr></table></figure>
+
+<h3 id="读LZO文件写MYSQL"><a href="#读LZO文件写MYSQL" class="headerlink" title="读LZO文件写MYSQL"></a>读LZO文件写MYSQL</h3><p>读写表和读写文件不同，读写表更适合用Spark SQL来实现，现在我们的表的字段非常多，不适用于使用tuple的实现方式，从而自定义外部数据源，在TableScan中也是实现与上面相同代码，就能将lzo文件分片读写</p>
+<figure class="highlight scala"><table><tr><td class="code"><pre><span class="line"><span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">buildScan</span></span>(): <span class="type">RDD</span>[<span class="type">Row</span>] = &#123;</span><br><span class="line">    logError(<span class="string">"进入buildScan方法"</span>)</span><br><span class="line">    <span class="comment">// 使用RDD拿到Lzo本文内容</span></span><br><span class="line">    <span class="keyword">val</span> lines = sqlContext.sparkContext.newAPIHadoopFile(path, classOf[<span class="type">LzoTextInputFormat</span>], classOf[<span class="type">LongWritable</span>], classOf[<span class="type">Text</span>])</span><br><span class="line">    .map(_._2.toString)</span><br><span class="line">    <span class="comment">// 拿到响应的schema信息</span></span><br><span class="line">    <span class="keyword">val</span> fields = schema.fields</span><br><span class="line">    <span class="comment">// 拿到每行数据，做简单处理，返回RDD[Row]</span></span><br><span class="line">    lines.map(_.split(<span class="string">","</span>).map(_.trim)).map(_.zipWithIndex.map &#123;</span><br><span class="line">        <span class="keyword">case</span> (value, index) =&gt;</span><br><span class="line">        <span class="type">Utils</span>.caseTo(value, fields(index).dataType)</span><br><span class="line">    &#125;).map(x =&gt; <span class="type">Row</span>.fromSeq(x))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我在这里尝试了压缩写和普通写，都可以查询到数据</p>
+<figure class="highlight scala"><table><tr><td class="code"><pre><span class="line"><span class="keyword">val</span> properties = <span class="keyword">new</span> <span class="type">Properties</span>()</span><br><span class="line">        properties.put(<span class="string">"user"</span>,<span class="string">"root"</span>)</span><br><span class="line">        properties.put(<span class="string">"password"</span>,<span class="string">"root"</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">val</span> url = <span class="string">"jdbc:mysql://hadoop:3306/tunan?useUnicode=true&amp;characterEncoding=utf-8"</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (!flat)&#123;</span><br><span class="line">            <span class="comment">// 保存到MySQL</span></span><br><span class="line">            result.write.mode(<span class="type">SaveMode</span>.<span class="type">Overwrite</span>)</span><br><span class="line">              .jdbc(url,<span class="string">"domain_group"</span>,properties)</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            <span class="comment">// 保存到MySQL,压缩格式为lzo</span></span><br><span class="line">            result.write.format(<span class="string">"orc"</span>).option(<span class="string">"compression"</span>,<span class="string">"lzo"</span>).mode(<span class="string">"overwrite"</span>)</span><br><span class="line">              .jdbc(url,<span class="string">"domain_group"</span>,properties)</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+
+<p>查询：</p>
+<p><img src="https://yerias.github.io/spark_img/compress-2.png" alt=""></p>
+<h3 id="读LZO文件写HIVE"><a href="#读LZO文件写HIVE" class="headerlink" title="读LZO文件写HIVE"></a>读LZO文件写HIVE</h3><p>读的方式也是一样的，使用外部数据源的方式直接得到DataFrame，在写的时候指定了存储格式，而不指定压缩格式的话，会默认指定压缩格式为Snappy</p>
+<figure class="highlight scala"><table><tr><td class="code"><pre><span class="line">textDf.write.format(<span class="string">"parquet"</span>).mode(<span class="string">"overwrite"</span>).saveAsTable(<span class="string">"store_format.parquet_tb"</span>)</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://yerias.github.io/spark_img/compress-3.png" alt=""></p>
+<h3 id="读LZO文件压缩写HIVE"><a href="#读LZO文件压缩写HIVE" class="headerlink" title="读LZO文件压缩写HIVE"></a>读LZO文件压缩写HIVE</h3><p>读Lzo的方式如上，在这里我们尝试了几种格式的压缩写</p>
+<ol>
+<li><p>指定了存储格式为parquet，压缩格式为lzo</p>
+<figure class="highlight scala"><table><tr><td class="code"><pre><span class="line">textDf.write.format(<span class="string">"parquet"</span>).option(<span class="string">"compression"</span>,<span class="string">"lzo"</span>).mode(<span class="string">"overwrite"</span>).saveAsTable(<span class="string">"store_format.parquet_tb"</span>)</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://yerias.github.io/spark_img/compress-4.png" alt=""></p>
+<p>可以看得到压缩格式和存储格式发生了变化，我们继续查表</p>
+<p><img src="https://yerias.github.io/spark_img/compress-5.png" alt=""></p>
+</li>
+<li><p>现在我们将压缩格式改为orc，存储格式还是使用lzo</p>
+<figure class="highlight scala"><table><tr><td class="code"><pre><span class="line">textDf.write.format(<span class="string">"orc"</span>).option(<span class="string">"compression"</span>,<span class="string">"lzo"</span>).mode(<span class="string">"overwrite"</span>).saveAsTable(<span class="string">"store_format.parquet_tb"</span>)</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://yerias.github.io/spark_img/compress-6.png" alt=""></p>
+<p>我们发现orc和lzo格式并不能一起使用，查出来的是无效的结果</p>
+</li>
+<li><p>继续使用压缩格式为orc，存储格式改为snappy</p>
+<figure class="highlight scala"><table><tr><td class="code"><pre><span class="line">textDf.write.format(<span class="string">"orc"</span>).option(<span class="string">"compression"</span>,<span class="string">"snappy"</span>).mode(<span class="string">"overwrite"</span>).saveAsTable(<span class="string">"store_format.parquet_tb"</span>)</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://yerias.github.io/spark_img/compress-7.png" alt=""></p>
+<p>查询结果：</p>
+<p><img src="https://yerias.github.io/spark_img/compress-5.png" alt=""></p>
+</li>
+</ol>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><ol>
+<li>使用Lzo压缩的压缩比相比于Snappy较高</li>
+<li>无论哪种压缩格式在MySQL中都是无效的</li>
+<li>Parquet可以和Snappy或者Lzo搭配使用，ORC可以和Snappy或者Bzip搭配使用</li>
+<li>ORC不能和Lzo搭配使用</li>
+</ol>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2020/04/29/kafka/3/">kafka eagle安装部署</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-04-29</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Kakfa/">Kakfa</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Kakfa/">Kakfa</a></span><div class="content"><h5 id="1-kafka-zookeeper准备"><a href="#1-kafka-zookeeper准备" class="headerlink" title="1.kafka+zookeeper准备"></a>1.kafka+zookeeper准备</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">这里假设你已经把kafka+zookeeper安装完成，但是需要注意的几点是：</span><br><span class="line">1.kafka需要开启JMX端口</span><br><span class="line">    找到kafka安装路径，进入到bin文件夹，修改下面的地方。</span><br><span class="line">    vi kafka-server-start.sh</span><br><span class="line">...</span><br><span class="line"><span class="keyword">if</span> [ <span class="string">"x<span class="variable">$KAFKA_HEAP_OPTS</span>"</span> = <span class="string">"x"</span> ]; <span class="keyword">then</span></span><br><span class="line">    <span class="built_in">export</span> KAFKA_HEAP_OPTS=<span class="string">"-server -Xms2G -Xmx2G -XX:PermSize=128m -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -XX:ParallelGCThreads=8 -XX:ConcGCThreads=5 -XX:InitiatingHeapOccupancyPercent=70"</span></span><br><span class="line">    <span class="built_in">export</span> JMX_PORT=<span class="string">"9999"</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line">...</span><br><span class="line">    参考链接：[kafka添加jmx端口]:https://ke.smartloli.org/3.Manuals/11.Metrics.html</span><br><span class="line"></span><br><span class="line">2.了解kafka在zookeeper配置</span><br><span class="line">    需要查看kafka的server.properties配置</span><br><span class="line">    找到zookeeper.connect此项配置，这个是要配置到eagle里面的</span><br><span class="line">    此处假设zookeeper.connect=192.168.18.11:2181,192.168.18.12:2181,192.168.18.13:2181</span><br><span class="line">    ！！！PS:此处踩了坑，如果说这里的zookeeper地址后面加了其他路径，在kafka-eagle里面也要配置，</span><br><span class="line">    否则在kafka-eagle的Dashboard中无法读取到kafka的信息。比如我们有人安装的kafka集群里面就有    </span><br><span class="line">    192.168.18.11:2181/kafka1或者192.168.18.11:2181/kafka2这种地址。</span><br><span class="line">    如果你在安装kafka的时候没有配置多余路径，这样是最好的，如果有一定要加上。</span><br><span class="line">3.连通性测试</span><br><span class="line">  安装kafka-eagle的服务器，一定要提前测试是否能连接kafka注册的zookeeper端口</span><br><span class="line">  telnet 端口进行测试</span><br></pre></td></tr></table></figure>
+
+<h5 id="2-JDK环境准备"><a href="#2-JDK环境准备" class="headerlink" title="2.JDK环境准备"></a>2.JDK环境准备</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">此处就忽略不说了，kafka既然会安装，也是依赖JDK环境的。版本没要求，但是最好是1.7以上。</span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$JAVA_HOME</span></span><br><span class="line">测试一下JDK环境是否安装成功</span><br></pre></td></tr></table></figure>
+
+<h5 id="3-开始安装kafka-eagle"><a href="#3-开始安装kafka-eagle" class="headerlink" title="3.开始安装kafka-eagle"></a>3.开始安装kafka-eagle</h5><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">1.下载安装包</span><br><span class="line">软件安装目录建议按照自己的规范来，以后好找</span><br><span class="line"><span class="built_in">cd</span> /tmp</span><br><span class="line">wget https://github.com/smartloli/kafka-eagle-bin/archive/v1.2.2.tar.gz</span><br><span class="line">tar zxf v1.2.2.tar.gz</span><br><span class="line"><span class="built_in">cd</span> kafka-eagle-bin-1.2.2</span><br><span class="line">tar zxf kafka-eagle-web-1.2.2-bin.tar.gz -C /data/app/</span><br><span class="line"><span class="built_in">cd</span> /data/app</span><br><span class="line">mv kafka-eagle-web-1.2.2 kafka-eagle</span><br><span class="line"></span><br><span class="line">2.环境配置</span><br><span class="line">vi /etc/profile</span><br><span class="line"><span class="built_in">export</span> KE_HOME=/data/app/kafka-eagle</span><br><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$PATH</span>:<span class="variable">$KE_HOME</span>/bin</span><br><span class="line">ps:此处的KE_HOME按照自己实际安装的目录来，我安装在/data/app/kafka-eagle下面</span><br><span class="line">如果你是安装的其他目录，别忘了修改。</span><br><span class="line"></span><br><span class="line">3.配置修改</span><br><span class="line"><span class="built_in">cd</span> <span class="variable">$&#123;KE_HOME&#125;</span>/conf</span><br><span class="line">vi system-config.properties</span><br><span class="line"></span><br><span class="line"><span class="comment"># multi zookeeper&amp;kafka cluster list -- The client connection address of the Zookeeper cluster is set here</span></span><br><span class="line"><span class="comment">#如果只有一个集群的话，就写一个cluster1就行了</span></span><br><span class="line">kafka.eagle.zk.cluster.alias=cluster1,cluster2   </span><br><span class="line"><span class="comment">#这里填上刚才上准备工作中的zookeeper.connect地址</span></span><br><span class="line">cluster1.zk.list=192.168.18.11:2181,192.168.18.12:2181,192.168.18.13:2181</span><br><span class="line"><span class="comment">#如果多个集群，继续写，如果没有注释掉</span></span><br><span class="line">cluster2.zk.list=192.168.18.21:2181,192.168.18.22:2181,192.168.18.23:2181/kafka </span><br><span class="line"></span><br><span class="line"><span class="comment"># zk limit -- Zookeeper cluster allows the number of clients to connect to</span></span><br><span class="line">kafka.zk.limit.size=25</span><br><span class="line"></span><br><span class="line"><span class="comment"># kafka eagel webui port -- WebConsole port access address</span></span><br><span class="line">kafka.eagle.webui.port=8048     <span class="comment">###web界面地址端口</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># kafka offset storage -- Offset stored in a Kafka cluster, if stored in the zookeeper, you can not use this option</span></span><br><span class="line">kafka.eagle.offset.storage=kafka</span><br><span class="line"></span><br><span class="line"><span class="comment"># delete kafka topic token -- Set to delete the topic token, so that administrators can have the right to delete</span></span><br><span class="line">kafka.eagle.topic.token=keadmin</span><br><span class="line"></span><br><span class="line"><span class="comment"># kafka sasl authenticate, current support SASL_PLAINTEXT</span></span><br><span class="line"><span class="comment">#如果kafka开启了sasl认证，需要在这个地方配置sasl认证文件</span></span><br><span class="line">kafka.eagle.sasl.enable=<span class="literal">false</span></span><br><span class="line">kafka.eagle.sasl.protocol=SASL_PLAINTEXT</span><br><span class="line">kafka.eagle.sasl.mechanism=PLAIN</span><br><span class="line">kafka.eagle.sasl.client=/data/kafka-eagle/conf/kafka_client_jaas.conf</span><br><span class="line"></span><br><span class="line"><span class="comment">#下面两项是配置数据库的，默认使用sqlite，如果量大，建议使用mysql，这里我使用的是sqlit</span></span><br><span class="line"><span class="comment">#如果想使用mysql建议在文末查看官方文档</span></span><br><span class="line"><span class="comment"># Default use sqlite to store data</span></span><br><span class="line">kafka.eagle.driver=org.sqlite.JDBC</span><br><span class="line"><span class="comment"># It is important to note that the '/hadoop/kafka-eagle/db' path must exist.</span></span><br><span class="line">kafka.eagle.url=jdbc:sqlite:/data/app/kafka-eagle/db/ke.db   <span class="comment">#这个地址，按照安装目录进行配置</span></span><br><span class="line">kafka.eagle.username=root</span><br><span class="line">kafka.eagle.password=smartloli</span><br><span class="line"></span><br><span class="line"><span class="comment"># &lt;Optional&gt; set mysql address</span></span><br><span class="line"><span class="comment">#kafka.eagle.driver=com.mysql.jdbc.Driver</span></span><br><span class="line"><span class="comment">#kafka.eagle.url=jdbc:mysql://127.0.0.1:3306/ke?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull</span></span><br><span class="line"><span class="comment">#kafka.eagle.username=root</span></span><br><span class="line"><span class="comment">#kafka.eagle.password=smartloli</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">如果开启了sasl认证，需要自己去修改kafka-eagle目录下的conf/kafka_client_jaas.conf</span><br><span class="line">此处不多说</span><br></pre></td></tr></table></figure>
+
+<h5 id="4-启动kafka-eagle"><a href="#4-启动kafka-eagle" class="headerlink" title="4.启动kafka-eagle"></a>4.启动kafka-eagle</h5><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">cd $&#123;KE_HOME&#125;/bin</span><br><span class="line">chmod +x ke.sh</span><br><span class="line">./ke.sh start</span><br><span class="line">查看日志是否出问题</span><br><span class="line">tailf ../<span class="built_in">log</span>/<span class="built_in">log</span>.<span class="built_in">log</span></span><br><span class="line">如果没问题，则直接登录</span><br><span class="line">http:<span class="comment">//host:8048/ke</span></span><br><span class="line">默认用户名:admin</span><br><span class="line">默认密码:<span class="number">12345</span></span><br><span class="line">如果进入到一下界面，就说明你安装成功了！</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://yerias.github.io/kafka/eagle.jpg" alt="eagle"></p>
+<h5 id="5-问题汇总"><a href="#5-问题汇总" class="headerlink" title="5.问题汇总"></a>5.问题汇总</h5><ol>
+<li><p>ZKPoolUtils.localhost-startStop-1 - ERROR - Unable to connect to zookeeper server within timeout: 100000</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">这个是网络问题，在kafka-eagle服务器上自己测试一下能否能telnet通配置的zk地址。</span><br><span class="line">cat system-config.properties|grep cluster1.zk.<span class="built_in">list</span></span><br><span class="line">测试这个配置的端口</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>ERROR - Get kafka consumer has error,msg is No resolvable bootstrap urls given in bootstrap.servers</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">这个问题是配置的zk地址有问题，看看kafka配置的zk地址</span><br><span class="line">跟自己在eagle上配置的地址是否相同，有没有少目录或者端口配置。</span><br><span class="line">可以看看文章开头，kafka+zookeeper准备-了解kafka在zookeeper配置</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>zookeeper state changed (AuthFailed)</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line">这个问题有两种情况</span><br><span class="line">1.认证的问题，确认你配置的认证文件是否正确</span><br><span class="line">2<span class="selector-class">.zk</span>地址问题，看看<span class="selector-tag">kafka</span>配置的<span class="selector-tag">zk</span>地址，跟自己在<span class="selector-tag">eagle</span>上配置的地址是否相同</span><br><span class="line">可以看看文章开头，<span class="selector-tag">kafka</span>+<span class="selector-tag">zookeeper</span>准备<span class="selector-tag">-</span>了解<span class="selector-tag">kafka</span>在<span class="selector-tag">zookeeper</span>配置</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h5 id="6-kafka-eagle使用"><a href="#6-kafka-eagle使用" class="headerlink" title="6.kafka-eagle使用"></a>6.kafka-eagle使用</h5><p>kafka-eagle官方文档: <a href="https://ke.smartloli.org/2.Install/2.Installing.html" target="_blank" rel="noopener">https://ke.smartloli.org/2.Install/2.Installing.html</a></p>
+<p>kafka-eagle下载地址: <a href="http://download.smartloli.org/" target="_blank" rel="noopener">http://download.smartloli.org/</a></p>
+<p>kafka-eagle git地址: <a href="https://github.com/smartloli/kafka-eagle" target="_blank" rel="noopener">https://github.com/smartloli/kafka-eagle</a></p>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2020/04/28/error/8/">FileNotFountException: file:/home/hadoop/lib/tunan-spark-core-1.0.jar!/ip2region.db</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-04-28</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Error/">Error</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Error/">Error</a></span><div class="content"><p>以后看到标题这种Error，先别管其他的，首先看看代码中有没有把Master注释掉，不然jar包中的文件永远到不了服务器的环境中去，就算把文件在服务器上的路径写死都没用。</p>
+<p>由于Spark不会自动清理–files和–jars传到服务器中的文件，因此只要我们传上去的jar包运行通一次，后面不管代码中有没有指定Master，都能找到服务器中的文件。</p>
+<p>报错图示1：</p>
+<p><img src="https://yerias.github.io/error/notfount1.png" alt="notfount1"></p>
+<p>报错图示2：</p>
+<p><img src="https://yerias.github.io/error/notfount2.png" alt="notfount2"></p>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2020/04/27/error/7/">error: object hadoop is not a member of packee com</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-04-27</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Error/">Error</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Error/">Error</a></span><div class="content"><p>这个问题是在Spark读取Lzo压缩文件的时候碰见的，Spark读取Lzo压缩文件的时候，就算文件添加了索引，也不能分片，原因是要在获取文件的时候使用newAPIHadoopFile算子读取文件获取rdd</p>
+<figure class="highlight scala"><table><tr><td class="code"><pre><span class="line"><span class="keyword">val</span> rdd = sc.newAPIHadoopFile(in, classOf[<span class="type">LzoTextInputFormat</span>], classOf[<span class="type">LongWritable</span>],</span><br><span class="line">                              classOf[<span class="type">Text</span>]).map(x =&gt; x._2.toString)</span><br></pre></td></tr></table></figure>
+
+<p>而这里最重要的就是LzoTextInputFormat类，这个类是Twitter的，但是添加了Twitter<a href="https://maven.twttr.com/" target="_blank" rel="noopener">仓库</a>后，能进仓库，但是不能下载，最后向朋友要了jar包，关键在于只给了我hadoop-lzo-0.4.20.jar，我通过添加外部依赖的方式，加到了项目里，运行的时候就报了error: object hadoop is not a member of packee com的错误</p>
+<p><img src="E:%5Chexo%5Cyeriasblog%5Cthemes%5Cmelody%5Csource%5Cerror%5Chadoop-lzo.png" alt="hadoop-lzo"></p>
+<p>其原因是只有jar包，没有pom文件，最后将jar包和pom文件一起放入maven仓库中，解决问题</p>
+<hr>
+<p><strong>终极解决办法是在github上下载源码，通过编译maven install到本地仓库</strong></p>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2020/04/26/%E7%BF%BB%E8%AF%91/2/">Introducing Window Functions in Spark SQL</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-04-26</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/%E5%8E%9F%E6%96%87%E7%BF%BB%E8%AF%91/">原文翻译</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/%E5%8E%9F%E6%96%87%E7%BF%BB%E8%AF%91/">原文翻译</a></span><div class="content"><p>原文：<a href="https://databricks.com/blog/2015/07/15/introducing-window-functions-in-spark-sql.html" target="_blank" rel="noopener">https://databricks.com/blog/2015/07/15/introducing-window-functions-in-spark-sql.html</a></p>
+<hr>
+<p>在这篇博客文章中，我们将介绍Apache Spark 1.4中添加的新窗口函数特性。窗口函数允许Spark SQL的用户计算结果，比如给定行的秩或输入行的范围内的移动平均值。它们显著提高了Spark的SQL和DataFrame api的表达能力。本博客将首先介绍窗口函数的概念，然后讨论如何与Spark SQL和Spark的DataFrame API一起使用它们。</p>
+<h2 id="什么是窗口函数"><a href="#什么是窗口函数" class="headerlink" title="什么是窗口函数?"></a>什么是窗口函数?</h2><p>在1.4之前，Spark SQL支持两种函数，可用于计算单个返回值。内置函数或udf(如substr或round)将单个行中的值作为输入，并为每个输入行生成单个返回值。聚合函数(如SUM或MAX)对一组行进行操作，并为每个组计算单个返回值。</p>
+<p>虽然这两种方法在实践中都非常有用，但是仍然有大量的操作不能单独使用这些类型的函数来表示。具体来说，无法同时对一组行进行操作，同时仍然为每个输入行返回一个值。这种限制使得执行各种数据处理任务(如计算移动平均值、计算累计和或访问当前行之前的行值)变得非常困难。幸运的是，对于Spark SQL的用户来说，窗口函数填补了这一空白。</p>
+<p>在其核心，一个窗口函数根据一组行(称为Frame)为表的每个输入行计算一个返回值。每个输入行都可以有一个与之关联的唯一frame。窗口函数的这种特性使它们比其他函数更强大，并允许用户以简洁的方式表达各种数据处理任务，而这些任务如果没有窗口函数是很难(如果不是不可能)表达的。现在，让我们看两个例子。</p>
+<p>假设我们有一个如下所示的productRevenue表。</p>
+<p><img src="https://yerias.github.io/%E7%BF%BB%E8%AF%91/1-1.png" alt="1-1"></p>
+<p>我们想回答两个问题:</p>
+<ol>
+<li><p>每一类中最畅销和第二畅销的产品是什么(<strong>分组top n</strong>)?</p>
+</li>
+<li><p>每种产品的收入和同类产品中最畅销的产品的收入有什么不同(<strong>最大值 - 当前值</strong>)?</p>
+</li>
+</ol>
+<p>回答第一个问题“在每个类别中，最畅销和第二畅销的产品是什么?”，我们需要根据产品的收入对其进行分类，并根据排名选择最畅销和第二畅销的产品。下面是通过使用窗口函数dense_rank来回答这个问题的SQL查询(我们将在下一节中解释使用窗口函数的语法)。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span></span><br><span class="line">  product,</span><br><span class="line">  <span class="keyword">category</span>,</span><br><span class="line">  revenue</span><br><span class="line"><span class="keyword">FROM</span> (</span><br><span class="line">    <span class="keyword">SELECT</span></span><br><span class="line">        product,</span><br><span class="line">        <span class="keyword">category</span>,</span><br><span class="line">        revenue,</span><br><span class="line">        <span class="keyword">dense_rank</span>() <span class="keyword">OVER</span> (<span class="keyword">PARTITION</span> <span class="keyword">BY</span> <span class="keyword">category</span> <span class="keyword">ORDER</span> <span class="keyword">BY</span> revenue <span class="keyword">DESC</span>) <span class="keyword">as</span> <span class="keyword">rank</span></span><br><span class="line">    <span class="keyword">FROM</span> productRevenue) tmp</span><br><span class="line"><span class="keyword">WHERE</span></span><br><span class="line">  <span class="keyword">rank</span> &lt;= <span class="number">2</span></span><br></pre></td></tr></table></figure>
+
+<p>这个查询的结果如下所示。如果不使用窗口函数，就很难用SQL表达查询，即使可以表达SQL查询，底层引擎也很难有效地评估查询。</p>
+<p><img src="https://yerias.github.io/%E7%BF%BB%E8%AF%91/1-2.png" alt="1-2"></p>
+<p>对于第二个问题，“每种产品的收入与同类产品中最畅销的产品的收入有什么不同?”，要计算一个产品的收入差异，我们需要找到每个产品在相同类别下的最高收入价值。下面是一个用于回答这个问题的Python DataFrame程序(<strong>python代码不重要，看思路</strong>)。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">from</span> pyspark.sql.window <span class="keyword">import</span> Window</span><br><span class="line"><span class="keyword">import</span> pyspark.sql.functions <span class="keyword">as</span> func</span><br><span class="line">windowSpec = \</span><br><span class="line">  Window 		<span class="comment"># 定义开窗函数</span></span><br><span class="line">    .partitionBy(df[<span class="string">'category'</span>]) \   <span class="comment"># 分组</span></span><br><span class="line">    .orderBy(df[<span class="string">'revenue'</span>].desc()) \	<span class="comment"># 排序</span></span><br><span class="line">    .rangeBetween(-sys.maxsize, sys.maxsize)  <span class="comment"># 拿到最大值</span></span><br><span class="line">dataFrame = sqlContext.table(<span class="string">"productRevenue"</span>) <span class="comment"># 拿到表</span></span><br><span class="line">revenue_difference = \</span><br><span class="line">  (func.max(dataFrame[<span class="string">'revenue'</span>]).over(windowSpec) - dataFrame[<span class="string">'revenue'</span>]) <span class="comment"># 使用开窗函数</span></span><br><span class="line">dataFrame.select(     <span class="comment"># 查询</span></span><br><span class="line">  dataFrame[<span class="string">'product'</span>],</span><br><span class="line">  dataFrame[<span class="string">'category'</span>],</span><br><span class="line">  dataFrame[<span class="string">'revenue'</span>],</span><br><span class="line">  revenue_difference.alias(<span class="string">"revenue_difference"</span>))   <span class="comment"># 给个别名</span></span><br></pre></td></tr></table></figure>
+
+<p>这个程序的结果如下所示。在不使用窗口函数的情况下，用户必须找到所有类别的所有最高收入值，然后将这个派生的数据集与原始的productRevenue表连接起来，以计算收入差异。</p>
+<p><img src="https://yerias.github.io/%E7%BF%BB%E8%AF%91/1-3.png" alt="1-3"></p>
+<h2 id="使用窗口函数"><a href="#使用窗口函数" class="headerlink" title="使用窗口函数"></a>使用窗口函数</h2><p>Spark SQL支持三种窗口函数:排序函数、分析函数和聚合函数。可用的排序函数和分析函数总结如下表所示。对于聚合函数，用户可以使用任何现有的聚合函数作为窗口函数。</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th><strong>SQL</strong></th>
+<th><strong>DataFrame API</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Ranking functions</strong></td>
+<td>rank</td>
+<td>rank</td>
+</tr>
+<tr>
+<td></td>
+<td>dense_rank</td>
+<td>denseRank</td>
+</tr>
+<tr>
+<td></td>
+<td>percent_rank</td>
+<td>percentRank</td>
+</tr>
+<tr>
+<td></td>
+<td>ntile</td>
+<td>ntile</td>
+</tr>
+<tr>
+<td></td>
+<td>row_number</td>
+<td>rowNumber</td>
+</tr>
+<tr>
+<td><strong>Analytic functions</strong></td>
+<td>cume_dist</td>
+<td>cumeDist</td>
+</tr>
+<tr>
+<td></td>
+<td>first_value</td>
+<td>firstValue</td>
+</tr>
+<tr>
+<td></td>
+<td>last_value</td>
+<td>lastValue</td>
+</tr>
+<tr>
+<td></td>
+<td>lag</td>
+<td>lag</td>
+</tr>
+<tr>
+<td></td>
+<td>lead</td>
+<td>lead</td>
+</tr>
+</tbody></table>
+<p>要使用窗口函数，用户需要标记一个函数被任意一方用作窗口函数</p>
+<ol>
+<li>在SQL中支持的函数后添加OVER子句，例如<code>avg(revenue) OVER (...)</code>; </li>
+<li>调用DataFrame API中支持的函数上的over方法，例如<code>rank().over(...)</code></li>
+</ol>
+<p>一旦一个函数被标记为一个窗口函数，下一个关键步骤就是定义与这个函数相关的窗口规范。窗口规范定义在与给定输入行关联的frame中包含哪些行。一个窗口规范包括三个部分:</p>
+<ul>
+<li><p>分区规范:控制哪些行将与给定行位于同一分区中。此外，在订购和计算frame之前，用户可能希望确保将category列具有相同值的所有行收集到相同的机器上。如果没有给出分区规范，那么所有数据必须收集到一台机器上。</p>
+</li>
+<li><p>排序规范:控制分区中的行排序的方式，确定给定行在其分区中的位置。</p>
+</li>
+<li><p>Frame规范:根据当前输入行的相对位置，声明当前输入行的frame中包含哪些行。例如，“当前行之前的三行到当前行”描述了一个frame，其中包括当前输入行和出现在当前行之前的三行。</p>
+</li>
+</ul>
+<p>在SQL中， <code>PARTITION BY</code> 和 <code>ORDER BY</code> 关键字分别用于为分区规范指定分区表达式和为排序规范指定排序表达式。SQL语法如下所示。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">OVER (PARTITION BY ... ORDER BY ...)</span><br></pre></td></tr></table></figure>
+
+<p>在DataFrame API中，我们提供了实用程序函数来定义窗口规范。以Python为例，用户可以按如下方式指定分区表达式和排序表达式。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pyspark.sql.window <span class="keyword">import</span> Window</span><br><span class="line">windowSpec = \</span><br><span class="line">  Window \	<span class="comment"># 定义窗口</span></span><br><span class="line">    .partitionBy(...) \  <span class="comment"># 分区</span></span><br><span class="line">    .orderBy(...)  <span class="comment"># 排序</span></span><br></pre></td></tr></table></figure>
+
+<p>除了排序和分区之外，用户还需要定义frame的开始边界、frame的结束边界和frame的类型，这是frame规范的三个组成部分。</p>
+<p>边界有<code>UNBOUNDED PRECEDING</code>, <code>UNBOUNDED FOLLOWING</code>, <code>CURRENT ROW</code>, <code>PRECEDING</code>,和<code>&lt;value&gt; FOLLOWING</code>五种类型。 <code>&lt;value&gt; FOLLOWING</code>. <code>UNBOUNDED PRECEDING</code> and <code>UNBOUNDED FOLLOWING</code>分别表示分区的第一行和最后一行。对于其他三种类型的边界，它们指定当前输入行的位置偏移量，并根据框架的类型定义它们的特定含义。有两种类型的frame，<em>ROW</em> frame 和<em>RANGE</em> frame.</p>
+<h3 id="ROW-frame"><a href="#ROW-frame" class="headerlink" title="ROW frame"></a>ROW frame</h3><p>ROW frame是基于当前输入行位置的物理偏移量，也就是说<code>CURRENT ROW</code>, <code>&lt;value&gt; PRECEDING</code>, or <code>&lt;value&gt; FOLLOWING</code>指定物理偏移.如果使用<code>CURRENT ROW</code>作为边界，它表示当前输入行。 <code>PRECEDING</code> and <code>FOLLOWING</code>分别描述当前输入行之前和之后出现的行数。</p>
+<p>下图演示了一个行frame， <code>1 PRECEDING</code>作为开始边界， <code>1 FOLLOWING</code> 作为结束边界(在SQL中表现为<code>ROWS BETWEEN 1 PRECEDING AND 1 FOLLOWING</code>)</p>
+<p><img src="https://yerias.github.io/%E7%BF%BB%E8%AF%91/2-1-1024x338.png" alt="2-1-1024x338"></p>
+<h3 id="RANGE-frame"><a href="#RANGE-frame" class="headerlink" title="RANGE frame"></a>RANGE frame</h3><p>RANGE frames基于当前输入行位置的逻辑偏移量，语法与ROW frame类似。逻辑偏移量是当前输入行的排序表达式的值与frame的边界行相同表达式的值之间的差。由于这个定义，当使用RANGE frame时，只允许一个排序表达式。此外，对于RANGE frame，对于边界计算而言，具有与当前输入行相同的排序表达式值的所有行都被认为是相同的行。</p>
+<p>现在，让我们看一个例子。在本例中，排序表达式是revenue;开始边界是 <code>2000 PRECEDING</code>;结束边界是<code>1000 FOLLOWING</code>，(这个frame被在SQL中被定义为<code>RANGE BETWEEN 2000 PRECEDING AND 1000 FOLLOWING</code>)，下面的五幅图说明了如何使用当前输入行的更新来更新frame。基本上，对于每一个当前的输入行，基于收入值，我们计算收入范围<code>[current revenue value - 2000, current revenue value + 1000]</code>。收入值在此范围内的所有行都位于当前输入行的frame中。</p>
+<p><img src="https://yerias.github.io/%E7%BF%BB%E8%AF%91/2-2-1024x369.png" alt="2-2-1024x369"></p>
+<p><img src="https://yerias.github.io/%E7%BF%BB%E8%AF%91/2-3-1024x263.png" alt="2-3-1024x263"></p>
+<p><img src="https://yerias.github.io/%E7%BF%BB%E8%AF%91/2-4-1024x263.png" alt="2-4-1024x263"></p>
+<p><img src="https://yerias.github.io/%E7%BF%BB%E8%AF%91/2-5-1024x263.png" alt="2-5-1024x263"></p>
+<p><img src="https://yerias.github.io/%E7%BF%BB%E8%AF%91/2-6-1024x263.png" alt="2-6-1024x263"></p>
+<p>总之，要定义窗口规范，用户可以在SQL中使用以下语法。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">OVER (PARTITION BY ... ORDER BY ... frame_type BETWEEN <span class="keyword">start</span> <span class="keyword">AND</span> <span class="keyword">end</span>)</span><br></pre></td></tr></table></figure>
+
+<p>在这里，<code>frame_type</code>可以是行(对于ROW frame)或范围(对于 RANGE frame);</p>
+<p>都可以使用 <code>UNBOUNDED PRECEDING</code>, <code>CURRENT ROW</code>, <code>&lt;value&gt; PRECEDING</code>, and <code>&lt;value&gt; FOLLOWING</code>其中的任意一个作为开始;  <code>UNBOUNDED FOLLOWING</code>, <code>CURRENT ROW</code>, <code>&lt;value&gt; PRECEDING</code>, and<code>&lt;value&gt; FOLLOWING</code>其中的任意一个作为结束.</p>
+<p>在Python DataFrame API中，用户可以定义如下的窗口规范。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pyspark.sql.window <span class="keyword">import</span> Window</span><br><span class="line"><span class="comment"># Defines partitioning specification and ordering specification.</span></span><br><span class="line">windowSpec = \</span><br><span class="line">  Window \</span><br><span class="line">    .partitionBy(...) \</span><br><span class="line">    .orderBy(...)</span><br><span class="line"><span class="comment"># Defines a Window Specification with a ROW frame.</span></span><br><span class="line">windowSpec.rowsBetween(start, end)</span><br><span class="line"><span class="comment"># Defines a Window Specification with a RANGE frame.</span></span><br><span class="line">windowSpec.rangeBetween(start, end)</span><br></pre></td></tr></table></figure></div><hr></div><nav id="pagination"><div class="pagination"><span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/13/">13</a><a class="extend next" rel="next" href="/page/2/">&gt;&gt;</a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By Tunan</div><div class="framework-info"><span>Driven - </span><a href="#"><span>Hexo</span></a><span class="footer-separator">|</span><span>Theme - </span><a href="#"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_site_uv"><i class="fa fa-user"></i><span id="busuanzi_value_site_uv"></span><span></span></span><span class="footer-separator">|</span><span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i><span id="busuanzi_value_site_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.6.1"></script><script src="/js/fancybox.js?version=1.6.1"></script><script src="/js/sidebar.js?version=1.6.1"></script><script src="/js/copy.js?version=1.6.1"></script><script src="/js/fireworks.js?version=1.6.1"></script><script src="/js/transition.js?version=1.6.1"></script><script src="/js/scroll.js?version=1.6.1"></script><script src="/js/head.js?version=1.6.1"></script><script>if(/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
   $('#nav').addClass('is-mobile')
   $('footer').addClass('is-mobile')
-}</script><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">Local search</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="Search for Posts"></div></div></div><hr><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>Powered by</span> <a href="https://github.com/wzpan/hexo-generator-search" target="_blank" rel="noopener" style="color:#49B1F5;">hexo-generator-search</a></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div></body></html>
+}</script></body></html>

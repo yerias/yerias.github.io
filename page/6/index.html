@@ -1,116 +1,842 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="BigData Developer"><meta name="keywords" content="yerias,TUNANのBlog,BigData"><meta name="author" content="Tunan"><meta name="copyright" content="Tunan"><title>感谢若老、J哥、师兄、前辈、同学、朋友、陌生人，在我行走在大数据道路上给我的谆谆教诲，同时此博客仅作为学习笔记存在，严禁任何人以何种理由商用，作者QQ: 971118017 | TUNANのBlog</title><link rel="shortcut icon" href="/melody-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.6.1"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.6.1"><link rel="dns-prefetch" href="https://cdn.staticfile.org"><link rel="dns-prefetch" href="https://cdn.bootcss.com"><link rel="dns-prefetch" href="https://creativecommons.org"><script>var GLOBAL_CONFIG = { 
   root: '/',
   algolia: undefined,
-  localSearch: {"path":"search.xml","languages":{"hits_empty":"We didn't find any results for the search: ${query}"}},
+  localSearch: undefined,
   copy: {
     success: 'Copy successfully',
     error: 'Copy error',
     noSupport: 'The browser does not support'
   }
-} </script></head><body><canvas class="fireworks"></canvas><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="author-info"><div class="author-info__avatar text-center"><img src="/img/xiaoqi.jpg"></div><div class="author-info__name text-center">Tunan</div><div class="author-info__description text-center">BigData Developer</div><div class="follow-button"><a href="#">Follow Me</a></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">Articles</span><span class="pull-right">128</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">Tags</span><span class="pull-right">30</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">Categories</span><span class="pull-right">26</span></a></div><hr><div class="author-info-links"><div class="author-info-links__title text-center">Links</div><a class="author-info-links__name text-center" href="https://hadoop.apache.org/docs/r2.10.0/hadoop-project-dist/hadoop-common/SingleCluster.html" target="_blank" rel="noopener">HADOOP</a><a class="author-info-links__name text-center" href="https://cwiki.apache.org/confluence/display/Hive/" target="_blank" rel="noopener">HIVE</a><a class="author-info-links__name text-center" href="http://archive.cloudera.com/cdh5/cdh/5/" target="_blank" rel="noopener">CDH</a><a class="author-info-links__name text-center" href="http://flume.apache.org/" target="_blank" rel="noopener">FLUME</a><a class="author-info-links__name text-center" href="https://azkaban.github.io/" target="_blank" rel="noopener">AZKABAN</a><a class="author-info-links__name text-center" href="https://www.maxinhong.com/" target="_blank" rel="noopener">叶梨子</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/qingyunzong" target="_blank" rel="noopener">老铁</a><a class="author-info-links__name text-center" href="https://blog.csdn.net/jim8973/" target="_blank" rel="noopener">飞哥</a><a class="author-info-links__name text-center" href="https://vinxikk.github.io/" target="_blank" rel="noopener">vinx</a><a class="author-info-links__name text-center" href="http://dongxicheng.org/" target="_blank" rel="noopener">懂西成</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/xing901022/" target="_blank" rel="noopener">xingoo</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/itboys/tag/" target="_blank" rel="noopener">大葱拌豆腐</a></div></div></div><nav id="nav" style="background-image: url(/img/soroush-golpoor-1497416-unsplash.jpg)"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">TUNANのBlog</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> Search</span></a><a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/categories">Categories</a></span></div><div id="site-info"><div id="site-title">TUNANのBlog</div><div id="site-sub-title">感谢若老、J哥、师兄、前辈、同学、朋友、陌生人，在我行走在大数据道路上给我的谆谆教诲，同时此博客仅作为学习笔记存在，严禁任何人以何种理由商用，作者QQ: 971118017</div><div id="site-social-icons"><a class="social-icon" href="https://github.com/yerias" target="_blank" rel="noopener"><i class="fa-github fa"></i></a><a class="social-icon search"><i class="fa fa-search"></i></a></div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><div class="recent-post-item article-container"><a class="article-title" href="/2020/03/09/hue/1/">HUE安装&amp;集成</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-03-09</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Hue/">Hue</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Hue/">Hue</a></span><div class="content">目录
-hue简介
+} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="author-info"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">Tunan</div><div class="author-info__description text-center">BigData Developer</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">Articles</span><span class="pull-right">129</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">Tags</span><span class="pull-right">30</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">Categories</span><span class="pull-right">26</span></a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">TUNANのBlog</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/categories">Categories</a></span></div><div id="site-info"><div id="site-title">TUNANのBlog</div><div id="site-sub-title">感谢若老、J哥、师兄、前辈、同学、朋友、陌生人，在我行走在大数据道路上给我的谆谆教诲，同时此博客仅作为学习笔记存在，严禁任何人以何种理由商用，作者QQ: 971118017</div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><div class="recent-post-item article-container"><a class="article-title" href="/2020/03/10/nginx/1/">Nginx的简介&amp;安装&amp;常用操作</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-03-10</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Nginx/">Nginx</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Nginx/">Nginx</a></span><div class="content"><h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><ol>
+<li>Nginx的功能介绍</li>
+<li>Nginx的安装</li>
+<li>Nginx常用操作</li>
+</ol>
+<h2 id="Nginx的功能介绍"><a href="#Nginx的功能介绍" class="headerlink" title="Nginx的功能介绍"></a>Nginx的功能介绍</h2><p>Nginx是一个轻量级、高性能、稳定性高、并发性好的HTTP和反向代理服务器。也是由于其的特性，其应用非常广。</p>
+<h3 id="反向代理"><a href="#反向代理" class="headerlink" title="反向代理"></a>反向代理</h3><p>在说反向代理之前说一下正向代理：某些情况下，代理服务器代理我们用户去访问服务器，需要用户手动的设置代理服务器的ip和端口号。正向代理的最大特点是代理服务器在客户端</p>
+<p>反向代理是用来代理服务器的，代理服务器代理我们要访问的目标服务器。代理服务器接受请求，然后将请求转发给内部网络的服务器(集群化)，并将从服务器上得到的结果返回给客户端，此时代理服务器对外就表现为一个服务器。反向代理的最大特点是代理服务器在服务器端</p>
+<p><img src="https://yerias.github.io/nginx_img/1.jpg" alt=""></p>
+<h3 id="负载均衡"><a href="#负载均衡" class="headerlink" title="负载均衡"></a>负载均衡</h3><p>负载均衡是在高并发情况下需要使用。其原理就是将数据流量分摊到多个服务器执行，减轻每台服务器的压力，多台服务器(集群)共同完成工作任务，从而提高了数据的吞吐量。</p>
+<p>Nginx可使用的负载均衡策略有：轮询（默认）、权重、ip_hash、url_hash(第三方)、fair(第三方)</p>
+<p><img src="https://yerias.github.io/nginx_img/2.jpg" alt=""></p>
+<p>Ip hash算法，对客户端请求的ip进行hash操作，然后根据hash结果将同一个客户端ip的请求分发给同一台服务器进行处理，可以解决session不共享的问题。 </p>
+<p><img src="https://yerias.github.io/nginx_img/3.jpg" alt=""></p>
+<h3 id="动静分离"><a href="#动静分离" class="headerlink" title="动静分离"></a>动静分离</h3><p>Nginx提供的动静分离是指把动态请求和静态请求分离开，合适的服务器处理相应的请求，使整个服务器系统的性能、效率更高。</p>
+<p>Nginx可以根据配置对不同的请求做不同转发，这是动态分离的基础。静态请求对应的静态资源可以直接放在Nginx上做缓冲，更好的做法是放在相应的缓冲服务器上。动态请求由相应的后端服务器处理。</p>
+<p>常见的静态文件有js、css、html，常见的动态文件有jsp、servlet</p>
+<h2 id="Nginx的安装"><a href="#Nginx的安装" class="headerlink" title="Nginx的安装"></a>Nginx的安装</h2><h3 id="安装所需环境"><a href="#安装所需环境" class="headerlink" title="安装所需环境"></a>安装所需环境</h3><p><strong>一. gcc 安装</strong><br>安装 nginx 需要先将官网下载的源码进行编译，编译依赖 gcc 环境，如果没有 gcc 环境，则需要安装：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">yum install gcc-c++</span><br></pre></td></tr></table></figure>
 
-安装maven
+<p><strong>二. PCRE pcre-devel 安装</strong><br>PCRE(Perl Compatible Regular Expressions) 是一个Perl库，包括 perl 兼容的正则表达式库。nginx 的 http 模块使用 pcre 来解析正则表达式，所以需要在 linux 上安装 pcre 库，pcre-devel 是使用 pcre 开发的一个二次开发库。nginx也需要此库。命令：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">yum install -y pcre pcre-devel</span><br></pre></td></tr></table></figure>
 
-安装ant
+<p><strong>三. zlib 安装</strong><br>zlib 库提供了很多种压缩和解压缩的方式， nginx 使用 zlib 对 http 包的内容进行 gzip ，所以需要在 Centos 上安装 zlib 库。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">yum install -y zlib zlib-devel</span><br></pre></td></tr></table></figure>
 
-安装hue
+<p><strong>四. OpenSSL 安装</strong><br>OpenSSL 是一个强大的安全套接字层密码库，囊括主要的密码算法、常用的密钥和证书封装管理功能及 SSL 协议，并提供丰富的应用程序供测试或其它目的使用。<br>nginx 不仅支持 http 协议，还支持 https（即在ssl协议上传输http），所以需要在 Centos 安装 OpenSSL 库。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">yum install -y openssl openssl-devel</span><br></pre></td></tr></table></figure>
 
-hue集成hdfs
+<p><strong>五. 综合操作下载命令</strong></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">yum install gcc-c++ pcre pcre-devel zlib zlib-devel openssl openssl-devel -y</span><br></pre></td></tr></table></figure>
 
-hue集成yarn
+<h3 id="下载安装Nginx"><a href="#下载安装Nginx" class="headerlink" title="下载安装Nginx"></a>下载安装Nginx</h3><ol>
+<li><p>官网下载<code>.tar.gz</code>安装包，地址：<a href="https://nginx.org/en/download.html" target="_blank" rel="noopener">https://nginx.org/en/download.html</a></p>
+</li>
+<li><p>使用<code>wget</code>命令下载（推荐）。确保系统已经安装了wget，如果没有安装，执行 yum install wget 安装。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">wget -c https://nginx.org/download/nginx-1.12.0.tar.gz</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>解压依然是直接命令：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">tar -zxvf nginx-1.12.0.tar.gz -C ../app</span><br><span class="line">cd nginx-1.12.0</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>默认配置(默认是安装在/usr/local/nginx，不推介指定安装目录)</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">./configure</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>编译安装(root用户)</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">make &amp;&amp; make install</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查找安装路径</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">whereis nginx</span><br></pre></td></tr></table></figure>
 
-hue集成hive
+<p>结果：/usr/local/nginx</p>
+</li>
+</ol>
+<h2 id="Nginx常用操作"><a href="#Nginx常用操作" class="headerlink" title="Nginx常用操作"></a>Nginx常用操作</h2><ol>
+<li><p>启动、停止nginx</p>
+<p>cd /usr/local/nginx/sbin/</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">./nginx 	#启动</span><br><span class="line">./nginx -s stop		#停止</span><br><span class="line">./nginx -s quit		#退出</span><br><span class="line">./nginx -s reload	#重新加载配置文件</span><br></pre></td></tr></table></figure>
 
-hue集成mysql
+<p>启动时报80端口被占用:nginx: [emerg] bind() to 0.0.0.0:80 failed (98: Address already in use)</p>
+<p>解决办法：安装net-tool 包：<code>yum install net-tools</code></p>
+<p><strong>命令详解：</strong></p>
+<p><code>./nginx -s quit</code>:此方式停止步骤是待nginx进程处理任务完毕进行停止。<br><code>./nginx -s stop</code>:此方式相当于先查出nginx进程id再使用kill命令强制杀掉进程。</p>
+</li>
+<li><p>重启Nginx</p>
+<p>对 nginx 进行重启相当于先停止再启动，即先执行停止命令再执行启动命令。如下：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">./nginx -s quit</span><br><span class="line">./nginx</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>重新加载配置文件</p>
+<p>当 ngin x的配置文件 nginx.conf 修改后，要想让配置生效需要重启 nginx，使用<code>-s reload</code>不用先停止 ngin x再启动 nginx 即可将配置信息在 nginx 中生效，如下:</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">./nginx -s reload</span><br></pre></td></tr></table></figure>
 
-hue集成zookeeper
+<p>启动成功后，可打开浏览器访问，默认端口80</p>
+</li>
+<li><p>配置开机自启</p>
+<p>即在<code>rc.local</code>增加启动代码就可以了。</p>
+<p>vi /etc/rc.local</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">/usr/local/nginx/sbin/nginx</span><br></pre></td></tr></table></figure>
 
-hue集成hbase
+<p>设置执行权限：<code>chmod 755 rc.local</code></p>
+</li>
+</ol>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2020/03/09/hue/1/">HUE安装&amp;集成</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-03-09</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Hue/">Hue</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Hue/">Hue</a></span><div class="content"><h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><ol>
+<li><p>hue简介</p>
+</li>
+<li><p>安装maven</p>
+</li>
+<li><p>安装ant</p>
+</li>
+<li><p>安装hue</p>
+</li>
+<li><p>hue集成hdfs</p>
+</li>
+<li><p>hue集成yarn</p>
+</li>
+<li><p>hue集成hive</p>
+</li>
+<li><p>hue集成mysql</p>
+</li>
+<li><p>hue集成zookeeper</p>
+</li>
+<li><p>hue集成hbase</p>
+</li>
+<li><p>hue集成oozie</p>
+</li>
+<li><p>Shell脚本</p>
+</li>
+</ol>
+<h2 id="hue简介"><a href="#hue简介" class="headerlink" title="hue简介"></a>hue简介</h2><p>HUE=Hadoop User Experience</p>
+<p>Hue是一个开源的Apache Hadoop UI系统，由Cloudera Desktop演化而来，最后Cloudera公司将其贡献给Apache基金会的Hadoop社区，它是基于Python Web框架Django实现的。</p>
+<p>通过使用Hue，可以在浏览器端的Web控制台上与Hadoop集群进行交互，来分析处理数据，例如操作HDFS上的数据，运行MapReduce Job，执行Hive的SQL语句，浏览HBase数据库等等。（说人话就是支持提供各种Web图形化界面的）</p>
+<h2 id="安装maven"><a href="#安装maven" class="headerlink" title="安装maven"></a>安装maven</h2><ol>
+<li>上传解压apache-maven-3.6.3-bin.tar到~/app目录下</li>
+<li>配置环境变量</li>
+<li>输入<code>mvn -version</code>测试是否安装成功</li>
+</ol>
+<h2 id="安装ant"><a href="#安装ant" class="headerlink" title="安装ant"></a>安装ant</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">yum install ant -y</span><br></pre></td></tr></table></figure>
 
-hue集成oozie
+<h2 id="安装hue"><a href="#安装hue" class="headerlink" title="安装hue"></a>安装hue</h2><ol>
+<li><p>hue相关网站</p>
+<p>hue官网：<a href="http://gethue.com/" target="_blank" rel="noopener">http://gethue.com/</a></p>
+<p>配置文档：<a href="http://archive.cloudera.com/cdh5/cdh/5/hue-3.9.0-cdh5.16.2" target="_blank" rel="noopener">http://archive.cloudera.com/cdh5/cdh/5/hue-3.9.0-cdh5.16.2</a></p>
+<p>源码：<a href="https://github.com/cloudera/hue" target="_blank" rel="noopener">https://github.com/cloudera/hue</a></p>
+<p>这里我们直接用下载hue：<a href="http://archive.cloudera.com/cdh5/cdh/5/hue-3.9.0-cdh5.16.2.tar.gz" target="_blank" rel="noopener">http://archive.cloudera.com/cdh5/cdh/5/hue-3.9.0-cdh5.16.2.tar.gz</a></p>
+</li>
+<li><p>安装hue所需要的依赖包</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">yum install asciidoc cyrus-sasl-devel cyrus-sasl-gssapi cyrus-sasl-plain gcc gcc-c++ krb5-devel libffi-devel libtidy libxml2-devel libxslt-devel make mysql mysql-devel openldap-devel python-devel sqlite-devel openssl-devel gmp-devel -y</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>解压安装Hue的tar包</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">cd ~/software</span><br><span class="line">tar -zxvf hue-3.7.0-cdh5.3.6.tar -C ~/app</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>编译</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">cd hue-3.7.0-cdh5.3.6</span><br><span class="line">make apps</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>修改hue.ini配置文件</p>
+<p>进入到desktop/conf目录下,找到hue.ini文件</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">secret_key=jFE93j;2[290-eiw.KEiwN2s3['d;/.q[eIW^y#e=+Iei*@Mn&lt;qW5o</span><br><span class="line">http_host=hadoop</span><br><span class="line">http_port=8888</span><br><span class="line">time_zone=Asia/Shanghai</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>启动</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">build/env/bin/supervisor</span><br></pre></td></tr></table></figure>
 
-Shell脚本
+</li>
+</ol>
+<h2 id="hue集成hdfs"><a href="#hue集成hdfs" class="headerlink" title="hue集成hdfs"></a>hue集成hdfs</h2><ol>
+<li><p>配置hdfs.site.xml</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">name</span>&gt;</span>dfs.webhdfs.enabled<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">value</span>&gt;</span>true<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>配置core-site.xml</p>
+<p>设置代理用户</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">name</span>&gt;</span>hadoop.proxyuser.hadoop.hosts<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">value</span>&gt;</span>*<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">name</span>&gt;</span>hadoop.proxyuser.hadoop.groups<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">value</span>&gt;</span>*<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">name</span>&gt;</span>hadoop.proxyuser.hue.hosts<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">value</span>&gt;</span>*<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">name</span>&gt;</span>hadoop.proxyuser.hue.groups<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">value</span>&gt;</span>*<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>如果你的Hadoop配置了<code>高可用</code>，则必须通过httpfs来访问，需要添加如下属性，反则则不必须。（如果HUE服务与Hadoop服务不在同一节点，则必须配置）</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">name</span>&gt;</span>hadoop.proxyuser.httpfs.hosts<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">value</span>&gt;</span>*<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">name</span>&gt;</span>hadoop.proxyuser.httpfs.groups<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">value</span>&gt;</span>*<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>配置httpfs-site.xml</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">name</span>&gt;</span>httpfs.proxyuser.hue.hosts<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">value</span>&gt;</span>*<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">name</span>&gt;</span>httpfs.proxyuser.hue.groups<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">value</span>&gt;</span>*<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>以上两个属性主要用于HUE服务与Hadoop服务不在同一台节点上所必须的配置。</p>
+</li>
+<li><p>配置hue.ini</p>
+<p>找到<code>[[hdfs_clusters]]</code>标签</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">HDFS服务器地址</span><br><span class="line">fs_defaultfs=hdfs://hadoop:9000</span><br><span class="line"></span><br><span class="line">如果开启了高可用，需要配置如下</span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># logical_name=mycluster</span></span></span><br><span class="line"></span><br><span class="line">向HDFS发送命令的请求地址</span><br><span class="line">webhdfs_url=http://hadoop:50070/webhdfs/v1</span><br><span class="line"></span><br><span class="line">HADOOP的一些配置</span><br><span class="line">hadoop_conf_dir=/home/hadoop/app/hadoop/etc/hadoop</span><br><span class="line">hadoop_hdfs_home=/home/hadoop/app/hadoop</span><br><span class="line">hadoop_bin=/home/hadoop/app/hadoop/bin</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>如果配置了高可用则启动hue前需要先启动httpfs服务</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">/home/hadoop/app/hadoop/sbin/httpfs.sh start</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h2 id="hue集成yarn"><a href="#hue集成yarn" class="headerlink" title="hue集成yarn"></a>hue集成yarn</h2><p>如果没有在hadoop中配置历史节点，需要先配置历史节点</p>
+<p>mapred-site.xml</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 历史服务器端地址 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">name</span>&gt;</span>mapreduce.jobhistory.address<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">value</span>&gt;</span>hadoop:10020<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 历史服务器web端地址 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">name</span>&gt;</span>mapreduce.jobhistory.webapp.address<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">value</span>&gt;</span>hadoop:19888<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>启动历史服务器</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash">HADOOP_HOME/sbin/mr-jobhistory-daemon.sh start historyserver</span></span><br></pre></td></tr></table></figure>
+
+<p>找到<code>[[yarn_clusters]]</code>标签，涉及修改配置如下：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">yarn服务的配置</span><br><span class="line">resourcemanager_host=192.168.56.86</span><br><span class="line">resourcemanager_port=8032</span><br><span class="line"></span><br><span class="line">是否将作业提交到此群集，并监控作业执行情况</span><br><span class="line">submit_to=True</span><br><span class="line"><span class="meta">#</span><span class="bash">logical_name=cluster-yarn1(如果开高可用的话)</span></span><br><span class="line"></span><br><span class="line">配置yarn资源管理的访问入口</span><br><span class="line">resourcemanager_api_url=http://hadoop:8088</span><br><span class="line">proxy_api_url=http://hadoop:8088</span><br><span class="line"></span><br><span class="line">历史服务器管理的入口，查看作业的历史运行情况</span><br><span class="line">history_server_api_url=http://hadoop:19888</span><br></pre></td></tr></table></figure>
+
+<p><code>注意</code>：hue界面的超级用户名字需要和提交到yarn的用户名字相同</p>
+<h2 id="hue集成hive"><a href="#hue集成hive" class="headerlink" title="hue集成hive"></a>hue集成hive</h2><p>配置hive-site.xml</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">name</span>&gt;</span>hive.server2.thrift.bind.host<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">value</span>&gt;</span>hadoop<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">description</span>&gt;</span>TCP绑定的主机<span class="tag">&lt;/<span class="name">description</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">name</span>&gt;</span>hive.server2.long.polling.timeout<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">value</span>&gt;</span>5000<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">description</span>&gt;</span>HiveServer2在响应使用长轮询的异步调用之前等待的时间（毫秒）<span class="tag">&lt;/<span class="name">description</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">name</span>&gt;</span>hive.metastore.uris<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">value</span>&gt;</span>thrift://hadoop:9083<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">description</span>&gt;</span>指向的是运行metastore服务的主机<span class="tag">&lt;/<span class="name">description</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>配置hue.ini，找到[beeswax]属性标签，涉及修改如下</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[beeswax]</span><br><span class="line">hive_server_host=hadoop</span><br><span class="line">hive_server_port=10000</span><br><span class="line">hive_conf_dir=/home/hadoop/app/hive/conf</span><br></pre></td></tr></table></figure>
+
+<p>启动</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">bin/hive --service metastore &amp;</span><br><span class="line">bin/hive --service hiveserver2 1&gt;/dev/null 2&gt;&amp;1 &amp;</span><br></pre></td></tr></table></figure>
+
+<p><code>注意：</code>如果设置了uris，在今后使用Hive时，那么必须启动如上两个命令，否则Hive无法正常启动。</p>
+<h2 id="hue集成mysql"><a href="#hue集成mysql" class="headerlink" title="hue集成mysql"></a>hue集成mysql</h2><p>配置hue.ini，找到[[[mysql]]]标签，涉及修改如下</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[[[mysql]]]</span><br><span class="line">	nice_name="mysql"</span><br><span class="line">	engine=mysql</span><br><span class="line">	host=hadoop</span><br><span class="line">	port=3306</span><br><span class="line">	user=root</span><br><span class="line">	password=root</span><br></pre></td></tr></table></figure>
+
+<h2 id="hue集成Zookeeper"><a href="#hue集成Zookeeper" class="headerlink" title="hue集成Zookeeper"></a>hue集成Zookeeper</h2><p>配置hue.ini</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[zookeeper]</span><br><span class="line">[[clusters]]</span><br><span class="line">[[[default]]]</span><br><span class="line">host_ports=hadoop:2181</span><br></pre></td></tr></table></figure>
+
+<p>启动zookeeper</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">zkServer.sh start</span><br><span class="line">zkServer.sh status</span><br></pre></td></tr></table></figure>
+
+<h2 id="hue集成hbase"><a href="#hue集成hbase" class="headerlink" title="hue集成hbase"></a>hue集成hbase</h2><h2 id="hue集成oozie"><a href="#hue集成oozie" class="headerlink" title="hue集成oozie"></a>hue集成oozie</h2><h2 id="Shell脚本"><a href="#Shell脚本" class="headerlink" title="Shell脚本"></a>Shell脚本</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">! /bin/bash</span></span><br><span class="line">echo "启动httpfs服务"</span><br><span class="line">/home/hadoop/app/hadoop/sbin/httpfs.sh start</span><br><span class="line"></span><br><span class="line">echo "启动历史服务"</span><br><span class="line">/home/hadoop/app/hadoop/sbin/mr-jobhistory-daemon.sh start historyserver</span><br><span class="line"></span><br><span class="line">echo "启动hive元数据"</span><br><span class="line"><span class="meta">$</span><span class="bash">HIVE_HOME/bin/hive --service metastore &amp;</span></span><br><span class="line"></span><br><span class="line">echo "启动hive服务端"</span><br><span class="line"><span class="meta">$</span><span class="bash">HIVE_HOME/bin/hive --service hiveserver2 1 &gt; /dev/null 2&gt;&amp;1 &amp;</span></span><br><span class="line"></span><br><span class="line">echo "启动hue"</span><br><span class="line"><span class="meta">$</span><span class="bash">HUE_HOME/build/env/bin/supervisor 1 &gt; /dev/null 2&gt;&amp;1 &amp;</span></span><br></pre></td></tr></table></figure>
+
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2020/03/07/java/9/">FastJson的使用</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-03-07</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Java/">Java</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Java/">Java</a></span><div class="content"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近在开发过程中使用了大量的<code>json</code>作为前后端数据交换的方式,由于之前没有对<code>json</code>做过系统的学习,所有在使用过程中查阅了大量的文档与资料,这里主要记录了我在开发后对<code>json</code>以及<code>FastJson</code>使用的总结</p>
+<h2 id="Json介绍"><a href="#Json介绍" class="headerlink" title="Json介绍"></a>Json介绍</h2><p><code>JSON</code>(javaScript Object Notation)是一种轻量级的数据交换格式。主要采用键值对(<code>{&quot;name&quot;: &quot;json&quot;}</code>)的方式来保存和表示数据。<code>JSON</code>是<code>JS</code>对象的字符串表示法，它使用文本表示一个<code>JS</code>对象的信息，本质上是一个字符串。更多简介见<a href="http://www.json.org/json-zh.html" target="_blank" rel="noopener">介绍JSON</a>。</p>
+<h2 id="FastJson-简介"><a href="#FastJson-简介" class="headerlink" title="FastJson  简介"></a>FastJson  简介</h2><p>在日志解析,前后端数据传输交互中,经常会遇到字符串(String)与<code>json</code>,<code>XML</code>等格式相互转换与解析，其中<code>json</code>以跨语言，跨前后端的优点在开发中被频繁使用，基本上可以说是标准的数据交换格式。<a href="https://github.com/alibaba/FastJson" target="_blank" rel="noopener">fastjson</a>是一个java语言编写的高性能且功能完善的JSON库，它采用一种“假定有序快速匹配”的算法，把<code>JSON Parse</code> 的性能提升到了极致。它的接口简单易用，已经被广泛使用在缓存序列化，协议交互，Web输出等各种应用场景中。</p>
+<h2 id="FastJson-常用-API"><a href="#FastJson-常用-API" class="headerlink" title="FastJson  常用 API"></a>FastJson  常用 API</h2><p>导入Jar包</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">	&lt;groupId&gt;com.alibaba&lt;/groupId&gt;</span><br><span class="line">	&lt;artifactId&gt;fastjson&lt;/artifactId&gt;</span><br><span class="line">	&lt;version&gt;1.2.47&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+
+<p>FastJson API 入口类是<code>com.alibaba.FastJson.JSON</code>,常用的序列化操作都可以在<code>JSON</code>类上的静态方法直接完成。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> Object <span class="title">parse</span><span class="params">(String text)</span></span>; <span class="comment">// 把JSON文本parse为JSONObject或者JSONArray </span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> JSONObject <span class="title">parseObject</span><span class="params">(String text)</span>； <span class="comment">// 把JSON文本parse成JSONObject    </span></span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> &lt;T&gt; T <span class="title">parseObject</span><span class="params">(String text, Class&lt;T&gt; clazz)</span></span>; <span class="comment">// 把JSON文本parse为JavaBean </span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> JSONArray <span class="title">parseArray</span><span class="params">(String text)</span></span>; <span class="comment">// 把JSON文本parse成JSONArray </span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> &lt;T&gt; <span class="function">List&lt;T&gt; <span class="title">parseArray</span><span class="params">(String text, Class&lt;T&gt; clazz)</span></span>; <span class="comment">//把JSON文本parse成JavaBean集合 </span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String <span class="title">toJSONString</span><span class="params">(Object object)</span></span>; <span class="comment">// 将JavaBean序列化为JSON文本 </span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String <span class="title">toJSONString</span><span class="params">(Object object, <span class="keyword">boolean</span> prettyFormat)</span></span>; <span class="comment">// 将JavaBean序列化为带格式的JSON文本 </span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> Object <span class="title">toJSON</span><span class="params">(Object javaObject)</span></span>; <span class="comment">//将JavaBean转换为JSONObject或者JSONArray。</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="使用方法举例"><a href="#使用方法举例" class="headerlink" title="使用方法举例"></a>使用方法举例</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//将JSON文本转换为java对象</span></span><br><span class="line"><span class="keyword">import</span> com.alibaba.FastJson.JSON;</span><br><span class="line">Model model = JSON.parseObject(jsonStr, Model<span class="class">.<span class="keyword">class</span>)</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="有关类库的一些说明"><a href="#有关类库的一些说明" class="headerlink" title="有关类库的一些说明"></a>有关类库的一些说明</h3><ul>
+<li>JSONArray : 相当于List</li>
+<li>JSONObject: 相当于Map&lt;String,Object&gt;</li>
+</ul>
+<h2 id="FastJson-使用实例"><a href="#FastJson-使用实例" class="headerlink" title="FastJson  使用实例"></a>FastJson  使用实例</h2><h3 id="Java对象与Json字符串的互转"><a href="#Java对象与Json字符串的互转" class="headerlink" title="Java对象与Json字符串的互转"></a>Java对象与Json字符串的互转</h3><p><code>User</code>测试类</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> com.tunan.json.user;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span>:</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span>: tunan</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@create</span>: 2020-03-07 09:54</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@since</span>: 1.0.0</span></span><br><span class="line"><span class="comment"> **/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">User</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String username;</span><br><span class="line">    <span class="keyword">private</span> String password;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">User</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">User</span><span class="params">(String username, String password)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.username = username;</span><br><span class="line">        <span class="keyword">this</span>.password = password;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getUsername</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> username;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setUsername</span><span class="params">(String username)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.username = username;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getPassword</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> password;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setPassword</span><span class="params">(String password)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.password = password;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>UserGroup</code>测试类</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> com.tunan.json.user;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.ArrayList;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span>:</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span>: tunan</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@create</span>: 2020-03-07 09:55</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@since</span>: 1.0.0</span></span><br><span class="line"><span class="comment"> **/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UserGroup</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> List&lt;User&gt; users= <span class="keyword">new</span> ArrayList&lt;User&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">UserGroup</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">UserGroup</span><span class="params">(String name, List&lt;User&gt; users)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">        <span class="keyword">this</span>.users = users;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setName</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;User&gt; <span class="title">getUsers</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> users;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setUsers</span><span class="params">(List&lt;User&gt; users)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.users = users;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>fastJson</code>测试类</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> com.tunan.json.user;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.alibaba.fastjson.JSON;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.ArrayList;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span>:</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span>: tunan</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@create</span>: 2020-03-07 09:58</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@since</span>: 1.0.0</span></span><br><span class="line"><span class="comment"> **/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestFastJosn</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        objectToJson();</span><br><span class="line">        JsonToObject();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//java对象转 json字符串</span></span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">objectToJson</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="comment">//简单java类转json</span></span><br><span class="line">        User user = <span class="keyword">new</span> User(<span class="string">"tunan"</span>,<span class="string">"123456"</span>);</span><br><span class="line">        String userJson = JSON.toJSONString(user);</span><br><span class="line">        System.out.println(<span class="string">"简单java类转字符串： "</span>+userJson);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//List&lt;Object&gt;转Json字符串</span></span><br><span class="line">        User user1 = <span class="keyword">new</span> User(<span class="string">"xiaoqi"</span>, <span class="string">"961228"</span>);</span><br><span class="line">        User user2 = <span class="keyword">new</span> User(<span class="string">"tunan"</span>, <span class="string">"123456"</span>);</span><br><span class="line">        List&lt;User&gt; users = <span class="keyword">new</span> ArrayList&lt;User&gt;();</span><br><span class="line">        users.add(user1);</span><br><span class="line">        users.add(user2);</span><br><span class="line">        String listJson = JSON.toJSONString(users);</span><br><span class="line">        System.out.println(<span class="string">"List&lt;Object&gt;转Json字符串： "</span>+listJson);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//复杂java转json字符串</span></span><br><span class="line">        UserGroup userGroup = <span class="keyword">new</span> UserGroup(<span class="string">"student"</span>, users);</span><br><span class="line">        String userGroupJson = JSON.toJSONString(userGroup);</span><br><span class="line">        System.out.println(<span class="string">"复杂java转json字符串： "</span>+userGroupJson);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//Json字符串 转Java类</span></span><br><span class="line">    <span class="comment">//注：字符串中使用双引号需要转义 (" --&gt; \"),这里使用的是单引号</span></span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">JsonToObject</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="comment">/*</span></span><br><span class="line"><span class="comment">         * json字符串转简单java对象</span></span><br><span class="line"><span class="comment">         * 字符串：&#123;"password":"123456","username":"dmego"&#125;</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        String userJson = <span class="string">"&#123;'password':'123456','username':'dmego'&#125;"</span>;</span><br><span class="line">        User user = JSON.parseObject(userJson, User<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">        System.out.println(<span class="string">"json字符串转简单java对象: "</span>+user.toString());</span><br><span class="line"></span><br><span class="line">        <span class="comment">/*</span></span><br><span class="line"><span class="comment">         * json字符串转List&lt;Object&gt;对象</span></span><br><span class="line"><span class="comment">         * 字符串：[&#123;"password":"123123","username":"zhangsan"&#125;,&#123;"password":"321321","username":"lisi"&#125;]</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        String listUserJson = <span class="string">"[&#123;'password':'123123','username':'zhangsan'&#125;,&#123;'password':'321321','username':'lisi'&#125;]"</span>;</span><br><span class="line">        List&lt;User&gt; userList = JSON.parseArray(listUserJson, User<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">        System.out.println(<span class="string">"json字符串转List&lt;Object&gt;对象: "</span>+userList.toString());</span><br><span class="line"></span><br><span class="line">        <span class="comment">/*json字符串转复杂java对象</span></span><br><span class="line"><span class="comment">         * 字符串：&#123;"name":"userGroup","users":[&#123;"password":"123123","username":"zhangsan"&#125;,&#123;"password":"321321","username":"lisi"&#125;]&#125;</span></span><br><span class="line"><span class="comment">         * */</span></span><br><span class="line">        String userGroupJson = <span class="string">"&#123;'name':'userGroup','users':[&#123;'password':'123123','username':'zhangsan'&#125;,&#123;'password':'321321','username':'lisi'&#125;]&#125;"</span>;</span><br><span class="line">        UserGroup userGroup = JSON.parseObject(userGroupJson, UserGroup<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">        System.out.println(<span class="string">"json字符串转复杂java对象: "</span>+userGroup.toString());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>结果</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">简单java类转字符串： &#123;<span class="string">"password"</span>:<span class="string">"123456"</span>,<span class="string">"username"</span>:<span class="string">"tunan"</span>&#125;</span><br><span class="line">List&lt;Object&gt;转Json字符串： [&#123;<span class="string">"password"</span>:<span class="string">"961228"</span>,<span class="string">"username"</span>:<span class="string">"xiaoqi"</span>&#125;,&#123;<span class="string">"password"</span>:<span class="string">"123456"</span>,<span class="string">"username"</span>:<span class="string">"tunan"</span>&#125;]</span><br><span class="line">复杂java转json字符串： &#123;<span class="string">"name"</span>:<span class="string">"student"</span>,<span class="string">"users"</span>:[&#123;<span class="string">"password"</span>:<span class="string">"961228"</span>,<span class="string">"username"</span>:<span class="string">"xiaoqi"</span>&#125;,&#123;<span class="string">"password"</span>:<span class="string">"123456"</span>,<span class="string">"username"</span>:<span class="string">"tunan"</span>&#125;]&#125;</span><br><span class="line"></span><br><span class="line">json字符串转简单java对象: User&#123;username=<span class="string">'dmego'</span>, password=<span class="string">'123456'</span>&#125;</span><br><span class="line">json字符串转List&lt;Object&gt;对象: [User&#123;username=<span class="string">'zhangsan'</span>, password=<span class="string">'123123'</span>&#125;, User&#123;username=<span class="string">'lisi'</span>, password=<span class="string">'321321'</span>&#125;]</span><br><span class="line">json字符串转复杂java对象: UserGroup&#123;name=<span class="string">'userGroup'</span>, users=[User&#123;username=<span class="string">'zhangsan'</span>, password=<span class="string">'123123'</span>&#125;, User&#123;username=<span class="string">'lisi'</span>, password=<span class="string">'321321'</span>&#125;]&#125;</span><br></pre></td></tr></table></figure>
+
+<p>通过结果看代码:</p>
+<p>我们可以看到，在<code>JavaBean</code>转<code>Json</code>的时候，使用了<code>JSON.toJSONString()</code>方法</p>
+<ol>
+<li>该方法中传入的是对象，即生成对象的<code>Json</code>字符串</li>
+<li>如果传入的是<code>List</code>，生成的就是对象的<code>Json</code>字符串数组</li>
+<li>如果传入的是复杂类型既有对象，又有对象数组，那么生成的就是个<code>Json</code>对象，这个对象中包括对象的<code>Json</code>字符串和对象的<code>Json</code>字符串数组，<code>Json</code>的字符串数组中又包含对象的<code>Json</code>字符串。</li>
+</ol>
+<p>在<code>Json</code>转<code>JavaBean</code>的时候，会根据调用<code>JSON.parseObject()</code>和<code>JSON.parseArray()</code>的不同，输出不同的结果</p>
+<ol>
+<li>传入对象的<code>Json</code>字符串和需要生成的<code>Java</code>对象，需要调用<code>JSON.parseObject()</code>方法，输出的就是一个普通的对象</li>
+<li>传入对象的<code>Json</code>字符串数组和要生成的<code>Java</code>对象，需要调用<code>JSON.parseArray()</code>方法，输出是一个<code>Java</code>对象数组</li>
+<li>传入的即包含对象的<code>Json</code>字符串，又包含对象的<code>Json</code>字符串数组，那么需要调用一个<code>JSON.parseObject()</code>方法，该方法会输出一个复杂的Java对象，该对象既包括对象又包括对象数组。</li>
+</ol>
+<h2 id="FastJson解析复杂嵌套Json字符串"><a href="#FastJson解析复杂嵌套Json字符串" class="headerlink" title="FastJson解析复杂嵌套Json字符串"></a>FastJson解析复杂嵌套Json字符串</h2><p>这个实例是我在开发中用到的，先给出要解析的Json字符串</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">[</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="string">"id"</span>: <span class="string">"user_list"</span>,</span><br><span class="line">        <span class="string">"key"</span>: <span class="string">"id"</span>,</span><br><span class="line">        <span class="string">"tableName"</span>: <span class="string">"用户列表"</span>,</span><br><span class="line">        <span class="string">"className"</span>: <span class="string">"cn.dmego.domain.User"</span>,</span><br><span class="line">        <span class="string">"column"</span>: [</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="string">"key"</span>: <span class="string">"rowIndex"</span>,</span><br><span class="line">                <span class="string">"header"</span>: <span class="string">"序号"</span>,</span><br><span class="line">                <span class="string">"width"</span>: <span class="string">"50"</span>,</span><br><span class="line">                <span class="string">"allowSort"</span>: <span class="string">"false"</span></span><br><span class="line">            &#125;,</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="string">"key"</span>: <span class="string">"id"</span>,</span><br><span class="line">                <span class="string">"header"</span>: <span class="string">"id"</span>,</span><br><span class="line">                <span class="string">"hidden"</span>: <span class="string">"true"</span></span><br><span class="line">            &#125;,</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="string">"key"</span>: <span class="string">"name"</span>,</span><br><span class="line">                <span class="string">"header"</span>: <span class="string">"姓名"</span>,</span><br><span class="line">                <span class="string">"width"</span>: <span class="string">"100"</span>,</span><br><span class="line">                <span class="string">"allowSort"</span>: <span class="string">"true"</span></span><br><span class="line">            &#125;</span><br><span class="line">        ]</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="string">"id"</span>: <span class="string">"role_list"</span>,</span><br><span class="line">        <span class="string">"key"</span>: <span class="string">"id"</span>,</span><br><span class="line">        <span class="string">"tableName"</span>: <span class="string">"角色列表"</span>,</span><br><span class="line">        <span class="string">"className"</span>: <span class="string">"cn.dmego.domain.Role"</span>,</span><br><span class="line">        <span class="string">"column"</span>: [</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="string">"key"</span>: <span class="string">"rowIndex"</span>,</span><br><span class="line">                <span class="string">"header"</span>: <span class="string">"序号"</span>,</span><br><span class="line">                <span class="string">"width"</span>: <span class="string">"50"</span>,</span><br><span class="line">                <span class="string">"allowSort"</span>: <span class="string">"false"</span></span><br><span class="line">            &#125;,</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="string">"key"</span>: <span class="string">"id"</span>,</span><br><span class="line">                <span class="string">"header"</span>: <span class="string">"id"</span>,</span><br><span class="line">                <span class="string">"hidden"</span>: <span class="string">"true"</span></span><br><span class="line">            &#125;,</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="string">"key"</span>: <span class="string">"name"</span>,</span><br><span class="line">                <span class="string">"header"</span>: <span class="string">"名称"</span>,</span><br><span class="line">                <span class="string">"width"</span>: <span class="string">"100"</span>,</span><br><span class="line">                <span class="string">"allowSort"</span>: <span class="string">"true"</span></span><br><span class="line">            &#125;</span><br><span class="line">        ]</span><br><span class="line">    &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<p>要想解析这种复杂的字符串，首先得先定义好与之相符的Java POJO 对象，经过观察，我们发现，这个是一个Json对象数组，每一个对象里包含了许多属性，其中还有一个属性的类型也是对象数组。所有，我们从里到外，先定义最里面的对象：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Column</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String key;</span><br><span class="line">    <span class="keyword">private</span> String header;</span><br><span class="line">    <span class="keyword">private</span> String width;</span><br><span class="line">    <span class="keyword">private</span> String allowSort;</span><br><span class="line">    <span class="keyword">private</span> String hidden;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"Column&#123;"</span> +</span><br><span class="line">                <span class="string">"key='"</span> + key + <span class="string">'\''</span> +</span><br><span class="line">                <span class="string">", header='"</span> + header + <span class="string">'\''</span> +</span><br><span class="line">                <span class="string">", width='"</span> + width + <span class="string">'\''</span> +</span><br><span class="line">                <span class="string">", allowSort='"</span> + allowSort + <span class="string">'\''</span> +</span><br><span class="line">                <span class="string">", hidden='"</span> + hidden + <span class="string">'\''</span> +</span><br><span class="line">                <span class="string">'&#125;'</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//这里省略部分getter与setter方法 </span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>再定义外层的对象：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Query</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String id;</span><br><span class="line">    <span class="keyword">private</span> String key;</span><br><span class="line">    <span class="keyword">private</span> String tableName;</span><br><span class="line">    <span class="keyword">private</span> String className;</span><br><span class="line">    <span class="keyword">private</span> List&lt;Column&gt; column;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"Query&#123;"</span> +</span><br><span class="line">                <span class="string">"id='"</span> + id + <span class="string">'\''</span> +</span><br><span class="line">                <span class="string">", key='"</span> + key + <span class="string">'\''</span> +</span><br><span class="line">                <span class="string">", tableName='"</span> + tableName + <span class="string">'\''</span> +</span><br><span class="line">                <span class="string">", className='"</span> + className + <span class="string">'\''</span> +</span><br><span class="line">                <span class="string">", column="</span> + column +</span><br><span class="line">                <span class="string">'&#125;'</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">     <span class="comment">//这里省略部分getter与setter方法 </span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我的这个Json文件放置在类路径下，最后想将这个Json字符串转化为List对象，并且将column 对象数组转化为query对象里的List属性</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span>: 将这个json字符串转化为List对象</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span>: tunan</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@create</span>: 2020-03-07 10:47</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@since</span>: 1.0.0</span></span><br><span class="line"><span class="comment"> **/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RoleTest</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        RoleTest roleTest = <span class="keyword">new</span> RoleTest();</span><br><span class="line">        List&lt;Query&gt; queries = roleTest.JsonToObject();</span><br><span class="line">        <span class="comment">//生成的是个List，需要循环输出</span></span><br><span class="line">        queries.forEach(System.out::println);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span>  List&lt;Query&gt; <span class="title">JsonToObject</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        ClassLoader loader = <span class="keyword">this</span>.getClass().getClassLoader();</span><br><span class="line">        InputStream in = loader.getResourceAsStream(<span class="string">"query.json"</span>);</span><br><span class="line">        <span class="comment">//这里是一次全部读出来了，大数据处理时需要按行读取</span></span><br><span class="line">        String jsonTxet = IOUtils.toString(in, <span class="string">"utf8"</span>);</span><br><span class="line">        List&lt;Query&gt; query = JSON.parseArray(jsonTxet, Query<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">        <span class="keyword">return</span> query;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>结果</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Query&#123;id=<span class="string">'user_list'</span>, key=<span class="string">'id'</span>, tableName=<span class="string">'用户列表'</span>, className=<span class="string">'cn.dmego.domain.User'</span>, column=[Column&#123;key=<span class="string">'rowIndex'</span>, header=<span class="string">'序号'</span>, width=<span class="string">'50'</span>, allowSort=<span class="string">'false'</span>, hidden=<span class="string">'null'</span>&#125;, Column&#123;key=<span class="string">'id'</span>, header=<span class="string">'id'</span>, width=<span class="string">'null'</span>, allowSort=<span class="string">'null'</span>, hidden=<span class="string">'true'</span>&#125;, Column&#123;key=<span class="string">'name'</span>, header=<span class="string">'姓名'</span>, width=<span class="string">'100'</span>, allowSort=<span class="string">'true'</span>, hidden=<span class="string">'null'</span>&#125;]&#125;</span><br><span class="line"></span><br><span class="line">Query&#123;id=<span class="string">'role_list'</span>, key=<span class="string">'id'</span>, tableName=<span class="string">'角色列表'</span>, className=<span class="string">'cn.dmego.domain.Role'</span>, column=[Column&#123;key=<span class="string">'rowIndex'</span>, header=<span class="string">'序号'</span>, width=<span class="string">'50'</span>, allowSort=<span class="string">'false'</span>, hidden=<span class="string">'null'</span>&#125;, Column&#123;key=<span class="string">'id'</span>, header=<span class="string">'id'</span>, width=<span class="string">'null'</span>, allowSort=<span class="string">'null'</span>, hidden=<span class="string">'true'</span>&#125;, Column&#123;key=<span class="string">'name'</span>, header=<span class="string">'名称'</span>, width=<span class="string">'100'</span>, allowSort=<span class="string">'true'</span>, hidden=<span class="string">'null'</span>&#125;]&#125;</span><br></pre></td></tr></table></figure>
+
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2020/03/03/scala/1/">Scala之高阶函数</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-03-03</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Scala/">Scala</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Scala/">Scala</a></span><div class="content"><h2 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h2><ol>
+<li>sorted</li>
+<li>sortBy</li>
+<li>sortWith</li>
+<li>flatten</li>
+<li>map</li>
+<li>flatMap</li>
+<li>filter</li>
+<li>groupBy</li>
+<li>flod</li>
+<li>reduce</li>
+<li>wc</li>
+</ol>
+<h2 id="sorted"><a href="#sorted" class="headerlink" title="sorted"></a>sorted</h2><p>排序，默认升序</p>
+<figure class="highlight scala"><table><tr><td class="code"><pre><span class="line"><span class="keyword">val</span> array = <span class="type">Array</span>(<span class="number">1</span>, <span class="number">2</span>, <span class="number">5</span>, <span class="number">4</span>, <span class="number">3</span>)</span><br><span class="line">    array.sorted</span><br></pre></td></tr></table></figure>
+
+<h2 id="sortBy"><a href="#sortBy" class="headerlink" title="sortBy"></a>sortBy</h2><p>排序，指定排序规则</p>
+<figure class="highlight scala"><table><tr><td class="code"><pre><span class="line"><span class="keyword">val</span> arrMap = <span class="type">Array</span>(('a', <span class="number">1</span>), ('b', <span class="number">4</span>), ('d', <span class="number">3</span>), ('c', <span class="number">2</span>))</span><br><span class="line">    arrMap.sortBy(_._1)</span><br><span class="line">    arrMap.sortBy(_._2)</span><br></pre></td></tr></table></figure>
+
+<h2 id="sortWith"><a href="#sortWith" class="headerlink" title="sortWith"></a>sortWith</h2><p>排序，多个字段联合排序</p>
+<figure class="highlight scala"><table><tr><td class="code"><pre><span class="line"><span class="keyword">val</span> arrMap2 = <span class="type">Array</span>((<span class="string">"a"</span>, <span class="number">2</span>), (<span class="string">"a"</span>, <span class="number">1</span>), (<span class="string">"b"</span>, <span class="number">2</span>), (<span class="string">"d"</span>, <span class="number">5</span>), (<span class="string">"c"</span>, <span class="number">4</span>))</span><br><span class="line">    arrMap2.sortWith((t1,t2)=&gt;&#123;</span><br><span class="line">      <span class="keyword">if</span> (!t1._1.equalsIgnoreCase(t2._1))&#123;</span><br><span class="line">        t1._1.compareTo(t2._1)&lt;<span class="number">0</span></span><br><span class="line">      &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        t1._2.compareTo(t2._2)&lt;<span class="number">0</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;)</span><br></pre></td></tr></table></figure>
+
+<h2 id="flatten"><a href="#flatten" class="headerlink" title="flatten"></a>flatten</h2><p>扁平化</p>
+<figure class="highlight scala"><table><tr><td class="code"><pre><span class="line"><span class="keyword">val</span> flatten = <span class="type">Array</span>(<span class="type">Array</span>(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>), <span class="type">Array</span>(<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>))</span><br><span class="line">    flatten.flatten</span><br></pre></td></tr></table></figure>
+
+<h2 id="map"><a href="#map" class="headerlink" title="map"></a>map</h2><p>映射</p>
+<figure class="highlight scala"><table><tr><td class="code"><pre><span class="line"><span class="keyword">val</span> map = <span class="type">Array</span>(<span class="string">"this is a demo,hello world"</span>)</span><br><span class="line">    map.map(_.split(<span class="string">" "</span>))</span><br><span class="line"></span><br><span class="line">    map.map(_.split(<span class="string">" "</span>)).flatten.map((_,<span class="number">1</span>))</span><br></pre></td></tr></table></figure>
+
+<h2 id="flatMap"><a href="#flatMap" class="headerlink" title="flatMap"></a>flatMap</h2><p>flatMap ==&gt; flatten + map</p>
+<figure class="highlight scala"><table><tr><td class="code"><pre><span class="line"><span class="keyword">val</span> flatMap = <span class="type">Array</span>(<span class="string">"this is a demo"</span>, <span class="string">"hello word"</span>)</span><br><span class="line">    flatMap.flatMap(_.split(<span class="string">" "</span>))</span><br><span class="line">    flatMap.flatMap(_.split(<span class="string">" "</span>)).map((_,<span class="number">1</span>))</span><br><span class="line"></span><br><span class="line">    flatMap.flatMap(line =&gt; (<span class="keyword">for</span> (i&lt;- line.split(<span class="string">" "</span>)) <span class="keyword">yield</span> (i,<span class="number">1</span>)))</span><br></pre></td></tr></table></figure>
+
+<h2 id="filter"><a href="#filter" class="headerlink" title="filter"></a>filter</h2><p>过滤</p>
+<figure class="highlight scala"><table><tr><td class="code"><pre><span class="line"><span class="keyword">val</span> filter = <span class="type">Array</span>(<span class="string">"this is a demo"</span>, <span class="string">"hello word"</span>)</span><br><span class="line">    filter.filter(_.contains(<span class="string">"hello"</span>))</span><br><span class="line">    filter.filterNot(_.contains(<span class="string">"hello"</span>))</span><br></pre></td></tr></table></figure>
+
+<h2 id="groupBy"><a href="#groupBy" class="headerlink" title="groupBy"></a>groupBy</h2><p>分组</p>
+<figure class="highlight scala"><table><tr><td class="code"><pre><span class="line"><span class="keyword">val</span> groupBy = <span class="type">Array</span>(<span class="string">"good"</span>, <span class="string">"good"</span>, <span class="string">"study"</span>)</span><br><span class="line">    groupBy.groupBy(x=&gt;x)</span><br><span class="line">    groupBy.groupBy(x=&gt;x).map(t=&gt;(t._1,t._2.size))</span><br></pre></td></tr></table></figure>
+
+<h2 id="flod"><a href="#flod" class="headerlink" title="flod"></a>flod</h2><p>聚合，需要指定默认值</p>
+<figure class="highlight scala"><table><tr><td class="code"><pre><span class="line"><span class="keyword">val</span> flod = <span class="type">Array</span>(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">8</span>, <span class="number">4</span>)</span><br><span class="line">    flod.fold(<span class="number">10</span>)((a,b)=&gt;&#123;</span><br><span class="line">      println(a+<span class="string">"  :  "</span>+b)</span><br><span class="line">      a-b</span><br><span class="line">    &#125;)</span><br></pre></td></tr></table></figure>
+
+<h2 id="reduce"><a href="#reduce" class="headerlink" title="reduce"></a>reduce</h2><p>聚合</p>
+<figure class="highlight scala"><table><tr><td class="code"><pre><span class="line"><span class="keyword">val</span> reduce = <span class="type">Array</span>(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">8</span>, <span class="number">4</span>)</span><br><span class="line">    reduce.reduce(_+_)</span><br><span class="line">    reduce.reduce(_-_)</span><br><span class="line">    reduce.reduceLeft(_+_)</span><br><span class="line">    reduce.reduceLeft(_-_)</span><br><span class="line">    reduce.reduceRight(_+_)</span><br><span class="line">    reduce.reduceRight(_-_)</span><br></pre></td></tr></table></figure>
+
+<h2 id="wc"><a href="#wc" class="headerlink" title="wc"></a>wc</h2><p>方案1</p>
+<figure class="highlight scala"><table><tr><td class="code"><pre><span class="line"><span class="keyword">val</span> wc = <span class="type">Array</span>(<span class="string">"this is demo"</span>, <span class="string">"good good study"</span>, <span class="string">"day day up"</span>)</span><br><span class="line">    wc.flatMap(_.split(<span class="string">" "</span>))</span><br><span class="line">      .groupBy(word=&gt;word)</span><br><span class="line">      .toList</span><br><span class="line">      .map(t=&gt;(t._1,t._2.size))</span><br><span class="line">      .sortBy(_._1)</span><br><span class="line">      .mkString(<span class="string">","</span>)</span><br></pre></td></tr></table></figure>
+
+<p>方案2</p>
+<figure class="highlight scala"><table><tr><td class="code"><pre><span class="line">wc.flatMap(_.split(<span class="string">" "</span>))</span><br><span class="line">     .map((_,<span class="number">1</span>))</span><br><span class="line">     .groupBy(_._1)</span><br><span class="line">     .toList</span><br><span class="line">     .map(t=&gt;(t._1,t._2.size))</span><br><span class="line">     .sortBy(_._1)</span><br><span class="line">     .mkString(<span class="string">"\t"</span>)</span><br></pre></td></tr></table></figure>
+
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2020/03/02/zookeeper/1/">Zookeeper的安装&amp;使用</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-03-02</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Zookeeper/">Zookeeper</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Zookeeper/">Zookeeper</a></span><div class="content"><h2 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h2><ol>
+<li>什么是分布式</li>
+<li>为什么选择Zookeeper</li>
+<li>Zookeeper的设计目标</li>
+<li>Zookeeper的数据模型</li>
+<li>安装Zookeeper</li>
+<li>单节点配置Zookeeper</li>
+<li>多节点配置Zookeeper</li>
+<li>Zookeeper的常用命令</li>
+<li>Zookeeper的监听</li>
+<li>Zookeeper四字命令</li>
+</ol>
+<h2 id="什么是分布式"><a href="#什么是分布式" class="headerlink" title="什么是分布式"></a>什么是分布式</h2><p>分布式系统</p>
+<p>分布式系统是由一组通过网络进行通信、为了完成共同的任务而协调工作的计算机节点组成的系统。分布式系统的出现是为了用廉价的、普通的机器完成单个计算机无法完成的计算、存储任务。其目的是<strong>利用更多的机器，处理更多的数据</strong>。</p>
+<p>分布式协调技术</p>
+<p>分布式系统的出现带来了分布式协调的问题，也就是我们如何对分布式系统中的进程进行调度，假设我们在某一台机器上面挂载了一个资源，然后其他物理分布的进程都要竞争这个资源，但是我们又不希望他们同时访问，这时候就需要一个协调器，让他们有序的来访问在这个资源。这个协调器就是我们经常提到的那个<strong>锁</strong>，比如说”进程-1”在使用该资源的时候，会先去获得锁，”进程1”获得锁以后会对该资源保持<strong>独占</strong>，这样其他进程就无法访问该资源，”进程1”用完该资源以后就将锁释放掉，让其他进程来获得锁，那么通过这个锁机制，我们就能保证了分布式系统中多个进程能够有序的访问该临界资源。那么我们把这个分布式环境下的这个锁叫作<strong>分布式锁</strong>。分布式锁也就是我们<strong>分布式协调技术</strong>实现的核心内容。</p>
+<h2 id="为什么选择zookeeper"><a href="#为什么选择zookeeper" class="headerlink" title="为什么选择zookeeper"></a>为什么选择zookeeper</h2><p>ZooKeeper是一种为分布式应用所设计的高可用、高性能且一致的开源协调服务，它提供了一项基本服务：<strong>分布式锁服务</strong>。由于ZooKeeper的开源特性，后来我们的开发者在分布式锁的基础上，摸索了出了其他的使用方法：<strong>配置维护、组服务、分布式消息队列</strong>、<strong>分布式通知/协调</strong>等。</p>
+<p>ZooKeeper在实现这些服务时，首先它设计一种新的<strong>数据结构——Znode</strong>，然后在该数据结构的基础上定义了一些<strong>原语</strong>，也就是一些关于该数据结构的一些操作。有了这些数据结构和原语还不够，因为我们的ZooKeeper是工作在一个分布式的环境下，我们的服务是通过消息以网络的形式发送给我们的分布式应用程序，所以还需要一个<strong>通知机制</strong>——Watcher机制。那么总结一下，ZooKeeper所提供的服务主要是通过：数据结构+原语+watcher机制，三个部分来实现的。</p>
+<p>ZooKeeper<strong>性能上的特点</strong>决定了它能够用在大型的、分布式的系统当中。从<strong>可靠性</strong>方面来说，它并不会因为一个节点的错误而崩溃。除此之外，它<strong>严格的序列访问控制</strong>意味着复杂的控制原语可以应用在客户端上。ZooKeeper在一致性、可用性、容错性的保证，也是ZooKeeper的成功之处，它获得的一切成功都与它采用的协议——Zab协议是密不可分的，这些内容将会在后面介绍。</p>
+<h2 id="Zookeeper的设计目标"><a href="#Zookeeper的设计目标" class="headerlink" title="Zookeeper的设计目标"></a>Zookeeper的设计目标</h2><p>ZooKeeper 很简单。ZooKeeper允许分布式进程通过共享的层次命名空间相互协调，该命名空间的组织类似于标准文件系统。名称空间由数据寄存器组成——用ZooKeeper的说法称为znodes——这些寄存器类似于文件和目录。与典型的用于存储的文件系统不同，ZooKeeper数据保存在内存中，这意味着ZooKeeper可以实现高吞吐量和低延迟数。</p>
+<p>ZooKeeper实现非常重视高性能、高可用性和严格有序的访问。ZooKeeper的性能方面意味着它可以用于大型分布式系统。可靠性方面使它不会成为单点故障。严格的排序意味着复杂的同步原语可以在客户端实现。</p>
+<p>ZooKeeper 是复制。与它所协调的分布式进程一样，ZooKeeper本身也打算在一组称为集合的主机上进行复制。</p>
+<p><img src="http://zookeeper.apache.org/doc/current/images/zkservice.jpg" alt="Zookeeper集群部署"></p>
+<p>组成ZooKeeper服务的服务器必须相互了解。它们在内存中维护状态映像，以及持久存储中的事务日志和快照。只要大多数服务器可用，ZooKeeper服务就可用。</p>
+<p>客户端连接到单个ZooKeeper服务器。客户端维护一个TCP连接，通过它发送请求、获取响应、获取监视事件和发送心跳。如果到服务器的TCP连接中断，客户机将连接到另一台服务器。</p>
+<p>ZooKeeper是有序的。ZooKeeper用一个数字来标记每个更新，这个数字反映了所有ZooKeeper事务的顺序。后续操作可以使用该顺序来实现更高级别的抽象，比如同步原语。</p>
+<p>ZooKeeper很快。在“以读取为主”的工作负载中，它的速度特别快。ZooKeeper应用程序运行在数千台机器上，当读操作比写操作更常见时，它的性能最好，比率约为10:1。</p>
+<h2 id="Zookeeper的数据模型"><a href="#Zookeeper的数据模型" class="headerlink" title="Zookeeper的数据模型"></a>Zookeeper的数据模型</h2><p>ZooKeeper拥有一个层次的命名空间，这个和标准的文件系统非常相似，如下图所示。</p>
+<p><img src="https://images0.cnblogs.com/blog/671563/201411/301534562152768.png" alt="ZooKeeper数据模型与文件系统目录树"></p>
+<p>从图中我们可以看出ZooKeeper的数据模型，在结构上和标准文件系统的非常相似，都是采用这种树形层次结构，ZooKeeper树中的每个节点被称为—Znode。和文件系统的目录树一样，ZooKeeper树中的每个节点可以拥有子节点。但也有不同之处：</p>
+<ol>
+<li><p>引用方式</p>
+<p>Zonde通过<strong>路径引用</strong>，如同Unix中的文件路径。路径必须是绝对的，因此他们必须由斜杠字符来<strong>开头</strong>。除此以外，他们必须是唯一的，也就是说每一个路径只有一个表示，因此这些路径不能改变。在ZooKeeper中，路径由Unicode字符串组成，并且有一些限制。字符串”/zookeeper”用以保存管理信息，比如关键配额信息。</p>
+</li>
+<li><p>Znode结构</p>
+<p>ZooKeeper命名空间中的Znode，兼具文件和目录两种特点。既像文件一样维护着数据、元信息、ACL、时间戳等数据结构，又像目录一样可以作为路径标识的一部分。图中的每个节点称为一个Znode。 每个Znode由3部分组成:</p>
+<ul>
+<li><p>stat：此为状态信息, 描述该Znode的版本, 权限等信息</p>
+</li>
+<li><p>data：与该Znode关联的数据</p>
+</li>
+<li><p>children：该Znode下的子节点</p>
+</li>
+</ul>
+<p>ZooKeeper虽然可以关联一些数据，但并没有被设计为常规的数据库或者大数据存储，相反的是，它用来<strong>管理调度数据</strong>，比如分布式应用中的配置文件信息、状态信息、汇集位置等等。这些数据的共同特性就是它们都是很小的数据，通常以KB为大小单位。ZooKeeper的服务器和客户端都被设计为严格检查并限制每个Znode的数据大小至多1M，但常规使用中应该远小于此值。</p>
+</li>
+<li><p>数据访问</p>
+<p>ZooKeeper中的每个节点存储的数据要被<strong>原子性的操作</strong>。也就是说读操作将获取与节点相关的所有数据，写操作也将替换掉节点的所有数据。另外，每一个节点都拥有自己的ACL(访问控制列表)，这个列表规定了用户的权限，即限定了特定用户对目标节点可以执行的操作。</p>
+</li>
+<li><p>节点类型</p>
+<p>ZooKeeper中的节点有两种，分别为<strong>临时节点</strong>和<strong>永久节点</strong>。节点的类型在创建时即被确定，并且不能改变。</p>
+<p>临时节点: </p>
+<ul>
+<li>该节点的生命周期依赖于创建它们的会话。一旦会话(Session)结束，临时节点将被自动删除，当然可以也可以手动删除。虽然每个临时的Znode都会绑定到一个客户端会话，但他们对所有的客户端还是可见的。另外，ZooKeeper的临时节点不允许拥有子节点。</li>
+</ul>
+<p>永久节点：</p>
+<ul>
+<li>该节点的生命周期不依赖于会话，并且只有在客户端显示执行删除操作的时候，他们才能被删除。</li>
+</ul>
+</li>
+<li><p>顺序节点</p>
+<p>当创建Znode的时候，用户可以请求在ZooKeeper的路径结尾添加一个<strong>递增的计数</strong>。这个计数<strong>对于此节点的父节点来说</strong>是唯一的，它的格式为”%10d”(10位数字，没有数值的数位用0补充，例如”0000000001”)。当计数值大于232-1时，计数器将溢出。</p>
+</li>
+<li><p>观察</p>
+<p>客户端可以在节点上设置watch，我们称之为<strong>监视器</strong>。当节点状态发生改变时(Znode的增、删、改)将会触发watch所对应的操作。当watch被触发时，ZooKeeper将会向客户端发送且仅发送一条通知，因为watch只能被触发一次，这样可以减少网络流量。</p>
+</li>
+</ol>
+<h2 id="安装Zookeeper"><a href="#安装Zookeeper" class="headerlink" title="安装Zookeeper"></a>安装Zookeeper</h2><ol>
+<li><p>下载源码包()</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">http:<span class="comment">//archive.cloudera.com/cdh5/cdh/5/zookeeper-3.4.5-cdh5.16.2.tar.gz</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>编译</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">yum install ant	<span class="comment">//zk的编译不是使用maven的，而是使用ant</span></span><br><span class="line">ant <span class="keyword">package</span></span><br></pre></td></tr></table></figure>
+
+<p>需要注意两个坑:</p>
+<ol>
+<li>需要指定jdk为1.7</li>
+<li>远端仓库连不上，需要改路径</li>
+</ol>
+</li>
+<li><p>配置环境变量</p>
+</li>
+</ol>
+<h2 id="单节点配置Zookeeper"><a href="#单节点配置Zookeeper" class="headerlink" title="单节点配置Zookeeper"></a>单节点配置Zookeeper</h2><ol>
+<li>修改zoo.cfg文件(需要从zoo_sample.cfg复制一份)</li>
+<li>修改dataDir路径，默认放在/tmp目录下，dataDir主要用于保存Zookeeper中的数据</li>
+<li>启动服务端 <code>bin/zkServer.sh start</code></li>
+<li>启动客户端 <code>bin/zkCli.sh</code></li>
+</ol>
+<h2 id="多节点配置Zookeeper"><a href="#多节点配置Zookeeper" class="headerlink" title="多节点配置Zookeeper"></a>多节点配置Zookeeper</h2><ol>
+<li><p>修改zoo.cfg文件(需要从zoo_sample.cfg复制一份)</p>
+</li>
+<li><p>修改dataDir路径，默认放在/tmp目录下，dataDir主要用于保存Zookeeper中的数据</p>
+</li>
+<li><p>在zoo.cfg文件中配置集群的id、主机和端口号，<code>集群共享内容</code></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">server<span class="number">.2</span>=hadoop102:<span class="number">2888</span>:<span class="number">3888</span></span><br><span class="line">server<span class="number">.3</span>=hadoop103:<span class="number">2888</span>:<span class="number">3888</span></span><br><span class="line">server<span class="number">.4</span>=hadoop104:<span class="number">2888</span>:<span class="number">3888</span></span><br></pre></td></tr></table></figure>
+
+<p><code>server.A=B:C:D</code><br>A：标识第几号服务器，有一个myid要与之对应<br>B：服务器的地址<br>C：follower与leader通信的端口<br>D：选举leader时的端口</p>
+</li>
+<li><p>在dataDir指定的路径下创建myid文件，添加与之对应的服务器编号，即编号A，<code>集群唯一内容</code>，Zookeeper启动时读取此文件，拿到里面的数据与zoo.cfg里面的配置信息比较从而判断到底是哪个server。</p>
+</li>
+<li><p>启动集群服务端 <code>bin/zkServer.sh start</code></p>
+</li>
+<li><p>启动集群客户端 ，工作中客户端连接集群命令: </p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">./zkCli.sh -server hadoop102:<span class="number">2181</span>,hadoop103:<span class="number">2181</span>,hadoop104:<span class="number">2181</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h2 id="Zookeeper的常用命令"><a href="#Zookeeper的常用命令" class="headerlink" title="Zookeeper的常用命令"></a>Zookeeper的常用命令</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">stat 	状态</span><br><span class="line">set	修改</span><br><span class="line">ls 	查看</span><br><span class="line">ls2 	ls+get</span><br><span class="line">delete 	删除</span><br><span class="line">rmr 	递归删除</span><br><span class="line">get 	得到</span><br><span class="line">create 	创建</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li><p><code>stat path [watch]</code>：数据的状态</p>
+<p><code>[zk: localhost:2181(CONNECTED) 1] stat /tunan</code> </p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">cZxid = <span class="number">0x21</span>	<span class="comment">//节点的id号</span></span><br><span class="line">ctime = Mon Mar <span class="number">02</span> <span class="number">15</span>:<span class="number">27</span>:<span class="number">36</span> CST <span class="number">2020</span>	<span class="comment">//节点的创建时间</span></span><br><span class="line">mZxid = <span class="number">0x32</span>	<span class="comment">//节点修改的id号</span></span><br><span class="line">mtime = Mon Mar <span class="number">02</span> <span class="number">15</span>:<span class="number">36</span>:<span class="number">45</span> CST <span class="number">2020</span>	<span class="comment">//节点修改的时间</span></span><br><span class="line">pZxid = <span class="number">0x38</span>	<span class="comment">//最后更新的子节点的id</span></span><br><span class="line">cversion = <span class="number">9</span>	<span class="comment">//节点所拥有的子节点的被修改的版本号</span></span><br><span class="line">dataVersion = <span class="number">1</span>	<span class="comment">//节点数据版本号</span></span><br><span class="line">aclVersion = <span class="number">0</span>	<span class="comment">//节点所拥有的ACL版本号</span></span><br><span class="line">ephemeralOwner = <span class="number">0x0</span>	<span class="comment">//特殊标记 0x0: 永久节点</span></span><br><span class="line">dataLength = <span class="number">3</span>	<span class="comment">//数据的长度</span></span><br><span class="line">numChildren = <span class="number">5</span>	<span class="comment">//子节点的个数</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>set path data [version]</code>：修改数据</p>
+<p><code>[zk: localhost:2181(CONNECTED) 5] set /tunan/aaa 123456</code></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">cZxid = <span class="number">0x31</span>	<span class="comment">//这是一个子节点的id跟上面的父节点的id不同</span></span><br><span class="line">ctime = Mon Mar <span class="number">02</span> <span class="number">15</span>:<span class="number">35</span>:<span class="number">31</span> CST <span class="number">2020</span>	<span class="comment">//子节点的创建时间</span></span><br><span class="line">mZxid = <span class="number">0x3a</span>	<span class="comment">//子节点的修改id</span></span><br><span class="line">mtime = Tue Mar <span class="number">03</span> <span class="number">11</span>:<span class="number">28</span>:<span class="number">06</span> CST <span class="number">2020</span>	<span class="comment">//子节点的修改时间</span></span><br><span class="line">pZxid = <span class="number">0x31</span>	<span class="comment">//最后更新的子节点的id，我们现在更新的是这个节点，所以对应cZxid</span></span><br><span class="line">cversion = <span class="number">0</span>	<span class="comment">//节点所拥有的子节点的被修改的版本号，明显和父节点不同</span></span><br><span class="line">dataVersion = <span class="number">1</span>	<span class="comment">//数据被修改过了，所以版本号变了</span></span><br><span class="line">aclVersion = <span class="number">0</span>	<span class="comment">//节点所拥有的ACL版本号</span></span><br><span class="line">ephemeralOwner = <span class="number">0x0</span>	<span class="comment">//特殊标记 0x0: 永久节点</span></span><br><span class="line">dataLength = <span class="number">6</span>	<span class="comment">//数据的长度</span></span><br><span class="line">numChildren = <span class="number">0</span>	<span class="comment">//子节点的个数</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>ls path [watch]</code>：查看节点</p>
+<p><code>[zk: localhost:2181(CONNECTED) 8] ls /tunan</code></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">[aaa, ccc, bbb, eee, ddd]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>ls2 path [watch]</code>：查看并获取节点内容，等同于get</p>
+<p><code>[zk: localhost:2181(CONNECTED) 9] ls2 /tunan</code></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">[aaa, ccc, bbb, eee, ddd]	<span class="comment">//节点的数据内容</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>delete path [version]</code>：删除节点</p>
+<p><code>[zk: localhost:2181(CONNECTED) 10] delete /tunan/aaa</code><br><code>[zk: localhost:2181(CONNECTED) 11] ls /tunan</code></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">[ccc, bbb, eee, ddd]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>rmr path</code>：递归删除节点</p>
+<p><code>[zk: localhost:2181(CONNECTED) 12] rmr /tunan/ccc</code><br><code>[zk: localhost:2181(CONNECTED) 13] ls /tunan</code></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">[bbb, eee, ddd]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>get path [watch]</code>：获取节点内容，等同于ls2</p>
+<p><code>[zk: localhost:2181(CONNECTED) 14] get /tunan/bbb</code></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="number">222</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>create [-s] [-e] path data acl</code>：创建节点</p>
+<p>-s：顺序创建</p>
+<p><code>[zk: localhost:2181(CONNECTED) 0] create -s /tunan/bbb 12345</code></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Created /tunan/bbb0000000007</span><br></pre></td></tr></table></figure>
+
+<p><code>[zk: localhost:2181(CONNECTED) 1] create -s /tunan/bbb 12345</code></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Created /tunan/bbb0000000008</span><br></pre></td></tr></table></figure>
+
+<p>-e：临时创建</p>
+<p><code>[zk: localhost:2181(CONNECTED) 5] create -e /tunan/fff 12345</code></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Created /tunan/fff</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h2 id="Zookeeper的监听"><a href="#Zookeeper的监听" class="headerlink" title="Zookeeper的监听"></a>Zookeeper的监听</h2><ol>
+<li><p>watch概述</p>
+<p>ZooKeeper可以为所有的<strong>读操作</strong>设置watch，这些读操作包括：exists()、getChildren()及getData()。watch事件是<strong>一次性的触发器</strong>，当watch的对象状态发生改变时，将会触发此对象上watch所对应的事件。watch事件将被<strong>异步</strong>地发送给客户端，并且ZooKeeper为watch机制提供了有序的<strong>一致性保证</strong>。理论上，客户端接收watch事件的时间要快于其看到watch对象状态变化的时间。</p>
+</li>
+<li><p>watch类型</p>
+<p>ZooKeeper所管理的watch可以分为两类：</p>
+<ul>
+<li><p>数据watch(data watches)：<strong>getData</strong>和<strong>exists</strong>负责设置数据watch</p>
+</li>
+<li><p>孩子watch(child watches)：<strong>getChildren</strong>负责设置孩子watch</p>
+</li>
+</ul>
+<p>我们可以通过操作<strong>返回的数据</strong>来设置不同的watch：</p>
+<ul>
+<li>getData和exists：</li>
+<li>getChildren：返回孩子列表</li>
+</ul>
+<p>因此</p>
+<ol>
+<li><p>一个成功的<strong>setData操作</strong>将触发Znode的数据watch</p>
+</li>
+<li><p>一个成功的<strong>create操作</strong>将触发Znode的数据watch以及孩子watch</p>
+</li>
+<li><p>一个成功的<strong>delete操作</strong>将触发Znode的数据watch以及孩子watch</p>
+</li>
+</ol>
+</li>
+<li><p>watch注册与处触发</p>
+<p>图 6.1 watch设置操作及相应的触发器如图下图所示：</p>
+<p><img src="https://images0.cnblogs.com/blog/671563/201411/301534579188980.png" alt="img"></p>
+<ol>
+<li>exists操作上的watch，在被监视的Znode<strong>创建</strong>、<strong>删除</strong>或<strong>数据更新</strong>时被触发。</li>
+<li>getData操作上的watch，在被监视的Znode<strong>删除</strong>或<strong>数据更新</strong>时被触发。在被创建时不能被触发，因为只有</li>
+<li>getChildren操作上的watch，在被监视的Znode的子节点<strong>创建</strong>或<strong>删除</strong>，或是这个Znode自身被<strong>删除</strong>时被触发。可以通过查看watch事件类型来区分是Znode，还是他的子节点被删除：NodeDelete表示Znode被删除，NodeDeletedChanged表示子节点被删除。</li>
+</ol>
+<p>Watch由客户端所连接的ZooKeeper服务器在本地维护，因此watch可以非常容易地设置、管理和分派。当客户端连接到一个新的服务器时，任何的会话事件都将可能触发watch。另外，当从服务器断开连接的时候，watch将不会被接收。但是，当一个客户端重新建立连接的时候，任何先前注册过的watch都会被重新注册。</p>
+</li>
+<li><p>需要注意的几点</p>
+<p>Zookeeper的watch实际上要处理两类事件：</p>
+<ul>
+<li><p>连接状态事件(type=None, path=null)</p>
+<p>这类事件不需要注册，也不需要我们连续触发，我们只要处理就行了。</p>
+</li>
+<li><p>节点事件</p>
+<p>节点的建立，删除，数据的修改。它是one time trigger，我们需要不停的注册触发，还可能发生事件丢失的情况。</p>
+</li>
+</ul>
+<p>上面2类事件都在Watch中处理，也就是重载的<strong>process(Event event)</strong></p>
+<p>节点事件的触发，通过函数exists，getData或getChildren来处理这类函数，有双重作用：</p>
+<ol>
+<li>注册触发事件</li>
+<li>函数本身的功能</li>
+</ol>
+<p>函数的本身的功能又可以用异步的回调函数来实现,重载processResult()过程中处理函数本身的的功能。</p>
+</li>
+<li><p>命令行操作</p>
+<p>监听创建节点(<code>stat命令</code>)</p>
+<p><code>stat /xiaoqi watch</code></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[zk: localhost:2181(CONNECTED) 13] create /xiaoqi 111</span><br><span class="line"></span><br><span class="line">WATCHER::</span><br><span class="line"></span><br><span class="line">WatchedEvent state:SyncConnected type:NodeCreated path:/xiaoqi</span><br><span class="line">Created /xiaoqi</span><br></pre></td></tr></table></figure>
+
+<p>监听修改节点(<code>stat命令</code>)</p>
+<p><code>stat /xiaoqi watch</code></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[zk: localhost:2181(CONNECTED) 16] set /xiaoqi 1234</span><br><span class="line"></span><br><span class="line">WATCHER::</span><br><span class="line"></span><br><span class="line">WatchedEvent state:SyncConnected type:NodeDataChanged path:/xiaoqi</span><br></pre></td></tr></table></figure>
+
+<p>监听删除节点(<code>stat命令</code>)</p>
+<p><code>stat /xiaoqi watch</code></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[zk: localhost:2181(CONNECTED) 20] delete /xiaoqi</span><br><span class="line"></span><br><span class="line">WATCHER::</span><br><span class="line"></span><br><span class="line">WatchedEvent state:SyncConnected type:NodeDeleted path:/xiaoqi</span><br></pre></td></tr></table></figure>
+
+<p>监听父节点删除子节点(<code>ls命令</code>)</p>
+<p><code>ls /xiaoqi watch</code></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[zk: localhost:2181(CONNECTED) 29] create /xiaoqi/aaa 111</span><br><span class="line"></span><br><span class="line">WATCHER::</span><br><span class="line"></span><br><span class="line">WatchedEvent state:SyncConnected type:NodeChildrenChanged path:/xiaoqi</span><br></pre></td></tr></table></figure>
+
+<p>监听父节点创建子节点(<code>ls命令</code>)</p>
+<p><code>ls /xiaoqi watch</code></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[zk: localhost:2181(CONNECTED) 31] delete /xiaoqi/aaa</span><br><span class="line"></span><br><span class="line">WATCHER::</span><br><span class="line"></span><br><span class="line">WatchedEvent state:SyncConnected type:NodeChildrenChanged path:/xiaoqi</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h2 id="Zookeeper四字命令"><a href="#Zookeeper四字命令" class="headerlink" title="Zookeeper四字命令"></a>Zookeeper四字命令</h2><p><a href="">官网</a></p>
+<p>无须启动zk客户端，直接在命令行输入<code>echo {}| nc localhost 2181</code> 即可</p>
+<p><code>stat:</code> 列出服务器和连接的客户机的简要信息。</p>
+<p>echo stat | nc localhost 2181</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Zookeeper version: <span class="number">3.4</span><span class="number">.5</span>-cdh5<span class="number">.16</span><span class="number">.2</span>--<span class="number">1</span>, built on <span class="number">06</span>/<span class="number">03</span>/<span class="number">2019</span> <span class="number">10</span>:<span class="number">40</span> GMT</span><br><span class="line">Clients:	<span class="comment">//客户端</span></span><br><span class="line"> /<span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">58056</span>[<span class="number">0</span>](queued=<span class="number">0</span>,recved=<span class="number">1</span>,sent=<span class="number">0</span>)</span><br><span class="line"> /<span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span>:<span class="number">57020</span>[<span class="number">1</span>](queued=<span class="number">0</span>,recved=<span class="number">288</span>,sent=<span class="number">296</span>)</span><br><span class="line"></span><br><span class="line">Latency min/avg/max: <span class="number">0</span>/<span class="number">0</span>/<span class="number">20</span></span><br><span class="line">Received: <span class="number">454</span>	<span class="comment">//接收</span></span><br><span class="line">Sent: <span class="number">461</span>		<span class="comment">//发送</span></span><br><span class="line">Connections: <span class="number">2</span>	<span class="comment">//连接数</span></span><br><span class="line">Outstanding: <span class="number">0</span></span><br><span class="line">Zxid: <span class="number">0x53</span></span><br><span class="line">Mode: standalone	<span class="comment">//模式</span></span><br><span class="line">Node count: <span class="number">17</span>	<span class="comment">//节点数</span></span><br></pre></td></tr></table></figure>
+
+<p><code>ruok:</code> 测试服务器是否在非错误状态下运行。</p>
+<p>echo ruok | nc localhost 2181</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">imok</span><br></pre></td></tr></table></figure>
+
+<p><code>dump:</code> 列出未完成的会话和临时节点。这只对leader有效。</p>
+<p>echo dump | nc localhost 2181</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">SessionTracker dump:</span><br><span class="line"><span class="function">Session <span class="title">Sets</span> <span class="params">(<span class="number">3</span>)</span>:</span></span><br><span class="line"><span class="function">0 expire at Tue Mar 03 12:29:46 CST 2020:</span></span><br><span class="line"><span class="function">0 expire at Tue Mar 03 12:29:56 CST 2020:</span></span><br><span class="line"><span class="function">1 expire at Tue Mar 03 12:30:06 CST 2020:</span></span><br><span class="line"><span class="function">	0x1709e65d9b00001</span></span><br><span class="line"><span class="function">ephemeral nodes dump:</span></span><br><span class="line"><span class="function">Sessions with <span class="title">Ephemerals</span> <span class="params">(<span class="number">1</span>)</span>:</span></span><br><span class="line"><span class="function">0x1709e65d9b00001:</span></span><br><span class="line"><span class="function">	/tunan/fff	<span class="comment">//临时节点</span></span></span><br></pre></td></tr></table></figure>
+
+<p><code>conf:</code> 打印关于服务配置的详细信息。</p>
+<p>echo conf | nc localhost 2181</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">clientPort=<span class="number">2181</span>	<span class="comment">//端口</span></span><br><span class="line">dataDir=/home/hadoop/tmp/zookeeper/version-<span class="number">2</span>	<span class="comment">//数据目录</span></span><br><span class="line">dataLogDir=/home/hadoop/tmp/zookeeper/version-<span class="number">2</span>	<span class="comment">//日志目录</span></span><br><span class="line">tickTime=<span class="number">2000</span>	<span class="comment">//心跳时间，单位毫秒</span></span><br><span class="line">maxClientCnxns=<span class="number">60</span>	<span class="comment">//最大连接数</span></span><br><span class="line">minSessionTimeout=<span class="number">4000</span>	<span class="comment">//最小的超时时间</span></span><br><span class="line">maxSessionTimeout=<span class="number">40000</span>	<span class="comment">//最大的超时时间</span></span><br><span class="line">serverId=<span class="number">0</span>	<span class="comment">//服务器的id</span></span><br></pre></td></tr></table></figure>
+
+<p><code>envi:</code> 打印出服务环境的细节</p>
+<p>echo envi | nc localhost 2181</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Environment:</span><br><span class="line">zookeeper.version=<span class="number">3.4</span><span class="number">.5</span>-cdh5<span class="number">.16</span><span class="number">.2</span>--<span class="number">1</span>, built on <span class="number">06</span>/<span class="number">03</span>/<span class="number">2019</span> <span class="number">10</span>:<span class="number">40</span> GMT</span><br><span class="line">host.name=aliyun</span><br><span class="line">java.version=<span class="number">1.8</span><span class="number">.0_144</span></span><br><span class="line">java.vendor=Oracle Corporation</span><br><span class="line">java.home=/usr/java/jdk1<span class="number">.8</span><span class="number">.0_144</span>/jre</span><br><span class="line">java<span class="class">.<span class="keyword">class</span>.<span class="title">path</span></span>=/home/hadoop/app/zookeeper/bin/../build/classes:/home/hadoop/app/zookeeper/bin/../build/lib<span class="comment">/*.jar:/home/hadoop/app/zookeeper/bin/../share/zookeeper/zookeeper-3.4.5-cdh5.16.2.jar:/home/hadoop/app/zookeeper/bin/../share/zookeeper/slf4j-log4j12-1.7.5.jar:/home/hadoop/app/zookeeper/bin/../share/zookeeper/slf4j-api-1.7.5.jar:/home/hadoop/app/zookeeper/bin/../share/zookeeper/netty-3.10.5.Final.jar:/home/hadoop/app/zookeeper/bin/../share/zookeeper/log4j-1.2.16.jar:/home/hadoop/app/zookeeper/bin/../share/zookeeper/jline-2.11.jar:/home/hadoop/app/zookeeper/bin/../src/java/lib/*.jar:/home/hadoop/app/zookeeper/bin/../conf:</span></span><br><span class="line"><span class="comment">java.library.path=/usr/java/packages/lib/amd64:/usr/lib64:/lib64:/lib:/usr/lib</span></span><br><span class="line"><span class="comment">java.io.tmpdir=/tmp</span></span><br><span class="line"><span class="comment">java.compiler=&lt;NA&gt;</span></span><br><span class="line"><span class="comment">os.name=Linux</span></span><br><span class="line"><span class="comment">os.arch=amd64</span></span><br><span class="line"><span class="comment">os.version=3.10.0-514.26.2.el7.x86_64</span></span><br><span class="line"><span class="comment">user.name=hadoop</span></span><br><span class="line"><span class="comment">user.home=/home/hadoop</span></span><br><span class="line"><span class="comment">user.dir=/home/hadoop/app/zookeeper-3.4.5-cdh5.16.2/bin</span></span><br></pre></td></tr></table></figure>
+
+<p><code>mntr:</code> 输出可用于监视集群健康状况的变量列表。</p>
+<p>echo mntr | nc localhost 2181</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">zk_version	<span class="number">3.4</span><span class="number">.5</span>-cdh5<span class="number">.16</span><span class="number">.2</span>--<span class="number">1</span>, built on <span class="number">06</span>/<span class="number">03</span>/<span class="number">2019</span> <span class="number">10</span>:<span class="number">40</span> GMT</span><br><span class="line">zk_avg_latency	<span class="number">0</span></span><br><span class="line">zk_max_latency	<span class="number">20</span></span><br><span class="line">zk_min_latency	<span class="number">0</span></span><br><span class="line">zk_packets_received	<span class="number">494</span></span><br><span class="line">zk_packets_sent	<span class="number">501</span></span><br><span class="line">zk_num_alive_connections	<span class="number">2</span></span><br><span class="line">zk_outstanding_requests	<span class="number">0</span></span><br><span class="line">zk_server_state	standalone</span><br><span class="line">zk_znode_count	<span class="number">17</span></span><br><span class="line">zk_watch_count	<span class="number">1</span></span><br><span class="line">zk_ephemerals_count	<span class="number">1</span></span><br><span class="line">zk_approximate_data_size	<span class="number">253</span></span><br><span class="line">zk_open_file_descriptor_count	<span class="number">27</span></span><br><span class="line">zk_max_file_descriptor_count	<span class="number">65535</span></span><br><span class="line">zk_fsync_threshold_exceed_count	<span class="number">0</span></span><br></pre></td></tr></table></figure>
+
+<p><code>wchs:</code> 按会话列出关于服务器监视的详细信息。</p>
+<p>echo wchs | nc localhost 2181</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="number">1</span> connections watching <span class="number">1</span> paths</span><br><span class="line">Total watches:<span class="number">1</span></span><br></pre></td></tr></table></figure>
 
 
-hue简介HUE=Hadoop User E ...</div><a class="more" href="/2020/03/09/hue/1/#more" style="margin-top: 14px">Read more</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2020/03/07/java/9/">FastJson的使用</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-03-07</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Java/">Java</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Java/">Java</a></span><div class="content">前言最近在开发过程中使用了大量的json作为前后端数据交换的方式,由于之前没有对json做过系统的学习,所有在使用过程中查阅了大量的文档与资料,这里主要记录了我在开发后对json以及FastJson使用的总结
-Json介绍JSON(javaScript Object Notation)是一种轻量级的 ...</div><a class="more" href="/2020/03/07/java/9/#more" style="margin-top: 14px">Read more</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2020/03/03/scala/1/">Scala之高阶函数</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-03-03</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Scala/">Scala</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Scala/">Scala</a></span><div class="content">目标
-sorted
-sortBy
-sortWith
-flatten
-map
-flatMap
-filter
-groupBy
-flod
-reduce
-wc
 
-sorted排序，默认升序
-val array = Array(1, 2, 5, 4, 3)    array.sorted
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2020/02/21/offlinedw/8.%E9%A1%B9%E7%9B%AE%E5%A4%8D%E7%9B%98/">项目复盘</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-02-21</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/OfflineDW/">OfflineDW</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/OfflineDW/">OfflineDW</a></span><div class="content"><h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><ol>
+<li>任务分配问题</li>
+<li>hive问题</li>
+<li>etl代码问题</li>
+<li>任务调度问题</li>
+</ol>
+<h2 id="任务分配问题"><a href="#任务分配问题" class="headerlink" title="任务分配问题"></a>任务分配问题</h2><ol>
+<li>立项开始就需要梳理开发流程，精确到每一个开发环节。</li>
+<li>开发定义好接口尽量并行开发。</li>
+<li>建立规范、代码版本同步。</li>
+<li>定义ods层表名,dws层表名。</li>
+<li>有人跟踪项目进度有没有阻碍，进度落后需要帮忙</li>
+</ol>
+<h2 id="hive问题"><a href="#hive问题" class="headerlink" title="hive问题"></a>hive问题</h2><ol>
+<li>建表需要加注释，规范表名。</li>
+<li>重建外部表需要删除数据。</li>
+</ol>
+<h2 id="etl代码问题"><a href="#etl代码问题" class="headerlink" title="etl代码问题"></a>etl代码问题</h2><ol>
+<li>ip解析应该放在setup上。</li>
+<li>searcher 提到全局静态变量</li>
+</ol>
+<h2 id="任务调度"><a href="#任务调度" class="headerlink" title="任务调度"></a>任务调度</h2><ol>
+<li>每个统计任务直接跟sqoop同步任务</li>
+<li>数据倾斜group by 优化 skewindata  = true</li>
+</ol>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2020/02/20/azkaban/1/">Azkaban的安装&amp;使用&amp;坑</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-02-20</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Azkaban/">Azkaban</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Azkaban/">Azkaban</a></span><div class="content"><h2 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h2><ol>
+<li>Azkaban的安装</li>
+<li>Azkaban的使用</li>
+<li>Git的安装</li>
+</ol>
+<h2 id="Git的安装"><a href="#Git的安装" class="headerlink" title="Git的安装"></a>Git的安装</h2><p>在安装Azkaban之前要安装Git</p>
+<ol>
+<li><p>获取github最新的Git安装包下载链接，进入Linux服务器，执行下载，命令为： </p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">wget https://github.com/git/git/archive/v2.17.0.tar.gz</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>压缩包解压，命令为：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">tar -zxvf v2.17.0.tar.gz</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>安装编译源码所需依赖，命令为：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">yum install curl-devel expat-devel gettext-devel openssl-devel zlib-devel gcc perl-ExtUtils-MakeMaker</span><br></pre></td></tr></table></figure>
 
-sortBy排序， ...</div><a class="more" href="/2020/03/03/scala/1/#more" style="margin-top: 14px">Read more</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2020/03/02/zookeeper/1/">Zookeeper的安装&amp;使用</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-03-02</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Zookeeper/">Zookeeper</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Zookeeper/">Zookeeper</a></span><div class="content">目标
-什么是分布式
-为什么选择Zookeeper
-Zookeeper的设计目标
-Zookeeper的数据模型
-安装Zookeeper
-单节点配置Zookeeper
-多节点配置Zookeeper
-Zookeeper的常用命令
-Zookeeper的监听
-Zookeeper四字命令
+<p>耐心等待安装，出现提示输入y即可；</p>
+</li>
+<li><p>安装依赖时，yum自动安装了Git，需要卸载旧版本Git，命令为：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">yum remove git -y</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>进入解压后的文件夹，命令 cd git-2.17.0 ，然后执行编译，命令为:  </p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">make prefix=/usr/local/git all</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>安装Git至/usr/local/git路径，命令为:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">make prefix=/usr/local/git install</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>打开环境变量配置文件，命令 vim /etc/profile ，在底部加上Git相关配置信息：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">export GIT_HOME=/usr/local/git/bin</span><br><span class="line">export PATH=$GIT_HOME/bin/:$PATH</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>输入命令 <code>git --version</code> ，查看安装的git版本，校验通过，安装成功。</p>
+</li>
+</ol>
+<h2 id="Azkaban的安装"><a href="#Azkaban的安装" class="headerlink" title="Azkaban的安装"></a>Azkaban的安装</h2><ol>
+<li><p>下载<a href="https://github.com/azkaban/azkaban/releases" target="_blank" rel="noopener">Azkaban</a></p>
+</li>
+<li><p>解压</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">tar -xzvf 3.81.0.tar.gz -C ../app/</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>安装<a href="https://azkaban.readthedocs.io/en/latest/getStarted.html" target="_blank" rel="noopener">编译文档</a></p>
+<p>在开始编译之前要下载名为<a href="https://services.gradle.org/distributions/gradle-4.6-all.zip" target="_blank" rel="noopener">gradle-4.6-all.zip</a>的包，如果直接让系统下载超级慢，下载好了放在同目录下，并且在<code>/azkaban/gradle/wrapper/gradle-wrapper.properties</code> 中注释下载路径，并指定已经下载好的路径</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">distributionUrl=gradle-4.6-all.zip</span><br><span class="line"><span class="meta">#</span><span class="bash">distributionUrl=https\://services.gradle.org/distributions/gradle-4.6-all.zip</span></span><br></pre></td></tr></table></figure>
 
-什么是分布式分布式系 ...</div><a class="more" href="/2020/03/02/zookeeper/1/#more" style="margin-top: 14px">Read more</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2020/02/21/offlinedw/8.%E9%A1%B9%E7%9B%AE%E5%A4%8D%E7%9B%98/">项目复盘</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-02-21</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/OfflineDW/">OfflineDW</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/OfflineDW/">OfflineDW</a></span><div class="content">目录
-任务分配问题
-hive问题
-etl代码问题
-任务调度问题
+<p>还需要安装gcc环境:</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo yum install -y gcc-c++*</span><br></pre></td></tr></table></figure>
 
-任务分配问题
-立项开始就需要梳理开发流程，精确到每一个开发环节。
-开发定义好接口尽量并行开发。
-建立规范、代码版本同步。
-定义ods层表名,dws层表名。
-有人跟踪项目进度有没有阻碍，进度落后需要帮忙
-
-hive问题
-建表需要加注释， ...</div><a class="more" href="/2020/02/21/offlinedw/8.%E9%A1%B9%E7%9B%AE%E5%A4%8D%E7%9B%98/#more" style="margin-top: 14px">Read more</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2020/02/20/azkaban/1/">Azkaban的安装&amp;使用&amp;坑</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-02-20</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Azkaban/">Azkaban</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Azkaban/">Azkaban</a></span><div class="content">目标
-Azkaban的安装
-Azkaban的使用
-Git的安装
-
-Git的安装在安装Azkaban之前要安装Git
-
-获取github最新的Git安装包下载链接，进入Linux服务器，执行下载，命令为： 
-wget https://github.com/git/git/archive/v2.17.0 ...</div><a class="more" href="/2020/02/20/azkaban/1/#more" style="margin-top: 14px">Read more</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2020/02/20/offlinedw/7.%E7%BB%93%E6%9E%9C%E6%95%B0%E6%8D%AE%E7%9A%84%E5%B1%95%E7%A4%BA/">结果数据的展示</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-02-20</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/OfflineDW/">OfflineDW</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/OfflineDW/">OfflineDW</a></span><div class="content">由于时间忙不过来，这篇暂时不更新，仅作为维护项目的完整性存在。。。
-</div><a class="more" href="/2020/02/20/offlinedw/7.%E7%BB%93%E6%9E%9C%E6%95%B0%E6%8D%AE%E7%9A%84%E5%B1%95%E7%A4%BA/#more" style="margin-top: 14px">Read more</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2020/02/19/offlinedw/6.%E4%B8%9A%E5%8A%A1%E6%95%B0%E6%8D%AE%E7%9A%84%E6%8A%BD%E5%8F%96/">业务数据的抽取</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-02-19</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/OfflineDW/">OfflineDW</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/OfflineDW/">OfflineDW</a></span><div class="content">由于时间忙不过来，这篇暂时不更新，仅作为项目的完整性存在。。。
-</div><a class="more" href="/2020/02/19/offlinedw/6.%E4%B8%9A%E5%8A%A1%E6%95%B0%E6%8D%AE%E7%9A%84%E6%8A%BD%E5%8F%96/#more" style="margin-top: 14px">Read more</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2020/02/18/offlinedw/5.%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93%E7%9A%84%E5%88%86%E5%B1%82/">数据仓库的分层</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-02-18</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/OfflineDW/">OfflineDW</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/OfflineDW/">OfflineDW</a></span><div class="content">系统架构图:
-
-目标
-数据仓库为什么要分层
-数据仓库如何分层
-使用脚本将数据执行分层
-数据分析案例
-使用crontab调度脚本(临时)
-
-数据仓库为什么要分层分层的主要原因是在管理数据的时候，能对数据有一个更加清晰的掌控，详细来讲，主要有下面几个原因：
-
-清晰数据结构，每一个数据分层都有它的作用域， ...</div><a class="more" href="/2020/02/18/offlinedw/5.%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93%E7%9A%84%E5%88%86%E5%B1%82/#more" style="margin-top: 14px">Read more</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2020/02/17/offlinedw/4.%E9%A1%B9%E7%9B%AE%E6%95%B0%E6%8D%AE%E7%9A%84ETL/">项目数据的ETL</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-02-17</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/OfflineDW/">OfflineDW</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/OfflineDW/">OfflineDW</a></span><div class="content">系统架构图:
-
-目标
-为什么要进行ETL
-
-什么是ETL
-
-ETL该怎么做
-
-ETL在服务器上运行需要解决的问题
+<p>修改maven仓库为阿里云镜像</p>
+<p><code>vim azkaban-3.81.0/build.gradle 54行左右</code> </p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">maven &#123;</span><br><span class="line">	//这里是阿里云</span><br><span class="line">	url &apos;http://maven.aliyun.com/nexus/content/repositories/central/&apos;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 
-为什么要进行ETL在上一步我们使用Flume采集数据到HDFS，从系统架构图来看现在要进行数据的ETL操作，ETL进程对数据进行规范化、验证、清洗，并最终装载进入数据仓库
-什么是ET ...</div><a class="more" href="/2020/02/17/offlinedw/4.%E9%A1%B9%E7%9B%AE%E6%95%B0%E6%8D%AE%E7%9A%84ETL/#more" style="margin-top: 14px">Read more</a><hr></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/5/">&lt;&lt;</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><span class="space">&hellip;</span><a class="page-number" href="/page/13/">13</a><a class="extend next" rel="next" href="/page/7/">&gt;&gt;</a></div></nav></div></div><footer class="footer-bg" style="background-image: url(/img/soroush-golpoor-1497416-unsplash.jpg)"><div class="layout" id="footer"><div class="copyright">&copy;2018 - 2020 By Tunan</div><div class="framework-info"><span>Driven - </span><a href="#"><span>Hexo</span></a><span class="footer-separator">|</span><span>Theme - </span><a href="#"><span>Melody</span></a></div><div class="footer_custom_text">大家好，我是图南，很高兴认识你们！</div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_site_uv"><i class="fa fa-user"></i><span id="busuanzi_value_site_uv"></span><span></span></span><span class="footer-separator">|</span><span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i><span id="busuanzi_value_site_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.6.1"></script><script src="/js/fancybox.js?version=1.6.1"></script><script src="/js/sidebar.js?version=1.6.1"></script><script src="/js/copy.js?version=1.6.1"></script><script src="/js/fireworks.js?version=1.6.1"></script><script src="/js/transition.js?version=1.6.1"></script><script src="/js/scroll.js?version=1.6.1"></script><script src="/js/head.js?version=1.6.1"></script><script src="/js/search/local-search.js"></script><script>if(/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+
+</li>
+</ol>
+<p>   正式编译</p>
+   <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">./gradlew build installDist -x test</span><br></pre></td></tr></table></figure>
+
+<p>   编译后生成三个文件</p>
+   <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">azkaban-exec-server</span><br><span class="line">azkaban-solo-server</span><br><span class="line">azkaban-web-server</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li><p>执行<code>azkaban-solo-server</code></p>
+<ol>
+<li><p>解压<code>azkaban-solo-server</code>到<code>app</code>目录下</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">tar -xzvf azkaban-solo-server/build/distributionsa/zkaban-solo-server-0.1.0-SNAPSHOT.tar.gz ~/app</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>启动: <code>bin/start-solo.sh</code>，生成<code>AzkabanSingleServer</code>进程</p>
+</li>
+<li><p>修改配置(时区、用户)</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">时区: default.timezone.id=Asia/Shanghai</span><br><span class="line">用户: &lt;user password="tunan" roles="admin" username="tunan"/&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>web端登录，端口8081</p>
+</li>
+</ol>
+</li>
+<li><p>azkaban需要至少3G内存，如果内存不足3G，需要设置不检查内存</p>
+<p>azkaban-web-server-2.7.0/plugins/jobtypes/commonprivate.properties</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">memCheck.enabled=false</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h2 id="Azkaban的使用"><a href="#Azkaban的使用" class="headerlink" title="Azkaban的使用"></a>Azkaban的使用</h2><h3 id="单节点部署"><a href="#单节点部署" class="headerlink" title="单节点部署"></a>单节点部署</h3><p><a href="https://azkaban.readthedocs.io/en/latest/createFlows.html" target="_blank" rel="noopener">官方文档</a></p>
+<ol>
+<li><p>创建flow20.projec文件，写入信息: </p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">azkaban-flow-version: 2.0</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建basic.flow文件，写入信息:</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">nodes:</span><br><span class="line">  - name: jobA</span><br><span class="line">    type: command</span><br><span class="line">    config:</span><br><span class="line">      command: echo "This is an echoed text."</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>压缩Archive.zip文件，在web页面中提交</p>
+<p><code>坑</code>: 提交的用户和hadoop上的用户不同</p>
+</li>
+<li><p>多依赖案例</p>
+<p>flow20.projec文件相同，basic.flow文件内容不同，文件名可不同</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">nodes:</span><br><span class="line">  - name: jobC</span><br><span class="line">    type: noop</span><br><span class="line">    # jobC depends on jobA and jobB</span><br><span class="line">    dependsOn:</span><br><span class="line">      - jobA</span><br><span class="line">      - jobB</span><br><span class="line"></span><br><span class="line">  - name: jobA</span><br><span class="line">    type: command</span><br><span class="line">    config:</span><br><span class="line">      command: echo "This is an echoed text."</span><br><span class="line"></span><br><span class="line">  - name: jobB</span><br><span class="line">    type: command</span><br><span class="line">    config:</span><br><span class="line">      command: pwd</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>wc案例</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">nodes:</span><br><span class="line">  - name: tunan-wordcount</span><br><span class="line">    type: command</span><br><span class="line">    config:</span><br><span class="line">      command: hadoop jar /home/hadoop/app/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-2.6.0-cdh5.16.2.jar wordcount /azkaban/data/wc.txt /out</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>直接点击程序修改输出文件参数</li>
+<li>使用Flow Parameters修改输出文件参数</li>
+</ol>
+</li>
+<li><p>hive案例</p>
+<p>除了固定的flow20.project文件，需要修改hive.flow文件和添加stat.sh文件</p>
+<p>hive.flow</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">nodes:</span><br><span class="line">  - name: exe hive</span><br><span class="line">    type: command</span><br><span class="line">    config:</span><br><span class="line">      command: sh stat.sh</span><br></pre></td></tr></table></figure>
+
+<p>stat.sh</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">! /bin/bash</span></span><br><span class="line">hive -e "select * from offline_dw.dws_country_traffic"</span><br></pre></td></tr></table></figure>
+
+<p>上传相同的文件，新版本会覆盖旧的版本</p>
+</li>
+<li><p>调度执行</p>
+<p>在执行页面的左下角点击Schedule即可，并可在Scheduling中查看调度信息，然后在History中查看历史执行信息</p>
+</li>
+</ol>
+<h3 id="多节点部署"><a href="#多节点部署" class="headerlink" title="多节点部署"></a>多节点部署</h3><ol>
+<li><p>在mysql中创建数据库</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">mysql&gt; CREATE DATABASE azkaban;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建用户</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">mysql&gt; CREATE USER 'tunan'@'%' IDENTIFIED BY 'tunan';</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>赋权给用户</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">GRANT</span> <span class="keyword">SELECT</span>,<span class="keyword">INSERT</span>,<span class="keyword">UPDATE</span>,<span class="keyword">DELETE</span> <span class="keyword">ON</span> azkaban.* <span class="keyword">to</span> <span class="string">'tunan'</span>@<span class="string">'%'</span> <span class="keyword">WITH</span> <span class="keyword">GRANT</span> <span class="keyword">OPTION</span>;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在mysql中生成需要的表</p>
+<p>这里的source可能会遇到权限问题，解决的办法很多，如移动其他位置</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">use</span> azkaban;</span><br><span class="line">source /home/hadoop/app/azkaban/azkaban-db/build/<span class="keyword">install</span>/azkaban-db/<span class="keyword">create</span>-<span class="keyword">all</span>-<span class="keyword">sql</span><span class="number">-0.1</span><span class="number">.0</span>-SNAPSHOT.sql;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>执行SQL获取动态端口号</p>
+<p><code>mysql&gt; select * from executors ;</code></p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">+<span class="comment">----+--------+-------+--------+</span></span><br><span class="line">| id | host   | port  | active |</span><br><span class="line">+<span class="comment">----+--------+-------+--------+</span></span><br><span class="line">|  1 | aliyun | 46418 |      0 |</span><br><span class="line">+<span class="comment">----+--------+-------+--------+</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>激活执行器</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl -G "http://aliyun:46418/executor?action=activate"</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>把<code>azkaban-exec-server</code>和<code>azkaban-web-server</code>解压，并启动</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">tar -xzvf azkaban-exec-server/build/distributionsa/azkaban-exec-server-0.1.0-SNAPSHOT.tar.gz ~/app</span><br><span class="line">tar -xzvf azkaban-web-server/build/distributionsa/azkaban-web-server-0.1.0-SNAPSHOT.tar.gz ~/app</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>登录web使用，使用方式和单节点一样</p>
+</li>
+</ol>
+<h3 id="二次开发"><a href="#二次开发" class="headerlink" title="二次开发"></a>二次开发</h3><p>azkaban的二次开发需要调用az已经做好的接口</p>
+<p><a href="https://azkaban.readthedocs.io/en/latest/ajaxApi.html#request-parameters-1" target="_blank" rel="noopener">官方文档</a></p>
+<p>命令行获取session.id</p>
+<p><code>curl -k -X POST --data &quot;action=login&amp;username=azkaban&amp;password=azkaban&quot; http://aliyun:8081</code></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  "session.id" : "f1725f59-9d20-4fe2-b89e-3715ef85****",</span><br><span class="line">  "status" : "success"</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="常用功能"><a href="#常用功能" class="headerlink" title="常用功能"></a>常用功能</h2><ol>
+<li>配置代理用户</li>
+<li>配置hadoop.home</li>
+<li>配置Spark作业提交</li>
+</ol>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2020/02/20/offlinedw/7.%E7%BB%93%E6%9E%9C%E6%95%B0%E6%8D%AE%E7%9A%84%E5%B1%95%E7%A4%BA/">结果数据的展示</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-02-20</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/OfflineDW/">OfflineDW</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/OfflineDW/">OfflineDW</a></span><div class="content"><p>由于时间忙不过来，这篇暂时不更新，仅作为维护项目的完整性存在。。。</p>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2020/02/19/offlinedw/6.%E4%B8%9A%E5%8A%A1%E6%95%B0%E6%8D%AE%E7%9A%84%E6%8A%BD%E5%8F%96/">业务数据的抽取</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-02-19</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/OfflineDW/">OfflineDW</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/OfflineDW/">OfflineDW</a></span><div class="content"><p>由于时间忙不过来，这篇暂时不更新，仅作为项目的完整性存在。。。</p>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2020/02/18/offlinedw/5.%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93%E7%9A%84%E5%88%86%E5%B1%82/">数据仓库的分层</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-02-18</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/OfflineDW/">OfflineDW</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/OfflineDW/">OfflineDW</a></span><div class="content"><p>系统架构图:</p>
+<p><img src="https://yerias.github.io/offlinedw/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93%E6%9E%B6%E6%9E%84%E9%A1%B9%E7%9B%AE%E5%9B%BE_3.jpg" alt="数据仓库架构项目图"></p>
+<h2 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h2><ol>
+<li>数据仓库为什么要分层</li>
+<li>数据仓库如何分层</li>
+<li>使用脚本将数据执行分层</li>
+<li>数据分析案例</li>
+<li>使用crontab调度脚本(临时)</li>
+</ol>
+<h2 id="数据仓库为什么要分层"><a href="#数据仓库为什么要分层" class="headerlink" title="数据仓库为什么要分层"></a>数据仓库为什么要分层</h2><p>分层的主要原因是在管理数据的时候，能对数据有一个更加清晰的掌控，详细来讲，主要有下面几个原因：</p>
+<ol>
+<li><code>清晰数据结构</code>，每一个数据分层都有它的作用域，这样我们在使用表的时候能更方便地定位和理解。</li>
+<li><code>数据血缘追踪</code>，简单来说，我们最终给业务呈现的是一个能直接使用业务表，但是它的来源有很多，如果有一张来源表出问题了，我们希望能够快速准确地定位到问题，并清楚它的危害范围。</li>
+<li><code>减少重复开发</code>，规范数据分层，开发一些通用的中间层数据，能够减少极大的重复计算。</li>
+<li><code>把复杂问题简单化</code>，将一个复杂的任务分解成多个步骤来完成，每一层只处理单一的步骤，比较简单和容易理解。而且便于维护数据的准确性，当数据出现问题之后，可以不用修复所有的数据，只需要从有问题的步骤开始修复。</li>
+<li><code>屏蔽原始数据的异常</code></li>
+<li><code>屏蔽业务的影响</code>，不必改一次业务就需要重新接入数据</li>
+</ol>
+<h2 id="数据仓库如何分层"><a href="#数据仓库如何分层" class="headerlink" title="数据仓库如何分层"></a>数据仓库如何分层</h2><p>数据仓库的分层标准: 不为分层而分层</p>
+<h3 id="标准的分层"><a href="#标准的分层" class="headerlink" title="标准的分层"></a>标准的分层</h3><ul>
+<li>ODS：<code>数据原始层</code>: 直接加载原始数据，不做任何处理(不做ETL)</li>
+<li>DWD：<code>数据明细层</code>，对ODS层进行清洗(ETL)</li>
+<li>DWS：<code>数据服务层</code>，基于DWD做统计分析</li>
+<li>ADS：<code>数据应用层</code>，为各种统计报表提供数据</li>
+</ul>
+<h3 id="我们的分层"><a href="#我们的分层" class="headerlink" title="我们的分层"></a>我们的分层</h3><ul>
+<li>ODS(operate data store)：<code>数据原始层</code>，最接近数据源中数据的一层，数据源中的数据，经过抽取、洗净、传输，也就说传说中的ETL之后，装入本层</li>
+<li>DWS(data warehouse server)：<code>数据明细层</code>，从ODS层中获得的数据按照主题建立各种数据模型。在这里，我们需要了解四个概念：维（dimension）、事实（Fact）、指标（Index）和粒度（ Granularity）。</li>
+<li>ADS：<code>数据应用层</code>，该层主要是提供数据产品和数据分析使用的数据。 比如我们经常说的报表数据，或者说那种大宽表，一般就放在这里。</li>
+</ul>
+<h2 id="使用脚本将数据执行分层"><a href="#使用脚本将数据执行分层" class="headerlink" title="使用脚本将数据执行分层"></a>使用脚本将数据执行分层</h2><p>现在我们知道了数据需要在Hive中分成ODS层、DWS层和ADS层，每一层的建表标准是<code>ods_</code>、<code>dws_</code>、<code>ads_</code></p>
+<ol>
+<li><p>建库</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">database</span> <span class="keyword">if</span> <span class="keyword">not</span> <span class="keyword">exists</span> offline_dw;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>建ODS层外部分区表</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">external</span> <span class="keyword">table</span> ods_access(</span><br><span class="line"><span class="string">`year`</span>	<span class="keyword">String</span>,</span><br><span class="line"><span class="string">`month`</span>	<span class="keyword">String</span>,</span><br><span class="line"><span class="string">`day`</span>	<span class="keyword">String</span>,</span><br><span class="line">country	<span class="keyword">String</span>,</span><br><span class="line">province	<span class="keyword">String</span>,</span><br><span class="line">city	<span class="keyword">String</span>,</span><br><span class="line">area	<span class="keyword">String</span>,</span><br><span class="line">proxyIp	<span class="keyword">String</span>,</span><br><span class="line">responseTime	<span class="built_in">BigInt</span>,</span><br><span class="line">referer	<span class="keyword">String</span>,</span><br><span class="line"><span class="string">`method`</span>	<span class="keyword">String</span>,</span><br><span class="line"><span class="keyword">http</span>	<span class="keyword">String</span>,</span><br><span class="line"><span class="string">`domain`</span>	<span class="keyword">String</span>,</span><br><span class="line"><span class="string">`path`</span>	<span class="keyword">String</span>,</span><br><span class="line">httpCode	<span class="keyword">String</span>,</span><br><span class="line">requestSize	<span class="built_in">BigInt</span>,</span><br><span class="line">responseSize	<span class="built_in">bigInt</span>,</span><br><span class="line"><span class="keyword">cache</span>	<span class="keyword">String</span>,</span><br><span class="line">userId <span class="built_in">BigInt</span></span><br><span class="line">)</span><br><span class="line">partitioned <span class="keyword">by</span>(d <span class="keyword">String</span>)</span><br><span class="line"><span class="keyword">row</span> <span class="keyword">format</span> <span class="keyword">delimited</span></span><br><span class="line"><span class="keyword">fields</span> <span class="keyword">terminated</span> <span class="keyword">by</span> <span class="string">"\t"</span></span><br><span class="line">location <span class="string">"/item/offline-dw/ods/access/"</span>;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>写脚本(etl.sh)</p>
+<ol>
+<li>使用MR通过ETL把源数据写入ODS临时目录</li>
+<li>把ODS临时目录中<code>part*</code>开头的数据移动到ODS分区目录下，并指定分区</li>
+<li>接着Hive执行命令新建分区</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">! /bin/bash</span></span><br><span class="line"></span><br><span class="line">if [ $# -eq 1 ];then</span><br><span class="line">        time=$1</span><br><span class="line">else</span><br><span class="line">        time=`date --date "1 days ago" +%Y%m%d`</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">MR做ETL 注意输入和输出(带时间)</span></span><br><span class="line">hadoop jar /home/hadoop/lib/hadoop-client-1.0.0.jar com.tunan.item.ETLDriver -libjars $LIBJARS /item/offline-dw/raw/access/$time /item/offline-dw/ods_tmp/access/$time</span><br><span class="line"><span class="meta">#</span><span class="bash">删除分区目录(d=时间)</span></span><br><span class="line">hdfs dfs -rm -r -f  /item/offline-dw/ods/access/d=$time</span><br><span class="line"><span class="meta">#</span><span class="bash">创建分区目录(d=时间)</span></span><br><span class="line">hdfs dfs -mkdir -p /item/offline-dw/ods/access/d=$time</span><br><span class="line"><span class="meta">#</span><span class="bash">ods_tmp移动数据到ods((时间目录下的part* d=时间))  </span></span><br><span class="line">hdfs dfs -mv /item/offline-dw/ods_tmp/access/$time/part* /item/offline-dw/ods/access/d=$time</span><br><span class="line"><span class="meta">#</span><span class="bash">删除ods_tmp(带时间)</span></span><br><span class="line">hdfs dfs -rm -r -f /item/offline-dw/ods_tmp/access/$time</span><br><span class="line"><span class="meta">#</span><span class="bash">hive命令行刷新分区 (判断表是否存在，partition(d=<span class="string">"<span class="variable">$time</span>"</span>))</span></span><br><span class="line">hive -e "alter table offline_dw.ods_access add if not exists partition(d=$time)"</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h2 id="数据分析案例-DWS-ADS层"><a href="#数据分析案例-DWS-ADS层" class="headerlink" title="数据分析案例(DWS/ADS层)"></a>数据分析案例(DWS/ADS层)</h2><p>这层的数据可以作为DWS层，我们要什么数据就建什么表(分区)</p>
+<ul>
+<li><p>统计国家流量</p>
+<p>思路: 建分区表，字段分别是国家和流量，最后分组查询，插入表中</p>
+<ol>
+<li><p>建表</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">external</span> <span class="keyword">table</span> dws_country_traffic(</span><br><span class="line">	country <span class="keyword">String</span>,</span><br><span class="line">	traffic <span class="built_in">BigInt</span></span><br><span class="line">)</span><br><span class="line">partitioned <span class="keyword">by</span>(d <span class="keyword">String</span>)</span><br><span class="line"><span class="keyword">row</span> <span class="keyword">format</span> <span class="keyword">delimited</span></span><br><span class="line"><span class="keyword">fields</span> <span class="keyword">terminated</span> <span class="keyword">by</span> <span class="string">"\t"</span>;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查询数据插入表中</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">insert</span> overwrite <span class="keyword">table</span> offline_dw.dws_country_traffic <span class="keyword">partition</span>(d=<span class="string">'$time'</span>) </span><br><span class="line"><span class="keyword">select</span> country,<span class="keyword">sum</span>(responseSize) <span class="keyword">from</span> offline_dw.ods_access <span class="keyword">where</span> d = <span class="string">'$time'</span><span class="keyword">group</span> <span class="keyword">by</span> country;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><p>统计域名流量</p>
+<p>思路: 建分区表，字段分别是域名和流量，最后分组查询，插入表中</p>
+<ol>
+<li><p>建表</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">external</span> <span class="keyword">table</span> dws_domain_traffic(</span><br><span class="line">	<span class="keyword">domain</span> <span class="keyword">String</span>,</span><br><span class="line">	traffic <span class="built_in">BigInt</span></span><br><span class="line">)</span><br><span class="line">partitioned <span class="keyword">by</span>(d <span class="keyword">String</span>)</span><br><span class="line"><span class="keyword">row</span> <span class="keyword">format</span> <span class="keyword">delimited</span> </span><br><span class="line"><span class="keyword">fields</span> <span class="keyword">terminated</span> <span class="keyword">by</span> <span class="string">"\t"</span>;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查询数据插入表中</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">insert</span> overwrite <span class="keyword">table</span> offline_dw.dws_domain_traffic <span class="keyword">partition</span>(d=<span class="string">'$time'</span>) </span><br><span class="line"><span class="keyword">select</span> <span class="keyword">domain</span>,<span class="keyword">sum</span>(responseSize) <span class="keyword">from</span> offline_dw.ods_access <span class="keyword">where</span> d=<span class="string">'$time'</span><span class="keyword">group</span> <span class="keyword">by</span> <span class="keyword">domain</span>;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><p>写成脚本方便调度</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">! /bin/bash</span></span><br><span class="line"></span><br><span class="line">if [ $# -eq 1 ];then</span><br><span class="line">        time=$1</span><br><span class="line">else</span><br><span class="line">        time=`date --date '1 days ago' +%Y%m%d`</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">hive -e "insert overwrite table offline_dw.dws_country_traffic partition(d='$time') </span><br><span class="line">select country,sum(responseSize) from offline_dw.ods_access where d='$time' group by country;"</span><br><span class="line"></span><br><span class="line">hive -e "insert overwrite table offline_dw.dws_domain_traffic partition(d='$time') </span><br><span class="line">select domain,sum(responseSize)  from offline_dw.ods_access where d='$time' group by domain;"</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h2 id="使用crontab调度脚本-临时"><a href="#使用crontab调度脚本-临时" class="headerlink" title="使用crontab调度脚本(临时)"></a>使用crontab调度脚本(临时)</h2><p>每天凌晨一点执行etl.sh，每天凌晨两点执行stats.sh</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">crontab -e</span><br><span class="line"></span><br><span class="line">0 1 * * * /home/hadoop/offline_dw/script/etl.sh</span><br><span class="line">0 2 * * * /home/hadoop/offline_dw/script/stats.sh</span><br></pre></td></tr></table></figure>
+
+</div><hr></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/5/">&lt;&lt;</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><span class="space">&hellip;</span><a class="page-number" href="/page/13/">13</a><a class="extend next" rel="next" href="/page/7/">&gt;&gt;</a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By Tunan</div><div class="framework-info"><span>Driven - </span><a href="#"><span>Hexo</span></a><span class="footer-separator">|</span><span>Theme - </span><a href="#"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_site_uv"><i class="fa fa-user"></i><span id="busuanzi_value_site_uv"></span><span></span></span><span class="footer-separator">|</span><span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i><span id="busuanzi_value_site_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.6.1"></script><script src="/js/fancybox.js?version=1.6.1"></script><script src="/js/sidebar.js?version=1.6.1"></script><script src="/js/copy.js?version=1.6.1"></script><script src="/js/fireworks.js?version=1.6.1"></script><script src="/js/transition.js?version=1.6.1"></script><script src="/js/scroll.js?version=1.6.1"></script><script src="/js/head.js?version=1.6.1"></script><script>if(/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
   $('#nav').addClass('is-mobile')
   $('footer').addClass('is-mobile')
-}</script><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">Local search</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="Search for Posts"></div></div></div><hr><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>Powered by</span> <a href="https://github.com/wzpan/hexo-generator-search" target="_blank" rel="noopener" style="color:#49B1F5;">hexo-generator-search</a></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div></body></html>
+}</script></body></html>

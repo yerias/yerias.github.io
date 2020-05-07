@@ -1,101 +1,1047 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="BigData Developer"><meta name="keywords" content="yerias,TUNANのBlog,BigData"><meta name="author" content="Tunan"><meta name="copyright" content="Tunan"><title>感谢若老、J哥、师兄、前辈、同学、朋友、陌生人，在我行走在大数据道路上给我的谆谆教诲，同时此博客仅作为学习笔记存在，严禁任何人以何种理由商用，作者QQ: 971118017 | TUNANのBlog</title><link rel="shortcut icon" href="/melody-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.6.1"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.6.1"><link rel="dns-prefetch" href="https://cdn.staticfile.org"><link rel="dns-prefetch" href="https://cdn.bootcss.com"><link rel="dns-prefetch" href="https://creativecommons.org"><script>var GLOBAL_CONFIG = { 
   root: '/',
   algolia: undefined,
-  localSearch: {"path":"search.xml","languages":{"hits_empty":"We didn't find any results for the search: ${query}"}},
+  localSearch: undefined,
   copy: {
     success: 'Copy successfully',
     error: 'Copy error',
     noSupport: 'The browser does not support'
   }
-} </script></head><body><canvas class="fireworks"></canvas><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="author-info"><div class="author-info__avatar text-center"><img src="/img/xiaoqi.jpg"></div><div class="author-info__name text-center">Tunan</div><div class="author-info__description text-center">BigData Developer</div><div class="follow-button"><a href="#">Follow Me</a></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">Articles</span><span class="pull-right">128</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">Tags</span><span class="pull-right">30</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">Categories</span><span class="pull-right">26</span></a></div><hr><div class="author-info-links"><div class="author-info-links__title text-center">Links</div><a class="author-info-links__name text-center" href="https://hadoop.apache.org/docs/r2.10.0/hadoop-project-dist/hadoop-common/SingleCluster.html" target="_blank" rel="noopener">HADOOP</a><a class="author-info-links__name text-center" href="https://cwiki.apache.org/confluence/display/Hive/" target="_blank" rel="noopener">HIVE</a><a class="author-info-links__name text-center" href="http://archive.cloudera.com/cdh5/cdh/5/" target="_blank" rel="noopener">CDH</a><a class="author-info-links__name text-center" href="http://flume.apache.org/" target="_blank" rel="noopener">FLUME</a><a class="author-info-links__name text-center" href="https://azkaban.github.io/" target="_blank" rel="noopener">AZKABAN</a><a class="author-info-links__name text-center" href="https://www.maxinhong.com/" target="_blank" rel="noopener">叶梨子</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/qingyunzong" target="_blank" rel="noopener">老铁</a><a class="author-info-links__name text-center" href="https://blog.csdn.net/jim8973/" target="_blank" rel="noopener">飞哥</a><a class="author-info-links__name text-center" href="https://vinxikk.github.io/" target="_blank" rel="noopener">vinx</a><a class="author-info-links__name text-center" href="http://dongxicheng.org/" target="_blank" rel="noopener">懂西成</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/xing901022/" target="_blank" rel="noopener">xingoo</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/itboys/tag/" target="_blank" rel="noopener">大葱拌豆腐</a></div></div></div><nav id="nav" style="background-image: url(/img/soroush-golpoor-1497416-unsplash.jpg)"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">TUNANのBlog</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> Search</span></a><a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/categories">Categories</a></span></div><div id="site-info"><div id="site-title">TUNANのBlog</div><div id="site-sub-title">感谢若老、J哥、师兄、前辈、同学、朋友、陌生人，在我行走在大数据道路上给我的谆谆教诲，同时此博客仅作为学习笔记存在，严禁任何人以何种理由商用，作者QQ: 971118017</div><div id="site-social-icons"><a class="social-icon" href="https://github.com/yerias" target="_blank" rel="noopener"><i class="fa-github fa"></i></a><a class="social-icon search"><i class="fa fa-search"></i></a></div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><div class="recent-post-item article-container"><a class="article-title" href="/2018/10/04/hadoop/1/">HDFS的伪分布式部署&amp;HADOOP的常用命令</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-10-04</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Hadoop/">Hadoop</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Hadoop/HDFS/">HDFS</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Hadoop/">Hadoop</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/HDFS/">HDFS</a></span><div class="content">目标
-安装hadoop的hdfs伪分布式部署
-hadoop fs常规命令
-配置文件在官方哪里找
-整理 jdk、ssh、hosts文件
+} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="author-info"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">Tunan</div><div class="author-info__description text-center">BigData Developer</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">Articles</span><span class="pull-right">129</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">Tags</span><span class="pull-right">30</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">Categories</span><span class="pull-right">26</span></a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">TUNANのBlog</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/categories">Categories</a></span></div><div id="site-info"><div id="site-title">TUNANのBlog</div><div id="site-sub-title">感谢若老、J哥、师兄、前辈、同学、朋友、陌生人，在我行走在大数据道路上给我的谆谆教诲，同时此博客仅作为学习笔记存在，严禁任何人以何种理由商用，作者QQ: 971118017</div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><div class="recent-post-item article-container"><a class="article-title" href="/2018/10/05/hadoop/2/">yarn的伪分布式部署&amp;jps的原理&amp;oom-killer&amp;/tmp目录的clean机制</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-10-05</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Hadoop/">Hadoop</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Hadoop/Yarn/">Yarn</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Hadoop/">Hadoop</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/MapReduce/">MapReduce</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Yarn/">Yarn</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Linux/">Linux</a></span><div class="content"><h3 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h3><ol>
+<li>搭建 yarn伪分布式</li>
+<li>跑mr count案例</li>
+<li>整理 jps命令</li>
+<li>Linux两个机制 oom  clean</li>
+</ol>
+<h3 id="Yarn伪分布式部署-amp-单点-amp-主从架构"><a href="#Yarn伪分布式部署-amp-单点-amp-主从架构" class="headerlink" title="Yarn伪分布式部署&amp;单点&amp;主从架构"></a>Yarn伪分布式部署&amp;单点&amp;主从架构</h3><p>由于hadoop集成了MapReduce和Yarn，所以这里我们只要修改相关的配置文件即可使用</p>
+<p>我们需要配置<code>mapred-site.xml</code>和<code>yarn-site.xml</code>这两个文件，由于<code>mapred-site.xml</code>不存在所以需要复制一个出来</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[hadoop@aliyun hadoop]$ cp mapred-site.xml.template mapred-site.xml</span><br></pre></td></tr></table></figure>
 
-1.安装hadoop的hdfs伪分布式部署
-创建用户和目录
-[root@aliyun ~]# useradd hadoop[root@aliyun ~]# su - ...</div><a class="more" href="/2018/10/04/hadoop/1/#more" style="margin-top: 14px">Read more</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/10/03/mysql/3/">掌握where、group、join语句和写SQL</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-10-03</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/MySQL/">MySQL</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/DataWarehouse/">DataWarehouse</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/MySQL/">MySQL</a></span><div class="content">目标
-整理 sql的where各种条件
-整理 sql的group
-整理 sql的join
-04txt文件的案例 9句sql
-整理刚才分享的小知识点
-补充资料文件夹 去看看执行
-彩蛋 视频 sql
+<p>然后用<code>vim</code>打开<code>mapred-site.xml</code>并修改</p>
+<p>vim mapred-site.xml</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>mapreduce.framework.name<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">value</span>&gt;</span>yarn<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 历史服务器端地址 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>mapreduce.jobhistory.address<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">value</span>&gt;</span>hadoop:10020<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 历史服务器web端地址 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>mapreduce.jobhistory.webapp.address<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">value</span>&gt;</span>hadoop:19888<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
-1.整理 sql 的 where 各种条件where 子句: 如需有条件地从表中选取数据，可将 whe ...</div><a class="more" href="/2018/10/03/mysql/3/#more" style="margin-top: 14px">Read more</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/10/02/mysql/2/">掌握MySQL的建表规范、DDL语句和权限操作</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-10-02</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/MySQL/">MySQL</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/DataWarehouse/">DataWarehouse</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/MySQL/">MySQL</a></span><div class="content">目标
-整理 建表规范
-整理 DDL语句的
-整理 三句话
+<p>然后用<code>vim</code>打开<code>yarn-site.xml</code>并修改文件</p>
+<p>vim yarn-site.xml</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.nodemanager.aux-services<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">value</span>&gt;</span>mapreduce_shuffle<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    	<span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.resourcemanager.webapp.address<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">   	 <span class="tag">&lt;<span class="name">value</span>&gt;</span>aliyun:38088<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">     <span class="comment">&lt;!-- 日志聚集功能使能 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.log-aggregation-enable<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">value</span>&gt;</span>true<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 日志保留时间设置7天 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.log-aggregation.retain-seconds<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">value</span>&gt;</span>604800<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
-首先看一个建表例子，再去研究应该遵循哪些规范create table rzdata(id int(11) not null auto_increment,name varchar(200),age  int(3),createuser var ...</div><a class="more" href="/2018/10/02/mysql/2/#more" style="margin-top: 14px">Read more</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/10/01/mysql/1/">MySQL二进制部署和DBeaver连接MySQL</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-10-01</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/MySQL/">MySQL</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/DataWarehouse/">DataWarehouse</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/MySQL/">MySQL</a></span><div class="content">目标
-二进制部署mysql
-重新部署
-部署dbeaver 打通 mysql
+<p><code>注意:</code> 这是使用38088替代默认的8088是为了避免云主机被挖矿</p>
+<p>最后启动<code>Yarn</code></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[hadoop@aliyun hadoop]$ start-yarn.sh</span><br><span class="line">starting yarn daemons</span><br><span class="line">starting resourcemanager, logging to /home/hadoop/app/hadoop-2.6.0-cdh5.16.2/logs/yarn-hadoop-resourcemanager-aliyun.out</span><br><span class="line">aliyun: starting nodemanager, logging to /home/hadoop/app/hadoop-2.6.0-cdh5.16.2/logs/yarn-hadoop-nodemanager-aliyun.out</span><br><span class="line"></span><br><span class="line">[hadoop@aliyun hadoop]$ jps</span><br><span class="line">32501 NodeManager</span><br><span class="line">349 Jps</span><br><span class="line">32415 ResourceManager</span><br></pre></td></tr></table></figure>
 
-二进制部署mysql[https://github.com/Hackeruncle/MySQL/blob/master/MySQL%205.6.23%20Install.txt](https://github.com/Ha ...</div><a class="more" href="/2018/10/01/mysql/1/#more" style="margin-top: 14px">Read more</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/30/linux/shell/9/">Shell的test命令</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-30</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Linux/">Linux</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Linux/Shell/">Shell</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Linux/">Linux</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Shell/">Shell</a></span><div class="content">Shell中的 test 命令用于检查某个条件是否成立，它可以进行数值、字符和文件三个方面的测试。
-数值测试
+<p>最后再用<code>ps -ef</code>命令验证<code>ResourceManager</code>程序是否真的启动完成</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[hadoop@aliyun hadoop]$ netstat -nlp|grep 32415</span><br><span class="line">(Not all processes could be identified, non-owned process info</span><br><span class="line"> will not be shown, you would have to be root to see it all.)</span><br><span class="line">tcp        0      0 172.16.39.48:38088      0.0.0.0:*               LISTEN      32415/java          </span><br><span class="line">tcp        0      0 0.0.0.0:8030            0.0.0.0:*               LISTEN      32415/java          </span><br><span class="line">tcp        0      0 0.0.0.0:8031            0.0.0.0:*               LISTEN      32415/java          </span><br><span class="line">tcp        0      0 0.0.0.0:8032            0.0.0.0:*               LISTEN      32415/java          </span><br><span class="line">tcp        0      0 0.0.0.0:8033            0.0.0.0:*               LISTEN      32415/java</span><br></pre></td></tr></table></figure>
+
+<p>启动完成，可以去玩<code>wordcount</code>案例了</p>
+<h3 id="使用MapReduce运行WordCount案例"><a href="#使用MapReduce运行WordCount案例" class="headerlink" title="使用MapReduce运行WordCount案例"></a>使用MapReduce运行WordCount案例</h3><p>在data目录下创建mapreduce的输入文件</p>
+<p>[hadoop@aliyun data]$ vim name.log</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">ruozedata</span><br><span class="line">ruoze</span><br><span class="line">jepson</span><br><span class="line">huhu</span><br><span class="line">ye</span><br><span class="line">tunan</span><br><span class="line">afei</span><br><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">3</span><br><span class="line">2</span><br><span class="line">1</span><br><span class="line">a b c a a aaaa bcd</span><br><span class="line">ruoze jepson</span><br></pre></td></tr></table></figure>
+
+<p>把name.log文件put到hdfs上</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[hadoop@aliyun data]$ hdfs dfs -mkdir -p /wordcount/input</span><br><span class="line">[hadoop@aliyun data]$ hdfs dfs -put name.log /wordcount/input</span><br><span class="line">[hadoop@aliyun data]$ hdfs dfs -ls /wordcount/input/</span><br><span class="line">Found 1 items</span><br><span class="line">-rw-r--r--   1 hadoop supergroup         86 2019-12-01 17:46 /wordcount/input/name.log</span><br></pre></td></tr></table></figure>
+
+<p>使用hadoop jar 运行案例</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">hadoop jar share/hadoop/mapreduce2/hadoop-mapreduce-examples-2.6.0-cdh5.16.2.jar wordcount /wordcount/input /wordcount/output</span><br></pre></td></tr></table></figure>
+
+<p>查看结果</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[hadoop@aliyun hadoop]$ hdfs dfs -cat /wordcount/output/*</span><br><span class="line">1	2</span><br><span class="line">2	2</span><br><span class="line">3	2</span><br><span class="line">a	3</span><br><span class="line">aaaa	1</span><br><span class="line">afei	1</span><br><span class="line">b	1</span><br><span class="line">bcd	1</span><br><span class="line">c	1</span><br><span class="line">huhu	1</span><br><span class="line">jepson	2</span><br><span class="line">ruoze	2</span><br><span class="line">ruozedata	1</span><br><span class="line">tunan	1</span><br><span class="line">ye	1</span><br></pre></td></tr></table></figure>
+
+<h3 id="jps命令不为人知的地方"><a href="#jps命令不为人知的地方" class="headerlink" title="jps命令不为人知的地方"></a>jps命令不为人知的地方</h3><p>我们想既然jps可以直接运行，肯定在APTH路径下，我们何不which一下看看</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[hadoop@aliyun hadoop]$ which jps</span><br><span class="line">/usr/java/jdk/bin/jps</span><br></pre></td></tr></table></figure>
+
+<p>原来jps是一个java命令，我们使用一下jps看看它有什么作用</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[hadoop@aliyun hadoop]$ jps</span><br><span class="line">883 DataNode</span><br><span class="line">2117 Jps</span><br><span class="line">32501 NodeManager</span><br><span class="line">1082 SecondaryNameNode</span><br><span class="line">781 NameNode</span><br><span class="line">32415 ResourceManager</span><br></pre></td></tr></table></figure>
+
+<p>jps命令打印出来了hadoop组件里面的程序pid和程序名，引申出这些程序都属于java程序，结合jps属于java命令，得出jps打印出来所有运行的java程序</p>
+<p>我们可以从启动程序的脚本中得到pid和程序名存放的文件，这里就不去debug，他们默认存放在/tmp目录下一个叫做hsperfdata_用户名的文件下</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[hadoop@aliyun tmp]$ ll hsperfdata_hadoop/</span><br><span class="line">total 160</span><br><span class="line">-rw------- 1 hadoop hadoop 32768 Dec  1 18:08 1082</span><br><span class="line">-rw------- 1 hadoop hadoop 32768 Dec  1 18:08 32415</span><br><span class="line">-rw------- 1 hadoop hadoop 32768 Dec  1 18:08 32501</span><br><span class="line">-rw------- 1 hadoop hadoop 32768 Dec  1 18:08 781</span><br><span class="line">-rw------- 1 hadoop hadoop 32768 Dec  1 18:08 883</span><br></pre></td></tr></table></figure>
+
+<p>每个pid对应是一些二进制文件，没啥好看的，我们发现这个文件下还有一些以pid结尾的文件，文件保存的其实也是各自对应的pid号码，但是这里的.pid文件是进程自己创建的。用来管理和结束进程的。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[hadoop@aliyun tmp]$ ll grep *.pid</span><br><span class="line">-rw-rw-r-- 1 hadoop hadoop 4 Dec  1 17:39 hadoop-hadoop-datanode.pid</span><br><span class="line">-rw-rw-r-- 1 hadoop hadoop 4 Dec  1 17:39 hadoop-hadoop-namenode.pid</span><br><span class="line">-rw-rw-r-- 1 hadoop hadoop 5 Dec  1 17:39 hadoop-hadoop-secondarynamenode.pid</span><br><span class="line">-rw-rw-r-- 1 hadoop hadoop 6 Dec  1 17:37 yarn-hadoop-nodemanager.pid</span><br><span class="line">-rw-rw-r-- 1 hadoop hadoop 6 Dec  1 17:37 yarn-hadoop-resourcemanager.pid</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[hadoop@aliyun tmp]$ cat hadoop-hadoop-datanode.pid </span><br><span class="line">883</span><br></pre></td></tr></table></figure>
+
+<p>所以jps命令的作用就明白了，在使用jsp命令时，会去/tmp目录下/hsperfdata_username目录下找到程序的pid和程序名并打印出来，/tmp/hsperfdata_username目录会存放该用户所有已经启动的java进程信息。</p>
+<p>这里需要get到一个很关键的知识点，它可能让你在shell脚本中犯错，那就是进程所属的用户去执行 jps命令，只显示自己的相关的进程信息，也就是说，其他用户使用jps命令查看不到本用户启动的程序，root用户可以看所有的，但是显示不可用，我们这里就用root用户尝试一下</p>
+<p>我在这里翻车了，使用root显示出来了所有的进程，原因不明，但是其他普通用户无法显示</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">aliyun:mysqladmin:/usr/local/mysql:&gt;jps</span><br><span class="line">2346 Jps</span><br></pre></td></tr></table></figure>
+
+<p>这同样能得出我们想要的结果，那就是其他用户使用jps不能查看到本用户启动的java程序。其原理我们看看这个文件夹的权限就知道了</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[hadoop@aliyun tmp]$ ll hsperfdata_hadoop/</span><br><span class="line">total 128</span><br><span class="line">-rw------- 1 hadoop hadoop 32768 Dec  1 18:26 1082</span><br><span class="line">-rw------- 1 hadoop hadoop 32768 Dec  1 18:26 32415</span><br><span class="line">-rw------- 1 hadoop hadoop 32768 Dec  1 18:26 32501</span><br><span class="line">-rw------- 1 hadoop hadoop 32768 Dec  1 18:26 781</span><br></pre></td></tr></table></figure>
+
+<p>最后总结一下我们在判断一个程序是否在运行时，切不可使用jps命令，因为jps命令只能查看本用户的java进程，那我们在shell脚本中应该如何判断一个程序是否存在？使用万能的ps -ef。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[hadoop@aliyun tmp]$ ps -ef|grep 781 | grep -v grep | wc -l</span><br><span class="line">1</span><br></pre></td></tr></table></figure>
+
+<h3 id="Linux的oom-kill和clean机制"><a href="#Linux的oom-kill和clean机制" class="headerlink" title="Linux的oom-kill和clean机制"></a>Linux的oom-kill和clean机制</h3><p>在最后我们说一下在使用hadoop时会遇到的两个坑，而且还都是Linux自带的特性，以及解决的方法。</p>
+<p><code>oom-killer机制:</code> 大数据程序是非常吃内存的，而在Linux内核检测到系统内存不足后，会触发oom-killer，挑选占用最大内存的进程杀掉。</p>
+<p>如果我们的进程突然断了，首先查看日志找<code>EROOR</code>，有<code>ERROR</code>具体分析，没有<code>ERROR</code>但是<code>INFO</code>信息断了，很可能就是触发了<code>oom-killer机制</code>，使用<code>free -h</code>命令查看内存使用情况，再使用<code>cat /var/log/messages | grep oom</code>命令查看有没有类似于<code>Killed process</code> 的命令，如果有，就是触发了<code>oom-killer机制</code></p>
+<p><code>clean机制:</code> Linux的/tmp目录是一个临时目录，它有一个机制，默认清理超过30天的内容，而前面使用<code>jps</code>命令的时候就发现，<code>hadoop</code>的进程<code>pid</code>都存放在<code>/tmp</code>目录中，启动进程的时候去<code>/tmp</code>目录下创建对应的<code>pid</code>文件，结束进程的时候去<code>/tmp</code>目录下找到程序对应的<code>pid</code>用来结束进程并删除<code>pid</code>文件，那么引申出来一个问题，如果我们的<code>hadoop</code>组件进程启动时间超过了30天了呢，<code>pid</code>文件被清理，结束命令找不到<code>pid</code>号，会再重新创建一个<code>pid</code>，结果就是<code>pid</code>号紊乱，进程无法正常结束。</p>
+<p><code>解决的办法</code>就是在家目录下面创建一个tmp目录，然后把hdfs和yarn的pid号管理文件夹设置成家目录下的tmp目录即可。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[hadoop@aliyun hadoop]$ vi hadoop-env.sh</span><br><span class="line">export HADOOP_PID_DIR=/home/hadoop/tmp</span><br><span class="line"></span><br><span class="line">[hadoop@aliyun hadoop]$ cat yarn-env.sh</span><br><span class="line">export YARN_PID_DIR=/home/hadoop/tmp</span><br></pre></td></tr></table></figure>
+
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/10/04/hadoop/1/">HDFS的伪分布式部署&amp;HADOOP的常用命令</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-10-04</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Hadoop/">Hadoop</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Hadoop/HDFS/">HDFS</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Hadoop/">Hadoop</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/HDFS/">HDFS</a></span><div class="content"><h3 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h3><ol>
+<li>安装hadoop的hdfs伪分布式部署</li>
+<li>hadoop fs常规命令</li>
+<li>配置文件在官方哪里找</li>
+<li>整理 jdk、ssh、hosts文件</li>
+</ol>
+<h3 id="1-安装hadoop的hdfs伪分布式部署"><a href="#1-安装hadoop的hdfs伪分布式部署" class="headerlink" title="1.安装hadoop的hdfs伪分布式部署"></a>1.安装hadoop的hdfs伪分布式部署</h3><ol>
+<li><p>创建用户和目录</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# useradd hadoop</span><br><span class="line">[root@aliyun ~]# su - hadoop</span><br><span class="line">[hadoop@aliyun ~]$ mkdir app software sourcecode log tmp data lib</span><br><span class="line">[hadoop@aliyun ~]$ ll</span><br><span class="line">total 28</span><br><span class="line">drwxrwxr-x 2 hadoop hadoop 4096 Nov 28 11:26 app　　　　#解压的文件夹  软连接</span><br><span class="line">drwxrwxr-x 2 hadoop hadoop 4096 Nov 28 11:26 data　　　#数据</span><br><span class="line">drwxrwxr-x 2 hadoop hadoop 4096 Nov 28 11:26 lib　　　　#第三方的jar</span><br><span class="line">drwxrwxr-x 2 hadoop hadoop 4096 Nov 28 11:26 log　　　　#日志文件夹</span><br><span class="line">drwxrwxr-x 2 hadoop hadoop 4096 Nov 28 11:26 software　#压缩包</span><br><span class="line">drwxrwxr-x 2 hadoop hadoop 4096 Nov 28 11:26 sourcecode　　#源代码编译</span><br><span class="line">drwxrwxr-x 2 hadoop hadoop 4096 Nov 28 11:26 tmp　　　　#临时文件夹</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>下载/上传压缩包</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[hadoop@aliyun ~]$ cd software/</span><br><span class="line">[hadoop@aliyun software]$ wget http://archive.cloudera.com/cdh5/cdh/5/hadoop-2.6.0-cdh5.16.2.tar.gz</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>解压</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[hadoop@aliyun software]$ tar -xzvf hadoop-2.6.0-cdh5.16.2.tar.gz -C ../app/</span><br><span class="line">...</span><br><span class="line">...</span><br><span class="line">...</span><br><span class="line">[hadoop@aliyun software]$ cd ../app/</span><br><span class="line">[hadoop@aliyun app]$ ln -s hadoop-2.6.0-cdh5.16.2/ hadoop</span><br><span class="line">[hadoop@aliyun app]$ ll</span><br><span class="line">total 4</span><br><span class="line">lrwxrwxrwx  1 hadoop hadoop   23 Nov 28 11:36 hadoop -&gt; hadoop-2.6.0-cdh5.16.2/</span><br><span class="line">drwxr-xr-x 14 hadoop hadoop 4096 Jun  3 19:11 hadoop-2.6.0-cdh5.16.2</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>环境要求</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun java]# mkdir /usr/java</span><br><span class="line">[root@aliyun java]# cd /usr/java</span><br><span class="line">[root@aliyun java]# rz -E</span><br><span class="line">[root@aliyun java]# tar -xzvf jdk-8u144-linux-x64.tar.gz</span><br><span class="line">[root@aliyun java]# chown -R  root:root jdk1.8.0_144/</span><br><span class="line">[root@aliyun java]# ln -s jdk1.8.0_144/ jdk</span><br><span class="line">[root@aliyun java]# ll</span><br><span class="line">total 4</span><br><span class="line">lrwxrwxrwx 1 root root   13 Nov 28 12:01 jdk -&gt; jdk1.8.0_144/</span><br><span class="line">drwxr-xr-x 8 root root 4096 Jul 22  2017 jdk1.8.0_144</span><br><span class="line">[root@aliyun java]# vim /etc/profile</span><br><span class="line">    #env</span><br><span class="line">    export JAVA_HOME=/usr/java/jdk</span><br><span class="line">    export PATH=$JAVA_HOME/bin:$PATH</span><br><span class="line">[root@aliyun java]# source /etc/profile</span><br><span class="line">[root@aliyun java]# which java</span><br><span class="line">/usr/java/jdk/bin/java</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>JAVA_HOME 显性配置</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[hadoop@aliyun hadoop]$ vi hadoop-env.sh</span><br><span class="line">export JAVA_HOME=/usr/java/jdk</span><br><span class="line">[root@aliyun java]# cat /etc/hosts</span><br><span class="line">127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4</span><br><span class="line">::1         localhost localhost.localdomain localhost6 localhost6.localdomain6</span><br><span class="line"></span><br><span class="line">172.16.39.48 aliyun</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>配置文件</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">etc/hadoop/core-site.xml:</span><br><span class="line">&lt;configuration&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">        &lt;name&gt;fs.defaultFS&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;hdfs://aliyun:9000&lt;/value&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line">&lt;/configuration&gt;</span><br><span class="line"></span><br><span class="line">etc/hadoop/hdfs-site.xml:</span><br><span class="line">&lt;configuration&gt;</span><br><span class="line">    &lt;property&gt;</span><br><span class="line">        &lt;name&gt;dfs.replication&lt;/name&gt;</span><br><span class="line">        &lt;value&gt;1&lt;/value&gt;</span><br><span class="line">    &lt;/property&gt;</span><br><span class="line">&lt;/configuration&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>ssh无密码信任关系</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">家目录下输入</span><br><span class="line"><span class="meta">  $</span><span class="bash"> ssh-keygen -t rsa -P <span class="string">''</span> -f ~/.ssh/id_rsa</span></span><br><span class="line"><span class="meta">  $</span><span class="bash"> cat ~/.ssh/id_rsa.pub &gt;&gt; ~/.ssh/authorized_keys</span></span><br><span class="line"><span class="meta">  $</span><span class="bash"> chmod 0600 ~/.ssh/authorized_keys</span></span><br><span class="line">[hadoop@aliyun ~]$ ssh aliyun date</span><br><span class="line">Thu Nov 28 12:15:08 CST 2019</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>环境变量 hadoop</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[hadoop@aliyun ~]$ vi .bashrc</span><br><span class="line">export HADOOP_HOME=/home/hadoop/app/hadoop</span><br><span class="line">export PATH=$&#123;HADOOP_HOME&#125;/bin:$&#123;HADOOP_HOME&#125;/sbin:$PATH</span><br><span class="line">[hadoop@aliyun ~]$ source .bashrc </span><br><span class="line">[hadoop@aliyun ~]$ which hadoop</span><br><span class="line">~/app/hadoop/bin/hadoop</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>格式化</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[hadoop@aliyun ~]$ hdfs namenode -format</span><br><span class="line">has been successfully formatted.</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>第一次启动</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[hadoop@aliyun ~]$ start-dfs.sh </span><br><span class="line">[hadoop@aliyun ~]$ jps</span><br><span class="line">10804 SecondaryNameNode</span><br><span class="line">10536 NameNode</span><br><span class="line">10907 Jps</span><br><span class="line">10654 DataNode</span><br><span class="line">[hadoop@aliyun ~]$</span><br></pre></td></tr></table></figure>
+
+<p>坑：第一次启动会输入yes确定信任关系，我们打开./ssh下的known_hosts文件，这个文件中存放信任关系</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[hadoop@aliyun .ssh]$ cat known_hosts</span><br><span class="line">aliyun,172.16.39.48 ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBCjHBKn/7LF5sfbae1OLkK5QoWm11Xn8RZs1JTc7K8v4RFum1OKIjArocvRjLOYPsq5ezYo8TlBHTrAgeUcvkBM=</span><br><span class="line">localhost ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBCjHBKn/7LF5sfbae1OLkK5QoWm11Xn8RZs1JTc7K8v4RFum1OKIjArocvRjLOYPsq5ezYo8TlBHTrAgeUcvkBM=</span><br><span class="line">0.0.0.0 ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBCjHBKn/7LF5sfbae1OLkK5QoWm11Xn8RZs1JTc7K8v4RFum1OKIjArocvRjLOYPsq5ezYo8TlBHTrAgeUcvkBM=</span><br></pre></td></tr></table></figure>
+
+<p>将来也许在启动hadoop的时候一直要输入密码，就是这里面已经存在了主机的信任关系，但是密匙对是新的，删除这个文件或者内容即可</p>
+</li>
+<li><p>DN SNN都以 aliyun启动</p>
+</li>
+</ol>
+<ul>
+<li><p>NN：core-site.xml fs.defaultFS控制</p>
+</li>
+<li><p>DN: slaves文件</p>
+</li>
+<li><p>2NN:hdfs-site.xml</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">&lt;property&gt;</span><br><span class="line">    &lt;name&gt;dfs.namenode.secondary.http-address&lt;/name&gt;</span><br><span class="line">    &lt;value&gt;aliyun:50090&lt;/value&gt;       #注意端口号，新旧版本有区别</span><br><span class="line">&lt;/property&gt;</span><br><span class="line">&lt;property&gt;</span><br><span class="line">    &lt;name&gt;dfs.namenode.secondary.https-address&lt;/name&gt;</span><br><span class="line">    &lt;value&gt;aliyun:50091&lt;/value&gt;       #注意端口号，新旧版本有区别</span><br><span class="line">&lt;/property&gt;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="2-hadoop-fs常规命令"><a href="#2-hadoop-fs常规命令" class="headerlink" title="2.hadoop fs常规命令"></a>2.hadoop fs常规命令</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">hadoop fs -mkdir /</span><br><span class="line">hadoop fs -put</span><br><span class="line">hadoop fs -get</span><br><span class="line">hadoop fs -cat</span><br><span class="line">hadoop fs -rm</span><br><span class="line">hadoop fs -ls</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-配置文件在官方哪里找"><a href="#3-配置文件在官方哪里找" class="headerlink" title="3.配置文件在官方哪里找"></a><strong>3.配置文件在官方哪里找</strong></h3><p><strong><a href="https://hadoop.apache.org/docs/r2.10.0/hadoop-project-dist/hadoop-common/SingleCluster.html#Pseudo-Distributed_Operation" target="_blank" rel="noopener">https://hadoop.apache.org/docs/r2.10.0/hadoop-project-dist/hadoop-common/SingleCluster.html#Pseudo-Distributed_Operation</a></strong></p>
+<h3 id="4-整理-jdk、ssh、hosts文件"><a href="#4-整理-jdk、ssh、hosts文件" class="headerlink" title="4.整理 jdk、ssh、hosts文件"></a>4.整理 jdk、ssh、hosts文件</h3><p>jdk和ssh是hadoop运行的先决条件</p>
+<p>hosts文件存放主机名和ip地址的映射</p>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/10/03/mysql/3/">掌握where、group、join语句和写SQL</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-10-03</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/MySQL/">MySQL</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/DataWarehouse/">DataWarehouse</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/MySQL/">MySQL</a></span><div class="content"><h3 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h3><ol>
+<li>整理 sql的where各种条件</li>
+<li>整理 sql的group</li>
+<li>整理 sql的join</li>
+<li>04txt文件的案例 9句sql</li>
+<li>整理刚才分享的小知识点</li>
+<li>补充资料文件夹 去看看执行</li>
+<li>彩蛋 视频 sql</li>
+</ol>
+<h3 id="1-整理-sql-的-where-各种条件"><a href="#1-整理-sql-的-where-各种条件" class="headerlink" title="1.整理 sql 的 where 各种条件"></a>1.整理 sql 的 where 各种条件</h3><p><code>where 子句:</code> 如需有条件地从表中选取数据，可将 where 子句添加到 SELECT 语句。</p>
+<p>语法</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> 列名称 <span class="keyword">FROM</span> 表名称 <span class="keyword">WHERE</span> 列 运算符 值</span><br></pre></td></tr></table></figure>
+
+<p>下面的运算符可在 where 子句中使用：</p>
+<table>
+<thead>
+<tr>
+<th>操作符</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>=</td>
+<td>等于</td>
+</tr>
+<tr>
+<td>&lt;&gt;</td>
+<td>不等于</td>
+</tr>
+<tr>
+<td>&gt;</td>
+<td>大于</td>
+</tr>
+<tr>
+<td>&lt;</td>
+<td>小于</td>
+</tr>
+<tr>
+<td>&gt;=</td>
+<td>大于等于</td>
+</tr>
+<tr>
+<td>&lt;=</td>
+<td>小于等于</td>
+</tr>
+<tr>
+<td>BETWEEN</td>
+<td>在某个范围内</td>
+</tr>
+<tr>
+<td>LIKE</td>
+<td>搜索某种模式</td>
+</tr>
+</tbody></table>
+<h3 id="2-整理-sql-的-group"><a href="#2-整理-sql-的-group" class="headerlink" title="2.整理 sql 的 group"></a>2.整理 sql 的 group</h3><p>聚合函数 (比如 SUM) 常常需要添加 group by语句。</p>
+<p><code>group by语句:</code> group by语句用于结合聚合函数，根据一个或多个列对结果集进行分组。</p>
+<p>语法</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> column_name, aggregate_function(column_name)</span><br><span class="line"><span class="keyword">FROM</span> table_name</span><br><span class="line"><span class="keyword">where</span> column_name <span class="keyword">operator</span> <span class="keyword">value</span></span><br><span class="line"><span class="keyword">group</span> bycolumn_name</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-整理-sql-的-join"><a href="#3-整理-sql-的-join" class="headerlink" title="3.整理 sql 的 join"></a>3.整理 sql 的 join</h3><p>join分为inner join、left join、right join，分别表示内联结，左联结，右联结</p>
+<p><code>inner join:</code> 在表中存在至少一个匹配时，INNER JOIN 关键字返回行。</p>
+<p>语法</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> column_name(s)</span><br><span class="line"><span class="keyword">FROM</span> table_name1</span><br><span class="line"><span class="keyword">INNER</span> <span class="keyword">JOIN</span> table_name2 </span><br><span class="line"><span class="keyword">ON</span> table_name1.column_name=table_name2.column_name</span><br></pre></td></tr></table></figure>
+
+<p><code>注意:</code> inner 与 join是相同的。</p>
+<p><code>left join:</code> left join 关键字会从左表 (table_name1) 那里返回所有的行，即使在右表 (table_name2) 中没有匹配的行。</p>
+<p>语法</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> column_name(s)</span><br><span class="line"><span class="keyword">FROM</span> table_name1</span><br><span class="line"><span class="keyword">left</span> <span class="keyword">join</span> table_name2 </span><br><span class="line"><span class="keyword">ON</span> table_name1.column_name=table_name2.column_name</span><br></pre></td></tr></table></figure>
+
+<p><code>注意:</code> 在某些数据库中， left join 称为 left outer join。</p>
+<p><code>right join</code> right join 关键字会右表 (table_name2) 那里返回所有的行，即使在左表 (table_name1) 中没有匹配的行。</p>
+<p>语法</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> column_name(s)</span><br><span class="line"><span class="keyword">FROM</span> table_name1</span><br><span class="line"><span class="keyword">right</span> <span class="keyword">join</span> table_name2 </span><br><span class="line"><span class="keyword">ON</span> table_name1.column_name=table_name2.column_name</span><br></pre></td></tr></table></figure>
+
+<p><code>注意:</code> 在某些数据库中， right join 称为 right outer join。</p>
+<h3 id="4-04txt文件的案例9句sql"><a href="#4-04txt文件的案例9句sql" class="headerlink" title="4. 04txt文件的案例9句sql"></a>4. 04txt文件的案例9句sql</h3><ul>
+<li>查询出部门编号为30的所有员工的编号和姓名</li>
+<li>找出部门编号为10中所有经理，和部门编号为20中所有销售员的详细资料。</li>
+<li>查询所有员工详细信息，用工资降序排序，如果工资相同使用入职日期升序排序</li>
+<li>列出薪金大于1500的各种工作及从事此工作的员工人数。</li>
+<li>列出在销售部工作的员工的姓名，假定不知道销售部的部门编号。</li>
+<li>查询姓名以S开头的\以S结尾\包含S字符\第二个字母为L __</li>
+<li>查询每种工作的最高工资、最低工资、人数</li>
+<li>列出薪金高于公司平均薪金的所有员工号，员工姓名，所在部门名称，上级领导，工资，工资等级</li>
+<li>列出薪金高于在部门30工作的 所有/任何一个员工的薪金的员工姓名和薪金、部门名称。</li>
+</ul>
+<h3 id="5-整理刚才分享的小知识点"><a href="#5-整理刚才分享的小知识点" class="headerlink" title="5.整理刚才分享的小知识点"></a>5.整理刚才分享的小知识点</h3><ol>
+<li><p>关于count()的使用细节</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">使用count(id)替换count(*)的使用，可以提升性能</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>sum()与count()的区别与联想</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">sum()计算统计字段的和，count()统计字段的数量，容易混淆，建议使用sum()联想count()，使用count()联想sum()，并区分</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>sql语句的执行顺序</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> yyyyy <span class="keyword">from</span> rzdata</span><br><span class="line"><span class="keyword">where</span> xxx</span><br><span class="line"><span class="keyword">group</span> byxxx <span class="keyword">having</span> xxx </span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> xxx</span><br><span class="line"><span class="keyword">limit</span> xxx ;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>all和any的区别</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">all()的用法是表示要满足字段中所有值即最大值，any()的用法表示的是满足字段值任意一个值即最小值</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>聚合函数中的null值</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">如果在进行数值计算的时候，字段中存在null值，则计算的结果是null值，在进行数值运算的时候使用IFNULL(expression, alt_value)替换null值为0，则能计算出结果</span><br><span class="line">如果第一个参数的表达式 expression 为 NULL，则返回第二个参数的备用值。</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>unoin和union all的区别</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">union的用法是把联合查询中的语句如果整体重复则去重，unoin all不会去重</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h3 id="6-补充资料文件夹-去看看执行"><a href="#6-补充资料文件夹-去看看执行" class="headerlink" title="6.补充资料文件夹 去看看执行"></a>6.补充资料文件夹 去看看执行</h3><p>　　资料文件中</p>
+<h3 id="7-彩蛋-视频-sql"><a href="#7-彩蛋-视频-sql" class="headerlink" title="7.彩蛋 视频 sql"></a>7.彩蛋 视频 sql</h3><p>　　百度云中</p>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/10/02/mysql/2/">掌握MySQL的建表规范、DDL语句和权限操作</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-10-02</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/MySQL/">MySQL</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/DataWarehouse/">DataWarehouse</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/MySQL/">MySQL</a></span><div class="content"><h3 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h3><ol>
+<li>整理 建表规范</li>
+<li>整理 DDL语句的</li>
+<li>整理 三句话</li>
+</ol>
+<h3 id="首先看一个建表例子，再去研究应该遵循哪些规范"><a href="#首先看一个建表例子，再去研究应该遵循哪些规范" class="headerlink" title="首先看一个建表例子，再去研究应该遵循哪些规范"></a>首先看一个建表例子，再去研究应该遵循哪些规范</h3><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> rzdata(</span><br><span class="line"><span class="keyword">id</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">not</span> <span class="literal">null</span> auto_increment,</span><br><span class="line"></span><br><span class="line"><span class="keyword">name</span> <span class="built_in">varchar</span>(<span class="number">200</span>),</span><br><span class="line">age  <span class="built_in">int</span>(<span class="number">3</span>),</span><br><span class="line"></span><br><span class="line">createuser <span class="built_in">varchar</span>(<span class="number">200</span>) ,</span><br><span class="line">createtime <span class="built_in">timestamp</span> <span class="keyword">not</span> <span class="literal">null</span> <span class="keyword">default</span> <span class="keyword">current_timestamp</span>,</span><br><span class="line">updateuser <span class="built_in">varchar</span>(<span class="number">200</span>) ,</span><br><span class="line">updatetime <span class="built_in">timestamp</span> <span class="keyword">not</span> <span class="literal">null</span> <span class="keyword">default</span> <span class="keyword">current_timestamp</span> <span class="keyword">on</span> <span class="keyword">update</span> <span class="keyword">current_timestamp</span>,</span><br><span class="line"></span><br><span class="line">primary <span class="keyword">key</span> (<span class="keyword">id</span>)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li><p>表名</p>
+<p>不能是中文，不能是汉语拼音 ，不然很low</p>
+</li>
+<li><p>风格统一</p>
+<p>统一所有表的风格，可以从已有的表中查看，或者找leader检查，方便后期维护</p>
+</li>
+<li><p>第一个字段</p>
+<p>第一个字段必须是id，并且自增长，是主键，没有意义 –&gt;拓展: 为什么？</p>
+</li>
+<li><p>主键</p>
+<p>一张表只有一个主键，primary key == unique+not null</p>
+</li>
+<li><p>后四个字段</p>
+<p>后四个字段包括：用户、创建时间、修改用户、修改时间</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">createuser varchar(200) ,</span><br><span class="line">createtime timestamp not null default current_timestamp,</span><br><span class="line">updateuser varchar(200) ,</span><br><span class="line">updatetime timestamp not null default current_timestamp on <span class="keyword">update</span> <span class="keyword">current_timestamp</span>,</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>业务字段</p>
+<p>业务字段需要唯一存在，使用unique约束，如订单号</p>
+<p>业务字段都必须加上注释</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">COMMENT</span> <span class="string">'用户名称'</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>字符集CHARSET</p>
+<p>查看字符集</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">&gt;&gt; show variables like '%char%';</span><br><span class="line">+<span class="comment">--------------------------+---------------------------------------------------------------+</span></span><br><span class="line">| Variable_name            | Value                                                         |</span><br><span class="line">+<span class="comment">--------------------------+---------------------------------------------------------------+</span></span><br><span class="line">| character_set_client     | utf8                                                          |</span><br><span class="line">| character_set_connection | utf8                                                          |</span><br><span class="line">| character_set_database   | latin1                                                        |</span><br><span class="line">| character_set_filesystem | binary                                                        |</span><br><span class="line">| character_set_results    | utf8                                                          |</span><br><span class="line">| character_set_server     | latin1                                                        |</span><br><span class="line">| character_set_system     | utf8                                                          |</span><br><span class="line">| character_sets_dir       | /usr/local/mysql-5.6.23-linux-glibc2.5-x86_64/share/charsets/ |</span><br><span class="line">+<span class="comment">--------------------------+---------------------------------------------------------------+</span></span><br><span class="line">8 rows in <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h3 id="DDL语句以及需要注意的点"><a href="#DDL语句以及需要注意的点" class="headerlink" title="DDL语句以及需要注意的点"></a>DDL语句以及需要注意的点</h3><p><code>查询语句：</code>select 查询字段 from 表 ;</p>
+<p>注意：</p>
+<ol>
+<li><p>生产环境下不要用 * 代替所有字段</p>
+<p>错误示范：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">mysql&gt; select * from tb_user;</span><br><span class="line">+<span class="comment">----+----------+----------------------------------+-------------+---------------------+----------------------------------+</span></span><br><span class="line">| id | username | password                         | phone       | created             | salt                             |</span><br><span class="line">+<span class="comment">----+----------+----------------------------------+-------------+---------------------+----------------------------------+</span></span><br><span class="line">| 28 | zhangsan | e21d44f200365b57fab2641cd31226d4 | 13600527634 | 2018-05-25 17:52:03 | 05b0f203987e49d2b72b20b95e0e57d9 |</span><br><span class="line">| 30 | leyou    | 4de9a93b3f95d468874a3c1bf3b25a48 | 15855410440 | 2018-09-30 11:37:30 | 4565613d4b0e434cb496d4eb87feb45f |</span><br><span class="line">+<span class="comment">----+----------+----------------------------------+-------------+---------------------+----------------------------------+</span></span><br><span class="line">2 rows in <span class="keyword">set</span> (<span class="number">0.01</span> sec)</span><br></pre></td></tr></table></figure>
+
+<p>正确示范：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">mysql&gt; select username,password from tb_user;</span><br><span class="line">+<span class="comment">----------+----------------------------------+</span></span><br><span class="line">| username | password                         |</span><br><span class="line">+<span class="comment">----------+----------------------------------+</span></span><br><span class="line">| zhangsan | e21d44f200365b57fab2641cd31226d4 |</span><br><span class="line">| leyou    | 4de9a93b3f95d468874a3c1bf3b25a48 |</span><br><span class="line">+<span class="comment">----------+----------------------------------+</span></span><br><span class="line">2 rows in <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查询语句如果数据量特别大必须使用where 或者 limit，否则需要使用大量的资源</p>
+<p>错误示范：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">name</span>,image,letter <span class="keyword">from</span> tb_brand;</span><br></pre></td></tr></table></figure>
+
+<p>正确示范：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">name</span>,image,letter <span class="keyword">from</span> tb_brand <span class="keyword">limit</span> <span class="number">100</span>;</span><br><span class="line"><span class="keyword">select</span> <span class="keyword">name</span>,image,letter <span class="keyword">from</span> tb_brand <span class="keyword">where</span> <span class="keyword">id</span>=<span class="number">100</span>;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<p><code>新增语句：</code>insert into 表名（字段1，字段2…） values（数据1，数据2…）;</p>
+<p>注意：在表名后加上对应要添加的字段名</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> tb_brand (<span class="keyword">name</span>，letter) <span class="keyword">values</span>(tunan，T);</span><br></pre></td></tr></table></figure>
+
+<p><code>修改语句：</code>update 表名 set 修改后的字段 where 条件；</p>
+<p>注意：一定要加上条件，否则是全局修改</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">update</span> tb_brand <span class="keyword">set</span> <span class="keyword">name</span>=<span class="string">"xiaoqi"</span> <span class="keyword">where</span> <span class="keyword">id</span> = <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+
+<p><code>删除语句：</code>delete from 表名 where 条件；</p>
+<p>注意：一定要加上条件，否则是全局删除；</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">delete</span> <span class="keyword">from</span> tb_brand tb <span class="keyword">where</span> <span class="keyword">id</span> = <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="当某条SQL验证拖累进程时怎么办？"><a href="#当某条SQL验证拖累进程时怎么办？" class="headerlink" title="当某条SQL验证拖累进程时怎么办？"></a>当某条SQL验证拖累进程时怎么办？</h3><p>使用 show processlist；查看mysql中的 sql 进程</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">mysql&gt; show processlist;</span><br><span class="line">+<span class="comment">-----+------+---------------------+--------+---------+------+----------+------------------+</span></span><br><span class="line">| Id  | User | Host                | db     | Command | Time | State    | Info             |</span><br><span class="line">+<span class="comment">-----+------+---------------------+--------+---------+------+----------+------------------+</span></span><br><span class="line">| 272 | root | localhost           | leyou1 | Query   |    0 | starting | <span class="keyword">show</span> <span class="keyword">processlist</span> |</span><br><span class="line">| <span class="number">273</span> | root | <span class="number">121.62</span><span class="number">.184</span><span class="number">.34</span>:<span class="number">56629</span> | leyou1 | <span class="keyword">Sleep</span>   |  <span class="number">448</span> |          | <span class="literal">NULL</span>             |</span><br><span class="line">| <span class="number">274</span> | root | <span class="number">121.62</span><span class="number">.184</span><span class="number">.34</span>:<span class="number">56631</span> | leyou1 | <span class="keyword">Sleep</span>   |  <span class="number">592</span> |          | <span class="literal">NULL</span>             |</span><br><span class="line">+<span class="comment">-----+------+---------------------+--------+---------+------+----------+------------------+</span></span><br><span class="line"><span class="number">3</span> <span class="keyword">rows</span> <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br></pre></td></tr></table></figure>
+
+<p>然后根据 id 删除即可</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">kill</span> <span class="keyword">id</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="必须要记住的三条命令"><a href="#必须要记住的三条命令" class="headerlink" title="必须要记住的三条命令"></a>必须要记住的三条命令</h3><p><code>修改密码：</code></p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">update</span> <span class="keyword">user</span> <span class="keyword">set</span> <span class="keyword">password</span>=<span class="keyword">password</span>(<span class="string">'密码'</span>) <span class="keyword">where</span> <span class="keyword">user</span>=<span class="string">'用户名'</span>;</span><br></pre></td></tr></table></figure>
+
+<p><code>修改权限:</code></p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">grant</span> <span class="keyword">all</span> <span class="keyword">privileges</span> <span class="keyword">on</span> *.* <span class="keyword">to</span> 用户名@<span class="string">'%'</span> <span class="keyword">identified</span> <span class="keyword">by</span> <span class="string">'密码'</span>;</span><br></pre></td></tr></table></figure>
+
+<p><code>刷新权限：</code></p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">flush</span> <span class="keyword">privileges</span>;</span><br></pre></td></tr></table></figure></div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/10/01/mysql/1/">MySQL二进制部署和DBeaver连接MySQL</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-10-01</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/MySQL/">MySQL</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/DataWarehouse/">DataWarehouse</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/MySQL/">MySQL</a></span><div class="content"><h3 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h3><ol>
+<li>二进制部署mysql</li>
+<li>重新部署</li>
+<li>部署dbeaver 打通 mysql</li>
+</ol>
+<h3 id="二进制部署mysql"><a href="#二进制部署mysql" class="headerlink" title="二进制部署mysql"></a>二进制部署mysql</h3><p>[<a href="https://github.com/Hackeruncle/MySQL/blob/master/MySQL%205.6.23%20Install.txt]" target="_blank" rel="noopener">https://github.com/Hackeruncle/MySQL/blob/master/MySQL%205.6.23%20Install.txt]</a>(<a href="https://github.com/Hackeruncle/MySQL/blob/master/MySQL" target="_blank" rel="noopener">https://github.com/Hackeruncle/MySQL/blob/master/MySQL</a> 5.6.23 Install.txt)</p>
+<p>京东云下部署代码：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">scripts/mysql_install_db  \</span><br><span class="line"><span class="comment">--user=mysqladmin \</span></span><br><span class="line"><span class="comment">--basedir=/usr/local/mysql \</span></span><br><span class="line"><span class="comment">--datadir=/usr/local/mysql/data</span></span><br></pre></td></tr></table></figure>
+
+<p>必须要装三个环境：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">yum <span class="keyword">install</span> -y perl</span><br><span class="line">yum <span class="keyword">install</span> -y autoconf</span><br><span class="line">yum <span class="keyword">install</span> -y libaio</span><br></pre></td></tr></table></figure>
+
+<h3 id="重新部署"><a href="#重新部署" class="headerlink" title="重新部署"></a>重新部署</h3><ol>
+<li><p>删除压缩文件和数据文件</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">rm -rf arch<span class="comment">/* data/*</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>重置执行脚本文件</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">scripts/mysql_install_db  \</span><br><span class="line"><span class="comment">--user=mysqladmin \</span></span><br><span class="line"><span class="comment">--basedir=/usr/local/mysql \</span></span><br><span class="line"><span class="comment">--datadir=/usr/local/mysql/data</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h3 id="部署dbeaver-打通-mysql"><a href="#部署dbeaver-打通-mysql" class="headerlink" title="部署dbeaver 打通 mysql"></a>部署dbeaver 打通 mysql</h3><p>修改用户密码：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">update</span> <span class="keyword">user</span> <span class="keyword">set</span> <span class="keyword">password</span>=<span class="keyword">password</span>(<span class="string">'ruozedata'</span>) <span class="keyword">where</span> <span class="keyword">user</span>=<span class="string">'root'</span>;</span><br></pre></td></tr></table></figure>
+
+<p>查看用户权限信息：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">user</span>,<span class="keyword">password</span>,host <span class="keyword">from</span> <span class="keyword">user</span>;</span><br></pre></td></tr></table></figure>
+
+<p>给用户添加权限：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">grant</span> <span class="keyword">all</span> <span class="keyword">privileges</span> <span class="keyword">on</span> *.* <span class="keyword">to</span> root@<span class="string">'%'</span> <span class="keyword">identified</span> <span class="keyword">by</span> <span class="string">'ruozedata'</span>;</span><br><span class="line"><span class="keyword">flush</span> <span class="keyword">privileges</span>;　　<span class="comment">#刷新权限</span></span><br></pre></td></tr></table></figure>
+
+<p>DBeaver连接Mysql：</p>
+<p><img src="https://img2018.cnblogs.com/i-beta/1657732/201911/1657732-20191121181225170-233024101.png" alt="DBeaver连接设置"> </p>
+<p> <img src="https://img2018.cnblogs.com/i-beta/1657732/201911/1657732-20191121181334218-1241892255.png" alt="DBeaver连接添加jar包"></p>
+<h3 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h3><p>为了保证 ip 地址的安全性和可用性</p>
+<p>　　1. 在 linux 的 /etc/hosts 文件中配置 内网ip 地址和主机名的映射环境，这样在shell脚本或者代码中使用主机名替代 ip 使用</p>
+<p>　　2. 如果是云主机，在windows中的hosts文件中配置外网ip地址和主机名的映射</p>
+<p><code>注意：</code>hosts文件中的前两行切记不能删，否则可能带来bug</p>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/30/linux/shell/9/">Shell的test命令</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-30</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Linux/">Linux</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Linux/Shell/">Shell</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Linux/">Linux</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Shell/">Shell</a></span><div class="content"><p>Shell中的 test 命令用于检查某个条件是否成立，它可以进行<code>数值</code>、<code>字符</code>和<code>文件</code>三个方面的测试。</p>
+<h3 id="数值测试"><a href="#数值测试" class="headerlink" title="数值测试"></a>数值测试</h3><table>
+<thead>
+<tr>
+<th align="left">参数</th>
+<th align="left">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">-eq</td>
+<td align="left">等于则为真</td>
+</tr>
+<tr>
+<td align="left">-ne</td>
+<td align="left">不等于则为真</td>
+</tr>
+<tr>
+<td align="left">-gt</td>
+<td align="left">大于则为真</td>
+</tr>
+<tr>
+<td align="left">-ge</td>
+<td align="left">大于等于则为真</td>
+</tr>
+<tr>
+<td align="left">-lt</td>
+<td align="left">小于则为真</td>
+</tr>
+<tr>
+<td align="left">-le</td>
+<td align="left">小于等于则为真</td>
+</tr>
+</tbody></table>
+<p>实例演示：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">num1=100</span><br><span class="line">num2=100</span><br><span class="line">if test $[num1] -eq $[num2]</span><br><span class="line">then</span><br><span class="line">    echo '两个数相等！'</span><br><span class="line">else</span><br><span class="line">    echo '两个数不相等！'</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+
+<p>输出结果：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">两个数相等！</span><br></pre></td></tr></table></figure>
+
+<p>代码中的 [] 执行基本的算数运算，如：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line"></span><br><span class="line">a=5</span><br><span class="line">b=6</span><br><span class="line"></span><br><span class="line">result=$[a+b] # 注意等号两边不能有空格</span><br><span class="line">echo "result 为： $result"</span><br></pre></td></tr></table></figure>
+
+<p>结果为:</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">result 为： 11</span><br></pre></td></tr></table></figure>
+
+<h3 id="字符串测试"><a href="#字符串测试" class="headerlink" title="字符串测试"></a>字符串测试</h3><table>
+<thead>
+<tr>
+<th align="left">参数</th>
+<th align="left">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">=</td>
+<td align="left">等于则为真</td>
+</tr>
+<tr>
+<td align="left">!=</td>
+<td align="left">不相等则为真</td>
+</tr>
+<tr>
+<td align="left">-z 字符串</td>
+<td align="left">字符串的长度为零则为真</td>
+</tr>
+<tr>
+<td align="left">-n 字符串</td>
+<td align="left">字符串的长度不为零则为真</td>
+</tr>
+</tbody></table>
+<p>实例演示：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">num1="ru1noob"</span><br><span class="line">num2="runoob"</span><br><span class="line">if test $num1 = $num2</span><br><span class="line">then</span><br><span class="line">    echo '两个字符串相等!'</span><br><span class="line">else</span><br><span class="line">    echo '两个字符串不相等!'</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+
+<p>输出结果：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">两个字符串不相等!</span><br></pre></td></tr></table></figure>
+
+<h3 id="文件测试"><a href="#文件测试" class="headerlink" title="文件测试"></a>文件测试</h3><table>
+<thead>
+<tr>
+<th align="left">参数</th>
+<th align="left">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">-e 文件名</td>
+<td align="left">如果文件存在则为真</td>
+</tr>
+<tr>
+<td align="left">-r 文件名</td>
+<td align="left">如果文件存在且可读则为真</td>
+</tr>
+<tr>
+<td align="left">-w 文件名</td>
+<td align="left">如果文件存在且可写则为真</td>
+</tr>
+<tr>
+<td align="left">-x 文件名</td>
+<td align="left">如果文件存在且可执行则为真</td>
+</tr>
+<tr>
+<td align="left">-s 文件名</td>
+<td align="left">如果文件存在且至少有一个字符则为真</td>
+</tr>
+<tr>
+<td align="left">-d 文件名</td>
+<td align="left">如果文件存在且为目录则为真</td>
+</tr>
+<tr>
+<td align="left">-f 文件名</td>
+<td align="left">如果文件存在且为普通文件则为真</td>
+</tr>
+<tr>
+<td align="left">-c 文件名</td>
+<td align="left">如果文件存在且为字符型特殊文件则为真</td>
+</tr>
+<tr>
+<td align="left">-b 文件名</td>
+<td align="left">如果文件存在且为块特殊文件则为真</td>
+</tr>
+</tbody></table>
+<p>实例演示：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">cd /bin</span><br><span class="line">if test -e ./bash</span><br><span class="line">then</span><br><span class="line">    echo '文件已存在!'</span><br><span class="line">else</span><br><span class="line">    echo '文件不存在!'</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+
+<p>输出结果：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">文件已存在!</span><br></pre></td></tr></table></figure>
+
+<p>另外，Shell还提供了与( -a )、或( -o )、非( ! )三个逻辑操作符用于将测试条件连接起来，其优先级为：”!”最高，”-a”次之，”-o”最低。例如：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">cd /bin</span><br><span class="line">if test -e ./notFile -o -e ./bash</span><br><span class="line">then</span><br><span class="line">    echo '至少有一个文件存在!'</span><br><span class="line">else</span><br><span class="line">    echo '两个文件都不存在'</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+
+<p>输出结果：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">至少有一个文件存在!</span><br></pre></td></tr></table></figure></div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/29/linux/shell/8/">Shell的流程控制</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-29</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Linux/">Linux</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Linux/Shell/">Shell</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Linux/">Linux</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Shell/">Shell</a></span><div class="content"><p>和Java、PHP等语言不一样，shell的流程控制不可缺少</p>
+<h3 id="判断语句"><a href="#判断语句" class="headerlink" title="判断语句"></a>判断语句</h3><h4 id="if"><a href="#if" class="headerlink" title="if"></a>if</h4><p>if 语句语法格式：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">if condition</span><br><span class="line">then</span><br><span class="line">    command1 </span><br><span class="line">    command2</span><br><span class="line">    ...</span><br><span class="line">    commandN </span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+
+<p>写成一行（适用于终端命令提示符）：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">if [ $(ps -ef | grep -c "ssh") -gt 1 ]; then echo "true"; fi</span><br></pre></td></tr></table></figure>
+
+<p>末尾的fi就是if倒过来拼写，后面还会遇到类似的。</p>
+<h4 id="if-else"><a href="#if-else" class="headerlink" title="if else"></a>if else</h4><p>if else 语法格式：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">if condition</span><br><span class="line">then</span><br><span class="line">    command1 </span><br><span class="line">    command2</span><br><span class="line">    ...</span><br><span class="line">    commandN</span><br><span class="line">else</span><br><span class="line">    command</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+
+<h4 id="if-else-if-else"><a href="#if-else-if-else" class="headerlink" title="if else-if else"></a>if else-if else</h4><p>if else-if else 语法格式：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">if condition1</span><br><span class="line">then</span><br><span class="line">    command1</span><br><span class="line">elif condition2 </span><br><span class="line">then </span><br><span class="line">    command2</span><br><span class="line">else</span><br><span class="line">    commandN</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+
+<p>以下实例判断两个变量是否相等：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">a=10</span><br><span class="line">b=20</span><br><span class="line">if [ $a == $b ]</span><br><span class="line">then</span><br><span class="line">   echo "a 等于 b"</span><br><span class="line">elif [ $a -gt $b ]</span><br><span class="line">then</span><br><span class="line">   echo "a 大于 b"</span><br><span class="line">elif [ $a -lt $b ]</span><br><span class="line">then</span><br><span class="line">   echo "a 小于 b"</span><br><span class="line">else</span><br><span class="line">   echo "没有符合的条件"</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+
+<p>输出结果：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">a 小于 b</span><br></pre></td></tr></table></figure>
+
+<p>if else语句经常与test命令结合使用，如下所示：</p>
+<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">num1=$[<span class="number">2</span>*<span class="number">3</span>]</span><br><span class="line">num2=$[<span class="number">1</span>+<span class="number">5</span>]</span><br><span class="line"><span class="keyword">if</span> test $[num1] <span class="nomarkup">-eq</span> $[num2]</span><br><span class="line">then</span><br><span class="line">    echo <span class="string">'两个数字相等!'</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    echo <span class="string">'两个数字不相等!'</span></span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+
+<p>输出结果：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">两个数字相等!</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="循环语句"><a href="#循环语句" class="headerlink" title="循环语句"></a>循环语句</h3><h4 id="for循环"><a href="#for循环" class="headerlink" title="for循环"></a>for循环</h4><p>与其他编程语言类似，Shell支持for循环。</p>
+<p>for循环一般格式为：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">for var in item1 item2 ... itemN</span><br><span class="line">do</span><br><span class="line">    command1</span><br><span class="line">    command2</span><br><span class="line">    ...</span><br><span class="line">    commandN</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+
+<p>写成一行：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">for var in item1 item2 ... itemN; do command1; command2… done;</span><br></pre></td></tr></table></figure>
+
+<p>当变量值在列表里，for循环即执行一次所有命令，使用变量名获取列表中的当前取值。命令可为任何有效的shell命令和语句。in列表可以包含替换、字符串和文件名。</p>
+<p>in列表是可选的，如果不用它，for循环使用命令行的位置参数。</p>
+<p>例如，顺序输出当前列表中的数字：</p>
+<p><code>方法1:</code></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">for var in 1 2 3 4 5 </span><br><span class="line">do</span><br><span class="line">    echo "The value is: $var"</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+
+<p><code>方法2:</code></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">for var in &#123;1..5&#125;</span><br><span class="line">do</span><br><span class="line">    echo "The value is: $var"</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+
+<p><code>方法3:</code></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">for ((var=1;var&lt;=5;var++))</span><br><span class="line">do</span><br><span class="line">    echo "The value is: $var"</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+
+<p>输出结果：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">The value is: 1</span><br><span class="line">The value is: 2</span><br><span class="line">The value is: 3</span><br><span class="line">The value is: 4</span><br><span class="line">The value is: 5</span><br></pre></td></tr></table></figure>
+
+<p>顺序输出字符串中的字符：</p>
+<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> str <span class="keyword">in</span> <span class="string">'This is a string'</span></span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">    echo <span class="variable">$str</span></span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+
+<p>输出结果：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">This is a string</span><br></pre></td></tr></table></figure>
+
+<h4 id="while-语句"><a href="#while-语句" class="headerlink" title="while 语句"></a>while 语句</h4><p>while循环用于不断执行一系列命令，也用于从输入文件中读取数据；命令通常为测试条件。其格式为：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">while condition</span><br><span class="line">do</span><br><span class="line">    command</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+
+<p>以下是一个基本的while循环，测试条件是：如果int小于等于5，那么条件返回真。int从0开始，每次循环处理时，int加1。运行上述脚本，返回数字1到5，然后终止。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line">int=1</span><br><span class="line">while(( $int&lt;=5 ))</span><br><span class="line">do</span><br><span class="line">    echo $int</span><br><span class="line">    let "int++"</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+
+<p>运行脚本，输出：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td></tr></table></figure>
+
+<p>以上实例使用了 Bash let 命令，let 命令是 BASH 中用于计算的工具，用于执行一个或多个表达式，变量计算中不需要加上 $ 来表示变量。如果表达式中包含了空格或其他特殊字符，则必须引起来。</p>
+<p>while循环可用于读取键盘信息。下面的例子中，输入信息被设置为变量FILM，按<Ctrl-D>结束循环。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">echo '按下 &lt;CTRL-D&gt; 退出'</span><br><span class="line">echo -n '输入你最喜欢的网站名: '</span><br><span class="line">while read FILM</span><br><span class="line">do</span><br><span class="line">    echo "是的！$FILM 是一个好网站"</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+
+<p>运行脚本，输出类似下面：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">按下 &lt;CTRL-D&gt; 退出</span><br><span class="line">输入你最喜欢的网站名:菜鸟教程</span><br><span class="line">是的！菜鸟教程 是一个好网站</span><br></pre></td></tr></table></figure>
+
+<h4 id="无限循环"><a href="#无限循环" class="headerlink" title="无限循环"></a>无限循环</h4><p>无限循环语法格式：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">while :</span><br><span class="line">do</span><br><span class="line">    command</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+
+<p>或者</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">while true</span><br><span class="line">do</span><br><span class="line">    command</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+
+<p>或者</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">for (( ; ; ))</span><br></pre></td></tr></table></figure>
+
+<h3 id="开关语句"><a href="#开关语句" class="headerlink" title="开关语句"></a>开关语句</h3><h4 id="case"><a href="#case" class="headerlink" title="case"></a>case</h4><p>Shell case语句为多选择语句。可以用case语句匹配一个值与一个模式，如果匹配成功，执行相匹配的命令。case语句格式如下：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">case 值 in</span><br><span class="line">模式1)</span><br><span class="line">    command1</span><br><span class="line">    command2</span><br><span class="line">    ...</span><br><span class="line">    commandN</span><br><span class="line">    ;;</span><br><span class="line">模式2）</span><br><span class="line">    command1</span><br><span class="line">    command2</span><br><span class="line">    ...</span><br><span class="line">    commandN</span><br><span class="line">    ;;</span><br><span class="line">esac</span><br></pre></td></tr></table></figure>
+
+<p>case工作方式如上所示。取值后面必须为单词in，每一模式必须以右括号结束。取值可以为变量或常数。匹配发现取值符合某一模式后，其间所有命令开始执行直至 ;;。</p>
+<p>取值将检测匹配的每一个模式。一旦模式匹配，则执行完匹配模式相应命令后不再继续其他模式。如果无一匹配模式，使用星号 * 捕获该值，再执行后面的命令。</p>
+<p>下面的脚本提示输入1到4，与每一种模式进行匹配：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">echo '输入 1 到 4 之间的数字:'</span><br><span class="line">echo '你输入的数字为:'</span><br><span class="line">read aNum</span><br><span class="line">case $aNum in</span><br><span class="line">    1)  echo '你选择了 1'</span><br><span class="line">    ;;</span><br><span class="line">    2)  echo '你选择了 2'</span><br><span class="line">    ;;</span><br><span class="line">    3)  echo '你选择了 3'</span><br><span class="line">    ;;</span><br><span class="line">    4)  echo '你选择了 4'</span><br><span class="line">    ;;</span><br><span class="line">    *)  echo '你没有输入 1 到 4 之间的数字'</span><br><span class="line">    ;;</span><br><span class="line">esac</span><br></pre></td></tr></table></figure>
+
+<p>输入不同的内容，会有不同的结果，例如：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">输入 1 到 4 之间的数字:</span><br><span class="line">你输入的数字为:</span><br><span class="line">3</span><br><span class="line">你选择了 3</span><br></pre></td></tr></table></figure>
+
+<h3 id="跳出循环"><a href="#跳出循环" class="headerlink" title="跳出循环"></a>跳出循环</h3><p>在循环过程中，有时候需要在未达到循环结束条件时强制跳出循环，Shell使用两个命令来实现该功能：break和continue。</p>
+<h4 id="break命令"><a href="#break命令" class="headerlink" title="break命令"></a>break命令</h4><p>break命令允许跳出所有循环（终止执行后面的所有循环）。</p>
+<p>下面的例子中，脚本进入死循环直至用户输入数字大于5。要跳出这个循环，返回到shell提示符下，需要使用break命令。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line">while :</span><br><span class="line">do</span><br><span class="line">    echo -n "输入 1 到 5 之间的数字:"</span><br><span class="line">    read aNum</span><br><span class="line">    case $aNum in</span><br><span class="line">        1|2|3|4|5) echo "你输入的数字为 $aNum!"</span><br><span class="line">        ;;</span><br><span class="line">        *) echo "你输入的数字不是 1 到 5 之间的! 游戏结束"</span><br><span class="line">            break</span><br><span class="line">        ;;</span><br><span class="line">    esac</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+
+<p>执行以上代码，输出结果为：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">输入 1 到 5 之间的数字:3</span><br><span class="line">你输入的数字为 3!</span><br><span class="line">输入 1 到 5 之间的数字:7</span><br><span class="line">你输入的数字不是 1 到 5 之间的! 游戏结束</span><br></pre></td></tr></table></figure>
+
+<h4 id="continue"><a href="#continue" class="headerlink" title="continue"></a>continue</h4><p>continue命令与break命令类似，只有一点差别，它不会跳出所有循环，仅仅跳出当前循环。</p>
+<p>对上面的例子进行修改：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line">while :</span><br><span class="line">do</span><br><span class="line">    echo -n "输入 1 到 5 之间的数字: "</span><br><span class="line">    read aNum</span><br><span class="line">    case $aNum in</span><br><span class="line">        1|2|3|4|5) echo "你输入的数字为 $aNum!"</span><br><span class="line">        ;;</span><br><span class="line">        *) echo "你输入的数字不是 1 到 5 之间的!"</span><br><span class="line">            continue</span><br><span class="line">            echo "游戏结束"</span><br><span class="line">        ;;</span><br><span class="line">    esac</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+
+<p>运行代码发现，当输入大于5的数字时，该例中的循环不会结束，语句 <strong>echo “游戏结束”</strong> 永远不会被执行。</p>
+<hr>
+<h4 id="esac"><a href="#esac" class="headerlink" title="esac"></a>esac</h4><p>case的语法和C family语言差别很大，它需要一个esac（就是case反过来）作为结束标记，每个case分支用右圆括号，用两个分号表示break。</p>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/28/linux/shell/7/">Shell的printf命令</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-28</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Linux/">Linux</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Linux/Shell/">Shell</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Linux/">Linux</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Shell/">Shell</a></span><div class="content"><p>printf 命令模仿 C 程序库（library）里的 printf() 程序。</p>
+<p>printf 由 POSIX 标准所定义，因此使用 printf 的脚本比使用 echo 移植性好。</p>
+<p>printf 使用引用文本或空格分隔的参数，外面可以在 printf 中使用格式化字符串，还可以制定字符串的宽度、左右对齐方式等。默认 printf 不会像 echo 自动添加换行符，我们可以手动添加 \n。</p>
+<p>printf 命令的语法：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">printf  format-string  [arguments...]</span><br></pre></td></tr></table></figure>
+
+<p><strong>参数说明：</strong></p>
+<ul>
+<li><strong>format-string:</strong> 为格式控制字符串</li>
+<li><strong>arguments:</strong> 为参数列表。</li>
+</ul>
+<p>实例如下：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">echo</span> <span class="string">"Hello, Shell"</span></span></span><br><span class="line">Hello, Shell</span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">printf</span> <span class="string">"Hello, Shell\n"</span></span></span><br><span class="line">Hello, Shell</span><br><span class="line"><span class="meta">$</span></span><br></pre></td></tr></table></figure>
+
+<p>接下来,我来用一个脚本来体现printf的强大功能：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">printf "%-10s %-8s %-4s\n" 姓名 性别 体重kg  </span><br><span class="line">printf "%-10s %-8s %-4.2f\n" 郭靖 男 66.1234 </span><br><span class="line">printf "%-10s %-8s %-4.2f\n" 杨过 男 48.6543 </span><br><span class="line">printf "%-10s %-8s %-4.2f\n" 郭芙 女 47.9876</span><br></pre></td></tr></table></figure>
+
+<p>执行脚本，输出结果如下所示：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">姓名     性别   体重kg</span><br><span class="line">郭靖     男      66.12</span><br><span class="line">杨过     男      48.65</span><br><span class="line">郭芙     女      47.99</span><br></pre></td></tr></table></figure>
+
+<p>%s %c %d %f都是格式替代符</p>
+<p>%-10s 指一个宽度为10个字符（-表示左对齐，没有则表示右对齐），任何字符都会被显示在10个字符宽的字符内，如果不足则自动以空格填充，超过也会将内容全部显示出来。</p>
+<p>%-4.2f 指格式化为小数，其中.2指保留2位小数。</p>
+<p>更多实例：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> format-string为双引号</span></span><br><span class="line">printf "%d %s\n" 1 "abc"</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 单引号与双引号效果一样 </span></span><br><span class="line">printf '%d %s\n' 1 "abc" </span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 没有引号也可以输出</span></span><br><span class="line">printf %s abcdef</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 格式只指定了一个参数，但多出的参数仍然会按照该格式输出，format-string 被重用</span></span><br><span class="line">printf %s abc def</span><br><span class="line"></span><br><span class="line">printf "%s\n" abc def</span><br><span class="line"></span><br><span class="line">printf "%s %s %s\n" a b c d e f g h i j</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 如果没有 arguments，那么 %s 用NULL代替，%d 用 0 代替</span></span><br><span class="line">printf "%s and %d \n"</span><br></pre></td></tr></table></figure>
+
+<p>执行脚本，输出结果如下所示：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">1 abc</span><br><span class="line">1 abc</span><br><span class="line">abcdefabcdefabc</span><br><span class="line">def</span><br><span class="line">a b c</span><br><span class="line">d e f</span><br><span class="line">g h i</span><br><span class="line">j  </span><br><span class="line"> and 0</span><br></pre></td></tr></table></figure>
+
+<h3 id="printf的转义序列"><a href="#printf的转义序列" class="headerlink" title="printf的转义序列"></a>printf的转义序列</h3><table>
+<thead>
+<tr>
+<th align="left">序列</th>
+<th align="left">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">\a</td>
+<td align="left">警告字符，通常为ASCII的BEL字符</td>
+</tr>
+<tr>
+<td align="left">\b</td>
+<td align="left">后退</td>
+</tr>
+<tr>
+<td align="left">\c</td>
+<td align="left">抑制（不显示）输出结果中任何结尾的换行字符（只在%b格式指示符控制下的参数字符串中有效），而且，任何留在参数里的字符、任何接下来的参数以及任何留在格式字符串中的字符，都被忽略</td>
+</tr>
+<tr>
+<td align="left">\f</td>
+<td align="left">换页（formfeed）</td>
+</tr>
+<tr>
+<td align="left">\n</td>
+<td align="left">换行</td>
+</tr>
+<tr>
+<td align="left">\r</td>
+<td align="left">回车（Carriage return）</td>
+</tr>
+<tr>
+<td align="left">\t</td>
+<td align="left">水平制表符</td>
+</tr>
+<tr>
+<td align="left">\v</td>
+<td align="left">垂直制表符</td>
+</tr>
+<tr>
+<td align="left">\</td>
+<td align="left">一个字面上的反斜杠字符</td>
+</tr>
+<tr>
+<td align="left">\ddd</td>
+<td align="left">表示1到3位数八进制值的字符。仅在格式字符串中有效</td>
+</tr>
+<tr>
+<td align="left">\0ddd</td>
+<td align="left">表示1到3位的八进制值字符</td>
+</tr>
+</tbody></table>
+<p>实例:</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">printf</span> <span class="string">"a string, no processing:&lt;%s&gt;\n"</span> <span class="string">"A\nB"</span></span></span><br><span class="line">a string, no processing:&lt;A\nB&gt;</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">printf</span> <span class="string">"a string, no processing:&lt;%b&gt;\n"</span> <span class="string">"A\nB"</span></span></span><br><span class="line">a string, no processing:&lt;A</span><br><span class="line"><span class="meta">B&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">printf</span> <span class="string">"www.runoob.com \a"</span></span></span><br><span class="line">www.runoob.com $                  #不换行</span><br></pre></td></tr></table></figure></div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/27/linux/shell/6/">Shell的echo命令</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-27</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Linux/">Linux</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Linux/Shell/">Shell</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Linux/">Linux</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Shell/">Shell</a></span><div class="content"><p>Shell 的 echo 指令与 PHP 的 echo 指令类似，都是用于字符串的输出。命令格式：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">echo string</span><br></pre></td></tr></table></figure>
+
+<p>您可以使用echo实现更复杂的输出格式控制。</p>
+<h3 id="显示普通字符串"><a href="#显示普通字符串" class="headerlink" title="显示普通字符串:"></a>显示普通字符串:</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">echo "It is a test"</span><br></pre></td></tr></table></figure>
+
+<p>这里的双引号完全可以省略，以下命令与上面实例效果一致：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">echo It is a test</span><br></pre></td></tr></table></figure>
+
+<h3 id="显示转义字符"><a href="#显示转义字符" class="headerlink" title="显示转义字符"></a>显示转义字符</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">echo "\"It is a test\""</span><br></pre></td></tr></table></figure>
+
+<p>结果将是:</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">"It is a test"</span><br></pre></td></tr></table></figure>
+
+<p>同样，双引号也可以省略</p>
+<h3 id="显示变量"><a href="#显示变量" class="headerlink" title="显示变量"></a>显示变量</h3><p>read 命令从标准输入中读取一行,并把输入行的每个字段的值指定给 shell 变量</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/sh</span></span><br><span class="line">read name </span><br><span class="line">echo "$name It is a test"</span><br></pre></td></tr></table></figure>
+
+<p>以上代码保存为 test.sh，name 接收标准输入的变量，结果将是:</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@www ~]# sh test.sh</span><br><span class="line">OK                     #标准输入</span><br><span class="line">OK It is a test        #输出</span><br></pre></td></tr></table></figure>
+
+<h3 id="显示换行"><a href="#显示换行" class="headerlink" title="显示换行"></a>显示换行</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">echo -e "OK! \n" # -e 开启转义</span><br><span class="line">echo "It is a test"</span><br></pre></td></tr></table></figure>
+
+<p>输出结果：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">OK!</span><br><span class="line"></span><br><span class="line">It is a test</span><br></pre></td></tr></table></figure>
+
+<h3 id="显示不换行"><a href="#显示不换行" class="headerlink" title="显示不换行"></a>显示不换行</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/sh</span></span><br><span class="line">echo -e "OK! \c" # -e 开启转义 \c 不换行</span><br><span class="line">echo "It is a test"</span><br></pre></td></tr></table></figure>
+
+<p>输出结果：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">OK! It is a test</span><br></pre></td></tr></table></figure>
+
+<h3 id="显示结果定向至文件"><a href="#显示结果定向至文件" class="headerlink" title="显示结果定向至文件"></a>显示结果定向至文件</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">echo "It is a test" &gt; myfile</span><br></pre></td></tr></table></figure>
+
+<h3 id="原样输出字符串，不进行转义或取变量-用单引号"><a href="#原样输出字符串，不进行转义或取变量-用单引号" class="headerlink" title="原样输出字符串，不进行转义或取变量(用单引号)"></a>原样输出字符串，不进行转义或取变量(用单引号)</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">echo '$name\"'</span><br></pre></td></tr></table></figure>
+
+<p>输出结果：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash">name\"</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="显示命令执行结果"><a href="#显示命令执行结果" class="headerlink" title="显示命令执行结果"></a>显示命令执行结果</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">echo `date`</span><br></pre></td></tr></table></figure>
+
+<p><strong>注意：</strong> 这里使用的是反引号 <strong>`</strong>, 而不是单引号 <strong>‘</strong>。</p>
+<p>结果将显示当前日期</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">Thu Jul 24 10:08:46 CST 2014</span><br></pre></td></tr></table></figure>
+
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/26/linux/shell/5/">Shell的运算符</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-26</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Linux/">Linux</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Linux/Shell/">Shell</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Linux/">Linux</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Shell/">Shell</a></span><div class="content"><p>Shell 和其他编程语言一样，支持多种运算符，包括：</p>
+<ul>
+<li>算数运算符</li>
+<li>关系运算符</li>
+<li>布尔运算符</li>
+<li>字符串运算符</li>
+<li>文件测试运算符</li>
+</ul>
+<p>原生bash不支持简单的数学运算，但是可以通过其他命令来实现，例如 awk 和 expr，expr 最常用。</p>
+<p>expr 是一款表达式计算工具，使用它能完成表达式的求值操作。</p>
+<p>例如，两个数相加(注意使用的是反引号 ` 而不是单引号 ‘)：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#!/bin/bash</span><br><span class="line"></span><br><span class="line">val=`expr 2 + 2`</span><br><span class="line">echo &quot;两数之和为 : $val&quot;</span><br></pre></td></tr></table></figure>
 
 
-参数
-说明
+<p>运行实例</p>
+<p>执行脚本，输出结果如下所示：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">两数之和为 : 4</span><br></pre></td></tr></table></figure>
 
+<p>两点注意：</p>
+<ul>
+<li>表达式和运算符之间要有空格，例如 2+2 是不对的，必须写成 2 + 2，这与我们熟悉的大多数编程语言不一样。</li>
+<li>完整的表达式要被 <code></code> 包含，注意这个字符不是常用的单引号，在 Esc 键下边。</li>
+</ul>
+<h3 id="算术运算符"><a href="#算术运算符" class="headerlink" title="算术运算符"></a>算术运算符</h3><p>下表列出了常用的算术运算符，假定变量 a 为 10，变量 b 为 20：</p>
+<table>
+<thead>
+<tr>
+<th align="left">运算符</th>
+<th align="left">说明</th>
+<th align="left">举例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">+</td>
+<td align="left">加法</td>
+<td align="left"><code>expr $a + $b</code> 结果为 30。</td>
+</tr>
+<tr>
+<td align="left">-</td>
+<td align="left">减法</td>
+<td align="left"><code>expr $a - $b</code> 结果为 -10。</td>
+</tr>
+<tr>
+<td align="left">*</td>
+<td align="left">乘法</td>
+<td align="left"><code>expr $a * $b</code> 结果为  200。</td>
+</tr>
+<tr>
+<td align="left">/</td>
+<td align="left">除法</td>
+<td align="left"><code>expr $b / $a</code> 结果为 2。</td>
+</tr>
+<tr>
+<td align="left">%</td>
+<td align="left">取余</td>
+<td align="left"><code>expr $b % $a</code> 结果为 0。</td>
+</tr>
+<tr>
+<td align="left">=</td>
+<td align="left">赋值</td>
+<td align="left">a=$b 将把变量 b 的值赋给 a。</td>
+</tr>
+<tr>
+<td align="left">==</td>
+<td align="left">相等。用于比较两个数字，相同则返回 true。</td>
+<td align="left">[ $a == $b ] 返回 false。</td>
+</tr>
+<tr>
+<td align="left">!=</td>
+<td align="left">不相等。用于比较两个数字，不相同则返回 true。</td>
+<td align="left">[ $a != $b ] 返回 true。</td>
+</tr>
+</tbody></table>
+<p>注意：条件表达式要放在方括号之间，并且要有空格，例如: [$a==$b] 是错误的，必须写成 [ $a == $b ]。</p>
+<p>算术运算符实例如下：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">a=10</span><br><span class="line">b=20</span><br><span class="line"></span><br><span class="line">val=`expr $a + $b`</span><br><span class="line">echo "a + b : $val"</span><br><span class="line"></span><br><span class="line">val=`expr $a - $b`</span><br><span class="line">echo "a - b : $val"</span><br><span class="line"></span><br><span class="line">val=`expr $a * $b`</span><br><span class="line">echo "a * b : $val"</span><br><span class="line"></span><br><span class="line">val=`expr $b / $a`</span><br><span class="line">echo "b / a : $val"</span><br><span class="line"></span><br><span class="line">val=`expr $b % $a`</span><br><span class="line">echo "b % a : $val"</span><br><span class="line"></span><br><span class="line">if [ $a == $b ]</span><br><span class="line">then</span><br><span class="line">  echo "a 等于 b"</span><br><span class="line">fi</span><br><span class="line">if [ $a != $b ]</span><br><span class="line">then</span><br><span class="line">  echo "a 不等于 b"</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
 
+<p>执行脚本，输出结果如下所示：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">a + b : 30</span><br><span class="line">a - b : -10</span><br><span class="line">a * b : 200</span><br><span class="line">b / a : 2</span><br><span class="line">b % a : 0</span><br><span class="line">a 不等于 b</span><br></pre></td></tr></table></figure>
 
--eq
-等于则为真
+<p>注意：</p>
+<ul>
+<li>乘号()前边必须加反斜杠()才能实现乘法运算；</li>
+<li>if…then…fi 是条件语句，后续将会讲解。</li>
+<li>在 MAC 中 shell 的 expr 语法是：$((表达式))，此处表达式中的 “” 不需要转义符号 “&quot; 。</li>
+</ul>
+<h3 id="关系运算符"><a href="#关系运算符" class="headerlink" title="关系运算符"></a>关系运算符</h3><p>关系运算符只支持数字，不支持字符串，除非字符串的值是数字。</p>
+<p>下表列出了常用的关系运算符，假定变量 a 为 10，变量 b 为 20：</p>
+<table>
+<thead>
+<tr>
+<th align="left">运算符</th>
+<th align="left">说明</th>
+<th align="left">举例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">-eq</td>
+<td align="left">检测两个数是否相等，相等返回 true。</td>
+<td align="left">[ $a -eq $b ] 返回 false。</td>
+</tr>
+<tr>
+<td align="left">-ne</td>
+<td align="left">检测两个数是否不相等，不相等返回 true。</td>
+<td align="left">[ $a -ne $b ] 返回 true。</td>
+</tr>
+<tr>
+<td align="left">-gt</td>
+<td align="left">检测左边的数是否大于右边的，如果是，则返回 true。</td>
+<td align="left">[ $a -gt $b ] 返回 false。</td>
+</tr>
+<tr>
+<td align="left">-lt</td>
+<td align="left">检测左边的数是否小于右边的，如果是，则返回 true。</td>
+<td align="left">[ $a -lt $b ] 返回 true。</td>
+</tr>
+<tr>
+<td align="left">-ge</td>
+<td align="left">检测左边的数是否大于等于右边的，如果是，则返回 true。</td>
+<td align="left">[ $a -ge $b ] 返回 false。</td>
+</tr>
+<tr>
+<td align="left">-le</td>
+<td align="left">检测左边的数是否小于等于右边的，如果是，则返回 true。</td>
+<td align="left">[ $a -le $b ] 返回 true。</td>
+</tr>
+</tbody></table>
+<p>关系运算符实例如下：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">a=10</span><br><span class="line">b=20</span><br><span class="line"></span><br><span class="line">if [ $a -eq $b ]</span><br><span class="line">then</span><br><span class="line">  echo "$a -eq $b : a 等于 b"</span><br><span class="line">else</span><br><span class="line">  echo "$a -eq $b: a 不等于 b"</span><br><span class="line">fi</span><br><span class="line">if [ $a -ne $b ]</span><br><span class="line">then</span><br><span class="line">  echo "$a -ne $b: a 不等于 b"</span><br><span class="line">else</span><br><span class="line">  echo "$a -ne $b : a 等于 b"</span><br><span class="line">fi</span><br><span class="line">if [ $a -gt $b ]</span><br><span class="line">then</span><br><span class="line">  echo "$a -gt $b: a 大于 b"</span><br><span class="line">else</span><br><span class="line">  echo "$a -gt $b: a 不大于 b"</span><br><span class="line">fi</span><br><span class="line">if [ $a -lt $b ]</span><br><span class="line">then</span><br><span class="line">  echo "$a -lt $b: a 小于 b"</span><br><span class="line">else</span><br><span class="line">  echo "$a -lt $b: a 不小于 b"</span><br><span class="line">fi</span><br><span class="line">if [ $a -ge $b ]</span><br><span class="line">then</span><br><span class="line">  echo "$a -ge $b: a 大于或等于 b"</span><br><span class="line">else</span><br><span class="line">  echo "$a -ge $b: a 小于 b"</span><br><span class="line">fi</span><br><span class="line">if [ $a -le $b ]</span><br><span class="line">then</span><br><span class="line">  echo "$a -le $b: a 小于或等于 b"</span><br><span class="line">else</span><br><span class="line">  echo "$a -le $b: a 大于 b"</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
 
+<p>执行脚本，输出结果如下所示：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">10 -eq 20: a 不等于 b</span><br><span class="line">10 -ne 20: a 不等于 b</span><br><span class="line">10 -gt 20: a 不大于 b</span><br><span class="line">10 -lt 20: a 小于 b</span><br><span class="line">10 -ge 20: a 小于 b</span><br><span class="line">10 -le 20: a 小于或等于 b</span><br></pre></td></tr></table></figure>
 
--ne
-不等于则为真
+<h3 id="布尔运算符"><a href="#布尔运算符" class="headerlink" title="布尔运算符"></a>布尔运算符</h3><p>下表列出了常用的布尔运算符，假定变量 a 为 10，变量 b 为 20：</p>
+<table>
+<thead>
+<tr>
+<th align="left">运算符</th>
+<th align="left">说明</th>
+<th align="left">举例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">!</td>
+<td align="left">非运算，表达式为 true 则返回 false，否则返回 true。</td>
+<td align="left">[ ! false ] 返回 true。</td>
+</tr>
+<tr>
+<td align="left">-o</td>
+<td align="left">或运算，有一个表达式为 true 则返回 true。</td>
+<td align="left">[ $a -lt 20 -o $b -gt 100 ] 返回 true。</td>
+</tr>
+<tr>
+<td align="left">-a</td>
+<td align="left">与运算，两个表达式都为 true 才返回 true。</td>
+<td align="left">[ $a -lt 20 -a $b -gt 100 ] 返回 false。</td>
+</tr>
+</tbody></table>
+<p>布尔运算符实例如下：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">a=10</span><br><span class="line">b=20</span><br><span class="line"></span><br><span class="line">if [ $a != $b ]</span><br><span class="line">then</span><br><span class="line">  echo "$a != $b : a 不等于 b"</span><br><span class="line">else</span><br><span class="line">  echo "$a == $b: a 等于 b"</span><br><span class="line">fi</span><br><span class="line">if [ $a -lt 100 -a $b -gt 15 ]</span><br><span class="line">then</span><br><span class="line">  echo "$a 小于 100 且 $b 大于 15 : 返回 true"</span><br><span class="line">else</span><br><span class="line">  echo "$a 小于 100 且 $b 大于 15 : 返回 false"</span><br><span class="line">fi</span><br><span class="line">if [ $a -lt 100 -o $b -gt 100 ]</span><br><span class="line">then</span><br><span class="line">  echo "$a 小于 100 或 $b 大于 100 : 返回 true"</span><br><span class="line">else</span><br><span class="line">  echo "$a 小于 100 或 $b 大于 100 : 返回 false"</span><br><span class="line">fi</span><br><span class="line">if [ $a -lt 5 -o $b -gt 100 ]</span><br><span class="line">then</span><br><span class="line">  echo "$a 小于 5 或 $b 大于 100 : 返回 true"</span><br><span class="line">else</span><br><span class="line">  echo "$a 小于 5 或 $b 大于 100 : 返回 false"</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
 
+<p>执行脚本，输出结果如下所示：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">10 != 20 : a 不等于 b</span><br><span class="line">10 小于 100 且 20 大于 15 : 返回 true</span><br><span class="line">10 小于 100 或 20 大于 100 : 返回 true</span><br><span class="line">10 小于 5 或 20 大于 100 : 返回 false</span><br></pre></td></tr></table></figure>
 
--gt
-大于则为真
+<h3 id="逻辑运算符"><a href="#逻辑运算符" class="headerlink" title="逻辑运算符"></a>逻辑运算符</h3><p>以下介绍 Shell 的逻辑运算符，假定变量 a 为 10，变量 b 为 20:</p>
+<table>
+<thead>
+<tr>
+<th align="left">运算符</th>
+<th align="left">说明</th>
+<th align="left">举例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">&amp;&amp;</td>
+<td align="left">逻辑的 AND</td>
+<td align="left">[[ $a -lt 100 &amp;&amp; $b -gt 100 ]] 返回 false</td>
+</tr>
+<tr>
+<td align="left">||</td>
+<td align="left">逻辑的 OR</td>
+<td align="left">[[ $a -lt 100 || $b -gt 100 ]] 返回 true</td>
+</tr>
+</tbody></table>
+<p>算符实例如下：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">a=10</span><br><span class="line">b=20</span><br><span class="line"></span><br><span class="line">if [[ $a -lt 100 &amp;&amp; $b -gt 100 ]]</span><br><span class="line">then</span><br><span class="line">  echo "返回 true"</span><br><span class="line">else</span><br><span class="line">  echo "返回 false"</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line">if [[ $a -lt 100 || $b -gt 100 ]]</span><br><span class="line">then</span><br><span class="line">  echo "返回 true"</span><br><span class="line">else</span><br><span class="line">  echo "返回 false"</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
 
+<p>执行脚本，输出结果如下所示：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">返回 false</span><br><span class="line">返回 true</span><br></pre></td></tr></table></figure>
 
--ge
-大于等于则为真
+<h3 id="字符串运算符"><a href="#字符串运算符" class="headerlink" title="字符串运算符"></a>字符串运算符</h3><p>下表列出了常用的字符串运算符，假定变量 a 为 “abc”，变量 b 为 “efg”：</p>
+<table>
+<thead>
+<tr>
+<th align="left">运算符</th>
+<th align="left">说明</th>
+<th align="left">举例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">=</td>
+<td align="left">检测两个字符串是否相等，相等返回 true。</td>
+<td align="left">[ $a = $b ] 返回 false。</td>
+</tr>
+<tr>
+<td align="left">!=</td>
+<td align="left">检测两个字符串是否相等，不相等返回 true。</td>
+<td align="left">[ $a != $b ] 返回 true。</td>
+</tr>
+<tr>
+<td align="left">-z</td>
+<td align="left">检测字符串长度是否为0，为0返回 true。</td>
+<td align="left">[ -z $a ] 返回 false。</td>
+</tr>
+<tr>
+<td align="left">-n</td>
+<td align="left">检测字符串长度是否为0，不为0返回 true。</td>
+<td align="left">[ -n “$a” ] 返回 true。</td>
+</tr>
+<tr>
+<td align="left">$</td>
+<td align="left">检测字符串是否为空，不为空返回 true。</td>
+<td align="left">[ $a ] 返回 true。</td>
+</tr>
+</tbody></table>
+<p>字符串运算符实例如下：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">a="abc"</span><br><span class="line">b="efg"</span><br><span class="line"></span><br><span class="line">if [ $a = $b ]</span><br><span class="line">then</span><br><span class="line">  echo "$a = $b : a 等于 b"</span><br><span class="line">else</span><br><span class="line">  echo "$a = $b: a 不等于 b"</span><br><span class="line">fi</span><br><span class="line">if [ $a != $b ]</span><br><span class="line">then</span><br><span class="line">  echo "$a != $b : a 不等于 b"</span><br><span class="line">else</span><br><span class="line">  echo "$a != $b: a 等于 b"</span><br><span class="line">fi</span><br><span class="line">if [ -z $a ]</span><br><span class="line">then</span><br><span class="line">  echo "-z $a : 字符串长度为 0"</span><br><span class="line">else</span><br><span class="line">  echo "-z $a : 字符串长度不为 0"</span><br><span class="line">fi</span><br><span class="line">if [ -n "$a" ]</span><br><span class="line">then</span><br><span class="line">  echo "-n $a : 字符串长度不为 0"</span><br><span class="line">else</span><br><span class="line">  echo "-n $a : 字符串长度为 0"</span><br><span class="line">fi</span><br><span class="line">if [ $a ]</span><br><span class="line">then</span><br><span class="line">  echo "$a : 字符串不为空"</span><br><span class="line">else</span><br><span class="line">  echo "$a : 字符串为空"</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
 
+<p>执行脚本，输出结果如下所示：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">abc = efg: a 不等于 b</span><br><span class="line">abc != efg : a 不等于 b</span><br><span class="line">-z abc : 字符串长度不为 0</span><br><span class="line">-n abc : 字符串长度不为 0</span><br><span class="line">abc : 字符串不为空</span><br></pre></td></tr></table></figure>
 
--lt
-小于则为真
+<h3 id="文件测试运算符"><a href="#文件测试运算符" class="headerlink" title="文件测试运算符"></a>文件测试运算符</h3><p>文件测试运算符用于检测 Unix 文件的各种属性。</p>
+<p>属性检测描述如下：</p>
+<table>
+<thead>
+<tr>
+<th align="left">操作符</th>
+<th align="left">说明</th>
+<th align="left">举例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">-b file</td>
+<td align="left">检测文件是否是块设备文件，如果是，则返回 true。</td>
+<td align="left">[ -b $file ] 返回 false。</td>
+</tr>
+<tr>
+<td align="left">-c file</td>
+<td align="left">检测文件是否是字符设备文件，如果是，则返回 true。</td>
+<td align="left">[ -c $file ] 返回 false。</td>
+</tr>
+<tr>
+<td align="left"><code>-d file</code></td>
+<td align="left">检测文件是否是目录，如果是，则返回 true。</td>
+<td align="left">[ -d $file ] 返回 false。</td>
+</tr>
+<tr>
+<td align="left"><code>-f file</code></td>
+<td align="left">检测文件是否是普通文件（既不是目录，也不是设备文件），如果是，则返回 true。</td>
+<td align="left">[ -f $file ] 返回 true。</td>
+</tr>
+<tr>
+<td align="left">-g file</td>
+<td align="left">检测文件是否设置了 SGID 位，如果是，则返回 true。</td>
+<td align="left">[ -g $file ] 返回 false。</td>
+</tr>
+<tr>
+<td align="left">-k file</td>
+<td align="left">检测文件是否设置了粘着位(Sticky Bit)，如果是，则返回 true。</td>
+<td align="left">[ -k $file ] 返回 false。</td>
+</tr>
+<tr>
+<td align="left">-p file</td>
+<td align="left">检测文件是否是有名管道，如果是，则返回 true。</td>
+<td align="left">[ -p $file ] 返回 false。</td>
+</tr>
+<tr>
+<td align="left">-u file</td>
+<td align="left">检测文件是否设置了 SUID 位，如果是，则返回 true。</td>
+<td align="left">[ -u $file ] 返回 false。</td>
+</tr>
+<tr>
+<td align="left"><code>-r file</code></td>
+<td align="left">检测文件是否可读，如果是，则返回 true。</td>
+<td align="left">[ -r $file ] 返回 true。</td>
+</tr>
+<tr>
+<td align="left"><code>-w file</code></td>
+<td align="left">检测文件是否可写，如果是，则返回 true。</td>
+<td align="left">[ -w $file ] 返回 true。</td>
+</tr>
+<tr>
+<td align="left"><code>-x file</code></td>
+<td align="left">检测文件是否可执行，如果是，则返回 true。</td>
+<td align="left">[ -x $file ] 返回 true。</td>
+</tr>
+<tr>
+<td align="left"><code>-s file</code></td>
+<td align="left">检测文件是否为空（文件大小是否大于0），不为空返回 true。</td>
+<td align="left">[ -s $file ] 返回 true。</td>
+</tr>
+<tr>
+<td align="left"><code>-e file</code></td>
+<td align="left">检测文件（包括目录）是否存在，如果是，则返回 true。</td>
+<td align="left">[ -e $file ] 返回 true。</td>
+</tr>
+</tbody></table>
+<p>其他检查符：</p>
+<ul>
+<li>-S: 判断某文件是否 socket。</li>
+<li>-L: 检测文件是否存在并且是一个符号链接。</li>
+</ul>
+<p>变量 file 表示文件 /var/www/runoob/test.sh，它的大小为 100 字节，具有 rwx 权限。下面的代码，将检测该文件的各种属性：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">file="/var/www/runoob/test.sh"</span><br><span class="line">if [ -r $file ]</span><br><span class="line">then</span><br><span class="line">  echo "文件可读"</span><br><span class="line">else</span><br><span class="line">  echo "文件不可读"</span><br><span class="line">fi</span><br><span class="line">if [ -w $file ]</span><br><span class="line">then</span><br><span class="line">  echo "文件可写"</span><br><span class="line">else</span><br><span class="line">  echo "文件不可写"</span><br><span class="line">fi</span><br><span class="line">if [ -x $file ]</span><br><span class="line">then</span><br><span class="line">  echo "文件可执行"</span><br><span class="line">else</span><br><span class="line">  echo "文件不可执行"</span><br><span class="line">fi</span><br><span class="line">if [ -f $file ]</span><br><span class="line">then</span><br><span class="line">  echo "文件为普通文件"</span><br><span class="line">else</span><br><span class="line">  echo "文件为特殊文件"</span><br><span class="line">fi</span><br><span class="line">if [ -d $file ]</span><br><span class="line">then</span><br><span class="line">  echo "文件是个目录"</span><br><span class="line">else</span><br><span class="line">  echo "文件不是个目录"</span><br><span class="line">fi</span><br><span class="line">if [ -s $file ]</span><br><span class="line">then</span><br><span class="line">  echo "文件不为空"</span><br><span class="line">else</span><br><span class="line">  echo "文件为空"</span><br><span class="line">fi</span><br><span class="line">if [ -e $file ]</span><br><span class="line">then</span><br><span class="line">  echo "文件存在"</span><br><span class="line">else</span><br><span class="line">  echo "文件不存在"</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
 
-
--le
-小于等于则为真
-
-
-实例演示：
-n ...</div><a class="more" href="/2018/09/30/linux/shell/9/#more" style="margin-top: 14px">Read more</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/29/linux/shell/8/">Shell的流程控制</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-29</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Linux/">Linux</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Linux/Shell/">Shell</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Linux/">Linux</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Shell/">Shell</a></span><div class="content">和Java、PHP等语言不一样，shell的流程控制不可缺少
-判断语句ifif 语句语法格式：
-if conditionthen    command1     command2    ...    commandN fi
-
-写成一行（适用于终端命令提示符）：
-if [ $(ps -ef | gre ...</div><a class="more" href="/2018/09/29/linux/shell/8/#more" style="margin-top: 14px">Read more</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/28/linux/shell/7/">Shell的printf命令</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-28</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Linux/">Linux</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Linux/Shell/">Shell</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Linux/">Linux</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Shell/">Shell</a></span><div class="content">printf 命令模仿 C 程序库（library）里的 printf() 程序。
-printf 由 POSIX 标准所定义，因此使用 printf 的脚本比使用 echo 移植性好。
-printf 使用引用文本或空格分隔的参数，外面可以在 printf 中使用格式化字符串，还可以制定字符串的宽度、 ...</div><a class="more" href="/2018/09/28/linux/shell/7/#more" style="margin-top: 14px">Read more</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/27/linux/shell/6/">Shell的echo命令</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-27</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Linux/">Linux</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Linux/Shell/">Shell</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Linux/">Linux</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Shell/">Shell</a></span><div class="content">Shell 的 echo 指令与 PHP 的 echo 指令类似，都是用于字符串的输出。命令格式：
-echo string
-
-您可以使用echo实现更复杂的输出格式控制。
-显示普通字符串:echo "It is a test"
-
-这里的双引号完全可以省略，以下命令与上面实例效果一致：
-echo It ...</div><a class="more" href="/2018/09/27/linux/shell/6/#more" style="margin-top: 14px">Read more</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/26/linux/shell/5/">Shell的运算符</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-26</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Linux/">Linux</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Linux/Shell/">Shell</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Linux/">Linux</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Shell/">Shell</a></span><div class="content">Shell 和其他编程语言一样，支持多种运算符，包括：
-
-算数运算符
-关系运算符
-布尔运算符
-字符串运算符
-文件测试运算符
-
-原生bash不支持简单的数学运算，但是可以通过其他命令来实现，例如 awk 和 expr，expr 最常用。
-expr 是一款表达式计算工具，使用它能完成表达式的求值操作。
- ...</div><a class="more" href="/2018/09/26/linux/shell/5/#more" style="margin-top: 14px">Read more</a><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/25/linux/shell/4/">Shell的数组</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-25</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Linux/">Linux</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Linux/Shell/">Shell</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Linux/">Linux</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Shell/">Shell</a></span><div class="content">数组中可以存放多个值。Bash Shell 只支持一维数组（不支持多维数组），初始化时不需要定义数组大小（与 PHP 类似）。
-与大部分编程语言类似，数组元素的下标由0开始。
-Shell 数组用括号来表示，元素用”空格”符号分割开，语法格式如下：
-array_name=(value1 ... val ...</div><a class="more" href="/2018/09/25/linux/shell/4/#more" style="margin-top: 14px">Read more</a><hr></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/11/">&lt;&lt;</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/11/">11</a><span class="page-number current">12</span><a class="page-number" href="/page/13/">13</a><a class="extend next" rel="next" href="/page/13/">&gt;&gt;</a></div></nav></div></div><footer class="footer-bg" style="background-image: url(/img/soroush-golpoor-1497416-unsplash.jpg)"><div class="layout" id="footer"><div class="copyright">&copy;2018 - 2020 By Tunan</div><div class="framework-info"><span>Driven - </span><a href="#"><span>Hexo</span></a><span class="footer-separator">|</span><span>Theme - </span><a href="#"><span>Melody</span></a></div><div class="footer_custom_text">大家好，我是图南，很高兴认识你们！</div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_site_uv"><i class="fa fa-user"></i><span id="busuanzi_value_site_uv"></span><span></span></span><span class="footer-separator">|</span><span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i><span id="busuanzi_value_site_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.6.1"></script><script src="/js/fancybox.js?version=1.6.1"></script><script src="/js/sidebar.js?version=1.6.1"></script><script src="/js/copy.js?version=1.6.1"></script><script src="/js/fireworks.js?version=1.6.1"></script><script src="/js/transition.js?version=1.6.1"></script><script src="/js/scroll.js?version=1.6.1"></script><script src="/js/head.js?version=1.6.1"></script><script src="/js/search/local-search.js"></script><script>if(/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+<p>执行脚本，输出结果如下所示：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">文件可读</span><br><span class="line">文件可写</span><br><span class="line">文件可执行</span><br><span class="line">文件为普通文件</span><br><span class="line">文件不是个目录</span><br><span class="line">文件不为空</span><br><span class="line">文件存在</span><br></pre></td></tr></table></figure></div><hr></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/11/">&lt;&lt;</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/11/">11</a><span class="page-number current">12</span><a class="page-number" href="/page/13/">13</a><a class="extend next" rel="next" href="/page/13/">&gt;&gt;</a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By Tunan</div><div class="framework-info"><span>Driven - </span><a href="#"><span>Hexo</span></a><span class="footer-separator">|</span><span>Theme - </span><a href="#"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_site_uv"><i class="fa fa-user"></i><span id="busuanzi_value_site_uv"></span><span></span></span><span class="footer-separator">|</span><span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i><span id="busuanzi_value_site_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.6.1"></script><script src="/js/fancybox.js?version=1.6.1"></script><script src="/js/sidebar.js?version=1.6.1"></script><script src="/js/copy.js?version=1.6.1"></script><script src="/js/fireworks.js?version=1.6.1"></script><script src="/js/transition.js?version=1.6.1"></script><script src="/js/scroll.js?version=1.6.1"></script><script src="/js/head.js?version=1.6.1"></script><script>if(/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
   $('#nav').addClass('is-mobile')
   $('footer').addClass('is-mobile')
-}</script><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">Local search</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="Search for Posts"></div></div></div><hr><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>Powered by</span> <a href="https://github.com/wzpan/hexo-generator-search" target="_blank" rel="noopener" style="color:#49B1F5;">hexo-generator-search</a></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div></body></html>
+}</script></body></html>
