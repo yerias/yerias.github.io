@@ -228,7 +228,150 @@
 </ol>
 <p><code>坑</code>：软连接文件创建后的文件和源为文件权限不同，必须注意和修改软连接文件和目标文件的权限</p>
 <p><code>建议</code>：在创建软连接的时候，源文件路径和目标文件路径推介使用绝对路径</p>
-</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/20/linux/4/">熟练使用vim、系统命令和程序管理工具</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-20</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Linux/">Linux</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/DataWarehouse/">DataWarehouse</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Linux/">Linux</a></span><div class="content"><h3 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h3><ol>
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/20/linux/3/">熟悉Linux权限相关命令</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-20</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Linux/">Linux</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/DataWarehouse/">DataWarehouse</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Linux/">Linux</a></span><div class="content"><h3 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h3><ol>
+<li>整理 用户用户组</li>
+<li>整理 <code>sudo</code>命令</li>
+<li>整理 用户无法登录 <code>passwd</code>文件</li>
+<li>权限 <code>rwx------ chmod chown</code> 案例</li>
+<li>其他命令 <code>- su find du</code>等</li>
+</ol>
+<h3 id="用户和用户组"><a href="#用户和用户组" class="headerlink" title="用户和用户组"></a>用户和用户组</h3><p>针对用户的相关文件在：<code>/usr/sbin/user*</code></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# ll /usr/sbin/user*</span><br><span class="line">-rwxr-x---. 1 root root 118192 Nov  6  2016 /usr/sbin/useradd</span><br><span class="line">-rwxr-x---. 1 root root  80360 Nov  6  2016 /usr/sbin/userdel</span><br><span class="line">-rwxr-x---. 1 root root 113840 Nov  6  2016 /usr/sbin/usermod</span><br><span class="line">-rwsr-xr-x  1 root root  11296 Apr 13  2017 /usr/sbin/usernetctl</span><br></pre></td></tr></table></figure>
+
+<p>针对用户组的相关文件在：<code>/usr/sbin/group*</code></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# ll /usr/sbin/group*</span><br><span class="line">-rwxr-x---. 1 root root 65480 Nov  6  2016 /usr/sbin/groupadd</span><br><span class="line">-rwxr-x---. 1 root root 57016 Nov  6  2016 /usr/sbin/groupdel</span><br><span class="line">-rwxr-x---. 1 root root 57064 Nov  6  2016 /usr/sbin/groupmems</span><br><span class="line">-rwxr-x---. 1 root root 76424 Nov  6  2016 /usr/sbin/groupmod</span><br></pre></td></tr></table></figure>
+
+<p>可以打印出<code>PATH</code>路径，就会发现<code>/user/sbin</code>已经被添加在了<code>PATH</code>环境中了，可以从主机的任意位置使用这些命令</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# echo $PATH</span><br><span class="line">/opt/module/jdk1.8.0_144/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin</span><br></pre></td></tr></table></figure>
+
+<p>需求：</p>
+<p>​        1. 添加<code>hadoop</code>用户</p>
+<p>​        2. 删除<code>hadoop</code>用户</p>
+<p>​        3. 重新创建<code>hadoop</code>用户，模拟用户丢失样式，并修正样式</p>
+<p>​        4. 创建<code>bigdata</code>用户组，并把<code>hadoop</code>用户添加进这个用户组</p>
+<p>​        5. 修改<code>bigdata</code>为<code>hadoop</code>的主组</p>
+<ol>
+<li><p>添加<code>hadoop</code>用户</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# useradd hadoop</span><br><span class="line">[root@aliyun ~]# id hadoop</span><br><span class="line">uid=1000(hadoop) gid=1000(hadoop) groups=1000(hadoop)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>删除<code>hadoop</code>用户</p>
+<p>使用命令帮助查看 <code>userdel</code> 命令</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# userdel --help</span><br><span class="line">Usage: userdel [options] LOGIN</span><br><span class="line"></span><br><span class="line">Options:</span><br><span class="line">  -f, --force                   force some actions that would fail otherwise</span><br><span class="line">                                e.g. removal of user still logged in</span><br><span class="line">                                or files, even if not owned by the user</span><br><span class="line">  -h, --help                    display this help message and exit</span><br><span class="line">  -r, --remove                  remove home directory and mail spool</span><br><span class="line">  -R, --root CHROOT_DIR         directory to chroot into</span><br><span class="line">  -Z, --selinux-user            remove any SELinux user mapping for the user</span><br></pre></td></tr></table></figure>
+
+<p>会发现 <code>-r</code> 选项是删除家目录</p>
+<p>在这里我们选择删除用户的时候不删除家目录</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# userdel hadoop</span><br><span class="line">[root@aliyun ~]# id hadoop</span><br><span class="line">id: hadoop: no such user</span><br><span class="line">[root@aliyun home]# cat /etc/passwd | grep ruoze</span><br><span class="line">[root@aliyun home]# cat /etc/group | grep ruoze</span><br></pre></td></tr></table></figure>
+
+<p>因为<code>hadoop</code>该组只有<code>hadoop</code>用户，当这个用户删除时，组会校验就他自己，会自动删除</p>
+</li>
+<li><p>重新创建<code>hadoop</code>用户，模拟用户丢失样式，并修正样式</p>
+<p>创建<code>hadoop</code>用户</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# useradd hadoop</span><br><span class="line">useradd: warning: the home directory already exists.</span><br><span class="line">Not copying any file from skel directory into it.</span><br><span class="line">Creating mailbox file: File exists</span><br><span class="line">[root@aliyun ~]# id hadoop</span><br><span class="line">uid=1000(hadoop) gid=1000(hadoop) groups=1000(hadoop)</span><br></pre></td></tr></table></figure>
+
+<p>模拟用户丢失样式</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[hadoop@aliyun ~]$ ll -a .bash*</span><br><span class="line">-rw-r--r-- 1 hadoop hadoop  18 Dec  7  2016 .bash_logout</span><br><span class="line">-rw-r--r-- 1 hadoop hadoop 193 Dec  7  2016 .bash_profile</span><br><span class="line">-rw-r--r-- 1 hadoop hadoop 231 Dec  7  2016 .bashrc</span><br><span class="line">[hadoop@aliyun ~]$ rm -rf .bash*</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# su - hadoop　　　　#切换用户</span><br><span class="line">Last login: Sun Nov 17 09:29:10 CST 2019 on pts/0</span><br><span class="line">-bash-4.2$ 　　　#用户样式丢失</span><br></pre></td></tr></table></figure>
+
+<p>修正样式 (这里只有root权限才可以拷贝)</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# ll  -a /etc/skel/</span><br><span class="line">total 20</span><br><span class="line">drwxr-xr-x.  2 root root 4096 Aug 18  2017 .</span><br><span class="line">drwxr-xr-x. 81 root root 4096 Nov 17 09:27 ..</span><br><span class="line">-rw-r--r--   1 root root   18 Dec  7  2016 .bash_logout</span><br><span class="line">-rw-r--r--   1 root root  193 Dec  7  2016 .bash_profile</span><br><span class="line">-rw-r--r--   1 root root  231 Dec  7  2016 .bashrc</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# cp /etc/skel/ .bash* /home/hadoop/</span><br><span class="line">cp: omitting directory ‘/etc/skel/’</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# su - hadoop　　#样式回来了</span><br><span class="line">Last login: Sun Nov 17 09:33:39 CST 2019 on pts/2</span><br><span class="line">[hadoop@aliyun ~]$</span><br></pre></td></tr></table></figure>
+
+<p>创建<code>bigdata</code>用户组，并把<code>hadoop</code>用户添加进这个用户组</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# groupadd bigdata</span><br><span class="line">[root@aliyun ~]# usermod -a -G bigdata hadoop</span><br><span class="line">[root@aliyun ~]# id hadoop</span><br><span class="line">uid=1000(hadoop) gid=1000(hadoop) groups=1000(hadoop),1001(bigdata)</span><br></pre></td></tr></table></figure>
+
+<p><em>20200309更新</em>：<code>mysqladmin</code>的属组一里加入<code>hadoop</code>用户</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">usermod -a -G hadoop mysqladmin</span><br></pre></td></tr></table></figure>
+
+<p>修改<code>bigdata</code>为<code>hadoop</code>的属组</p>
+<p>查看命令帮助发现有一条命令是改变用户的属组的</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">-g, --gid GROUP               force use GROUP as new primary group</span><br><span class="line">[root@aliyun ~]# usermod -g bigdata hadoop　　#强制改变属组</span><br><span class="line">[root@aliyun ~]# id hadoop</span><br><span class="line">uid=1000(hadoop) gid=1001(bigdata) groups=1001(bigdata)</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h3 id="sudo命令"><a href="#sudo命令" class="headerlink" title="sudo命令"></a>sudo命令</h3><p><code>sudo</code>命令是让普通用户具备<code>root</code>用户的权限</p>
+<p>添加普通用户具备<code>root</code>权限的文件是：<code>/etc/sudoers</code></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">90 ## Allow root to run any commands anywhere </span><br><span class="line">91 root    ALL=(ALL)       ALL</span><br><span class="line">92 hadoop  ALL=(root)      NOPASSWD:ALL　　#新添加的内容</span><br></pre></td></tr></table></figure>
+
+<h3 id="用户无法登录-修改passwd文件"><a href="#用户无法登录-修改passwd文件" class="headerlink" title="用户无法登录 修改passwd文件"></a>用户无法登录 修改<code>passwd</code>文件</h3><p>在模拟用户无法登陆之前，先说明管理用户信息的文件是：<code>/etc/passwd</code></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# tail -3  /etc/passwd</span><br><span class="line">redis:x:996:994:Redis Database Server:/var/lib/redis:/sbin/nologin</span><br><span class="line">mysqladmin:x:514:101::/usr/local/mysql:/bin/bash</span><br><span class="line">hadoop:x:1000:1001::/home/hadoop:/bin/bash</span><br></pre></td></tr></table></figure>
+
+<p>需要注意的是最后一个冒号后面是用户的登陆权限</p>
+<p>需求：</p>
+<p>　　1. 模拟用户的登录权限是<code>/bin/false</code>，修改，并登录</p>
+<p>　　2. 模拟用户的登录权限是<code>/sbin/nologin</code>，修改，并登录</p>
+<p><strong>1. 模拟用户的登录权限是<code>/bin/false</code>，修改，并登录</strong></p>
+<ol>
+<li><p>模拟用户的登录权限是<code>/bin/false</code></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# cat /etc/passwd | grep hadoop</span><br><span class="line">hadoop:x:1000:1001::/home/hadoop:/bin/false</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>尝试登录</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# su - hadoop</span><br><span class="line">Last login: Sun Nov 17 09:37:25 CST 2019 on pts/2</span><br><span class="line">[root@aliyun ~]# 　　#登录失败</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看用户文件权限，并修改</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# cat /etc/passwd | grep 'hadoop'</span><br><span class="line">hadoop:x:1000:1001::/home/hadoop:/bin/bash</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>再次登录</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# su - hadoop</span><br><span class="line">Last login: Sun Nov 17 09:56:43 CST 2019 on pts/1</span><br><span class="line">[hadoop@aliyun ~]$     #登录成功</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<p><strong>2. 模拟用户的登录权限是<code>/sbin/nologin</code>，修改，并登录</strong></p>
+<ol>
+<li><p>模拟用户的登录权限是<code>/sbin/nologin</code></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# cat /etc/passwd | grep hadoop</span><br><span class="line">hadoop:x:1000:1001::/home/hadoop:/sbin/nologin</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>尝试登录</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# su - hadoop</span><br><span class="line">Last login: Sun Nov 17 09:59:35 CST 2019 on pts/1</span><br><span class="line">This account is currently not available.</span><br><span class="line">[root@aliyun ~]# 　　#登录失败</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看用户文件权限，并修改</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# cat /etc/passwd | grep 'hadoop'</span><br><span class="line">hadoop:x:1000:1001::/home/hadoop:/bin/bash</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>再次登录</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# su - hadoop</span><br><span class="line">Last login: Sun Nov 17 09:56:43 CST 2019 on pts/1</span><br><span class="line">[hadoop@aliyun ~]$     #登录成功</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h3 id="rwx-chmod-chown-案例"><a href="#rwx-chmod-chown-案例" class="headerlink" title="rwx------ chmod chown 案例"></a><code>rwx------</code> <code>chmod</code> <code>chown</code> 案例</h3><p>查看文件或者目录的读写执行权限</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# ll test.txt</span><br><span class="line">-rw-r--r-- 1 root root 12 Nov 12 23:36 test.txt</span><br><span class="line">r: read  4</span><br><span class="line">w: write 2 </span><br><span class="line">x: 执行  1</span><br><span class="line">-: 没权限 0</span><br></pre></td></tr></table></figure>
+
+<p>　<code>rw-</code>第一组 6 代表文件或文件夹的用户<code>root</code>，读写<br>　<code>r--</code> 第二组 4 代表文件或文件夹的用户组<code>root</code>，读<br>　<code>r--</code> 第三组 4 代表其他组的所属用户对这个文件或文件夹的权限: 读</p>
+<p><code>chmod</code> 命令用来修改文件或者目录的读写执行权限，加 <code>-R</code> 表示递归修改</p>
+<p><code>chown</code> 命令用来修改文件或者目录的属主和属组，加 <code>-R</code> 表示递归修改</p>
+<p>需求：</p>
+<p>​        1. 修改 <code>test.tx</code>t 文件的属组为<code>bigdata</code></p>
+<p>​        2.  <code>test.txt</code> 文件的权限为属主读写执行，属组读执行</p>
+<ol>
+<li><p>修改 <code>test.txt</code> 文件的属组为<code>bigdata</code></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# chown -R :bigdata test.txt </span><br><span class="line">[root@aliyun ~]# ll test.txt </span><br><span class="line">-rw-r--r-- 1 root bigdata 12 Nov 12 23:36 test.txt</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>修改 <code>test.txt</code> 文件的权限为属主可读写执行，属组可读执行,其他可读</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# chmod -R 754 test.txt </span><br><span class="line">[root@aliyun ~]# ll test.txt </span><br><span class="line">-rwxr-xr-- 1 root bigdata 12 Nov 12 23:36 test.txt</span><br></pre></td></tr></table></figure>
+
+<p>注意： <code>-R</code> 参数，目前可认为只有<code>chown</code>和<code>chmod</code>命令有，其他都为 <code>-r</code></p>
+</li>
+</ol>
+<h3 id="其他命令-su-find-du"><a href="#其他命令-su-find-du" class="headerlink" title="其他命令 - su find du"></a>其他命令 - <code>su</code> <code>find</code> <code>du</code></h3><p><u><code>su</code>命令用来切换用户，使用<code>su -</code> 用户名的方式，切换的时候把环境也切换了</u></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# su - hadoop　　#su - 用户名</span><br><span class="line">Last login: Sun Nov 17 10:16:08 CST 2019 on pts/2</span><br><span class="line">[hadoop@aliyun ~]$ pwd</span><br><span class="line">/home/hadoop</span><br><span class="line">[root@aliyun ~]# su hadoop　　#su 用户名</span><br><span class="line">[hadoop@aliyun root]$ pwd</span><br><span class="line">/root</span><br></pre></td></tr></table></figure>
+
+<p>需要注意 <code>.bash_profile</code> 和 <code>.bashrc</code> 两个文件中的环境生效的区别</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">.bash_profile文件 su ruoze不会执行，su - ruoze 都执行</span><br><span class="line">.bashrc文件       su ruoze执行   ，su - ruoze 都执行</span><br></pre></td></tr></table></figure>
+
+<p><u><code>find</code>命令用来查找文件，在不确定文件名的情况下使用模糊匹配</u></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[hadoop@aliyun root]$ find /home -name '*hadoop*'</span><br><span class="line">/home/hadoop</span><br></pre></td></tr></table></figure>
+
+<p><u><code>du</code>命令用来查看文件或者目录大小</u></p>
+<p>虽然 ls -l 也可以查看文件或者目录的大小，但是 <code>ls -l</code> 显示的目录大小并不准确</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# ll -h  size.log/</span><br><span class="line">total 12K</span><br><span class="line">-rw-r--r-- 1 root root 286K Nov 17 10:24 lastlog</span><br></pre></td></tr></table></figure>
+
+<p>再使用<code>du -sh</code> 查看一次</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# du -sh size.log/</span><br><span class="line">12K    size.log/</span><br></pre></td></tr></table></figure>
+
+<p>最后进入<code>size.log</code>文件夹查看文件的大小</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun log]# du -sh lastlog</span><br><span class="line">12K    lastlog</span><br></pre></td></tr></table></figure></div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/20/linux/4/">熟练使用vim、系统命令和程序管理工具</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-20</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Linux/">Linux</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/DataWarehouse/">DataWarehouse</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Linux/">Linux</a></span><div class="content"><h3 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h3><ol>
 <li>整理 vi</li>
 <li>整理 进程 端口号</li>
 <li>整理 连接拒绝 (权限受限)</li>
@@ -387,150 +530,7 @@
 
 <h4 id="zip压缩解压"><a href="#zip压缩解压" class="headerlink" title="zip压缩解压"></a>zip压缩解压</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">zip -r xxx.zip ./*  　　　　#在文件夹里面压缩文件 　　　　</span><br><span class="line">zip -r test.zip test/* 　　#在文件夹外卖压缩文件夹里面的文件unzip test.zip</span><br></pre></td></tr></table></figure>
 
-<h4 id="tar压缩解压"><a href="#tar压缩解压" class="headerlink" title="tar压缩解压"></a>tar压缩解压</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">tar -xzvf hadoop-2.6.0-cdh5.16.2.tar.gz　　　　#解压缩.ge的tar包</span><br><span class="line">tar -czvf hadoop-2.6.0-cdh5.16.2.tar.gz  hadoop-2.6.0-cdh5.16.2/*　　#压缩.ge的tar包</span><br></pre></td></tr></table></figure></div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/20/linux/3/">熟悉Linux权限相关命令</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-20</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Linux/">Linux</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/DataWarehouse/">DataWarehouse</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Linux/">Linux</a></span><div class="content"><h3 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h3><ol>
-<li>整理 用户用户组</li>
-<li>整理 <code>sudo</code>命令</li>
-<li>整理 用户无法登录 <code>passwd</code>文件</li>
-<li>权限 <code>rwx------ chmod chown</code> 案例</li>
-<li>其他命令 <code>- su find du</code>等</li>
-</ol>
-<h3 id="用户和用户组"><a href="#用户和用户组" class="headerlink" title="用户和用户组"></a>用户和用户组</h3><p>针对用户的相关文件在：<code>/usr/sbin/user*</code></p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# ll /usr/sbin/user*</span><br><span class="line">-rwxr-x---. 1 root root 118192 Nov  6  2016 /usr/sbin/useradd</span><br><span class="line">-rwxr-x---. 1 root root  80360 Nov  6  2016 /usr/sbin/userdel</span><br><span class="line">-rwxr-x---. 1 root root 113840 Nov  6  2016 /usr/sbin/usermod</span><br><span class="line">-rwsr-xr-x  1 root root  11296 Apr 13  2017 /usr/sbin/usernetctl</span><br></pre></td></tr></table></figure>
-
-<p>针对用户组的相关文件在：<code>/usr/sbin/group*</code></p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# ll /usr/sbin/group*</span><br><span class="line">-rwxr-x---. 1 root root 65480 Nov  6  2016 /usr/sbin/groupadd</span><br><span class="line">-rwxr-x---. 1 root root 57016 Nov  6  2016 /usr/sbin/groupdel</span><br><span class="line">-rwxr-x---. 1 root root 57064 Nov  6  2016 /usr/sbin/groupmems</span><br><span class="line">-rwxr-x---. 1 root root 76424 Nov  6  2016 /usr/sbin/groupmod</span><br></pre></td></tr></table></figure>
-
-<p>可以打印出<code>PATH</code>路径，就会发现<code>/user/sbin</code>已经被添加在了<code>PATH</code>环境中了，可以从主机的任意位置使用这些命令</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# echo $PATH</span><br><span class="line">/opt/module/jdk1.8.0_144/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin</span><br></pre></td></tr></table></figure>
-
-<p>需求：</p>
-<p>​        1. 添加<code>hadoop</code>用户</p>
-<p>​        2. 删除<code>hadoop</code>用户</p>
-<p>​        3. 重新创建<code>hadoop</code>用户，模拟用户丢失样式，并修正样式</p>
-<p>​        4. 创建<code>bigdata</code>用户组，并把<code>hadoop</code>用户添加进这个用户组</p>
-<p>​        5. 修改<code>bigdata</code>为<code>hadoop</code>的主组</p>
-<ol>
-<li><p>添加<code>hadoop</code>用户</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# useradd hadoop</span><br><span class="line">[root@aliyun ~]# id hadoop</span><br><span class="line">uid=1000(hadoop) gid=1000(hadoop) groups=1000(hadoop)</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>删除<code>hadoop</code>用户</p>
-<p>使用命令帮助查看 <code>userdel</code> 命令</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# userdel --help</span><br><span class="line">Usage: userdel [options] LOGIN</span><br><span class="line"></span><br><span class="line">Options:</span><br><span class="line">  -f, --force                   force some actions that would fail otherwise</span><br><span class="line">                                e.g. removal of user still logged in</span><br><span class="line">                                or files, even if not owned by the user</span><br><span class="line">  -h, --help                    display this help message and exit</span><br><span class="line">  -r, --remove                  remove home directory and mail spool</span><br><span class="line">  -R, --root CHROOT_DIR         directory to chroot into</span><br><span class="line">  -Z, --selinux-user            remove any SELinux user mapping for the user</span><br></pre></td></tr></table></figure>
-
-<p>会发现 <code>-r</code> 选项是删除家目录</p>
-<p>在这里我们选择删除用户的时候不删除家目录</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# userdel hadoop</span><br><span class="line">[root@aliyun ~]# id hadoop</span><br><span class="line">id: hadoop: no such user</span><br><span class="line">[root@aliyun home]# cat /etc/passwd | grep ruoze</span><br><span class="line">[root@aliyun home]# cat /etc/group | grep ruoze</span><br></pre></td></tr></table></figure>
-
-<p>因为<code>hadoop</code>该组只有<code>hadoop</code>用户，当这个用户删除时，组会校验就他自己，会自动删除</p>
-</li>
-<li><p>重新创建<code>hadoop</code>用户，模拟用户丢失样式，并修正样式</p>
-<p>创建<code>hadoop</code>用户</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# useradd hadoop</span><br><span class="line">useradd: warning: the home directory already exists.</span><br><span class="line">Not copying any file from skel directory into it.</span><br><span class="line">Creating mailbox file: File exists</span><br><span class="line">[root@aliyun ~]# id hadoop</span><br><span class="line">uid=1000(hadoop) gid=1000(hadoop) groups=1000(hadoop)</span><br></pre></td></tr></table></figure>
-
-<p>模拟用户丢失样式</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[hadoop@aliyun ~]$ ll -a .bash*</span><br><span class="line">-rw-r--r-- 1 hadoop hadoop  18 Dec  7  2016 .bash_logout</span><br><span class="line">-rw-r--r-- 1 hadoop hadoop 193 Dec  7  2016 .bash_profile</span><br><span class="line">-rw-r--r-- 1 hadoop hadoop 231 Dec  7  2016 .bashrc</span><br><span class="line">[hadoop@aliyun ~]$ rm -rf .bash*</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# su - hadoop　　　　#切换用户</span><br><span class="line">Last login: Sun Nov 17 09:29:10 CST 2019 on pts/0</span><br><span class="line">-bash-4.2$ 　　　#用户样式丢失</span><br></pre></td></tr></table></figure>
-
-<p>修正样式 (这里只有root权限才可以拷贝)</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# ll  -a /etc/skel/</span><br><span class="line">total 20</span><br><span class="line">drwxr-xr-x.  2 root root 4096 Aug 18  2017 .</span><br><span class="line">drwxr-xr-x. 81 root root 4096 Nov 17 09:27 ..</span><br><span class="line">-rw-r--r--   1 root root   18 Dec  7  2016 .bash_logout</span><br><span class="line">-rw-r--r--   1 root root  193 Dec  7  2016 .bash_profile</span><br><span class="line">-rw-r--r--   1 root root  231 Dec  7  2016 .bashrc</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# cp /etc/skel/ .bash* /home/hadoop/</span><br><span class="line">cp: omitting directory ‘/etc/skel/’</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# su - hadoop　　#样式回来了</span><br><span class="line">Last login: Sun Nov 17 09:33:39 CST 2019 on pts/2</span><br><span class="line">[hadoop@aliyun ~]$</span><br></pre></td></tr></table></figure>
-
-<p>创建<code>bigdata</code>用户组，并把<code>hadoop</code>用户添加进这个用户组</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# groupadd bigdata</span><br><span class="line">[root@aliyun ~]# usermod -a -G bigdata hadoop</span><br><span class="line">[root@aliyun ~]# id hadoop</span><br><span class="line">uid=1000(hadoop) gid=1000(hadoop) groups=1000(hadoop),1001(bigdata)</span><br></pre></td></tr></table></figure>
-
-<p><em>20200309更新</em>：<code>mysqladmin</code>的属组一里加入<code>hadoop</code>用户</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">usermod -a -G hadoop mysqladmin</span><br></pre></td></tr></table></figure>
-
-<p>修改<code>bigdata</code>为<code>hadoop</code>的属组</p>
-<p>查看命令帮助发现有一条命令是改变用户的属组的</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">-g, --gid GROUP               force use GROUP as new primary group</span><br><span class="line">[root@aliyun ~]# usermod -g bigdata hadoop　　#强制改变属组</span><br><span class="line">[root@aliyun ~]# id hadoop</span><br><span class="line">uid=1000(hadoop) gid=1001(bigdata) groups=1001(bigdata)</span><br></pre></td></tr></table></figure>
-
-</li>
-</ol>
-<h3 id="sudo命令"><a href="#sudo命令" class="headerlink" title="sudo命令"></a>sudo命令</h3><p><code>sudo</code>命令是让普通用户具备<code>root</code>用户的权限</p>
-<p>添加普通用户具备<code>root</code>权限的文件是：<code>/etc/sudoers</code></p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">90 ## Allow root to run any commands anywhere </span><br><span class="line">91 root    ALL=(ALL)       ALL</span><br><span class="line">92 hadoop  ALL=(root)      NOPASSWD:ALL　　#新添加的内容</span><br></pre></td></tr></table></figure>
-
-<h3 id="用户无法登录-修改passwd文件"><a href="#用户无法登录-修改passwd文件" class="headerlink" title="用户无法登录 修改passwd文件"></a>用户无法登录 修改<code>passwd</code>文件</h3><p>在模拟用户无法登陆之前，先说明管理用户信息的文件是：<code>/etc/passwd</code></p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# tail -3  /etc/passwd</span><br><span class="line">redis:x:996:994:Redis Database Server:/var/lib/redis:/sbin/nologin</span><br><span class="line">mysqladmin:x:514:101::/usr/local/mysql:/bin/bash</span><br><span class="line">hadoop:x:1000:1001::/home/hadoop:/bin/bash</span><br></pre></td></tr></table></figure>
-
-<p>需要注意的是最后一个冒号后面是用户的登陆权限</p>
-<p>需求：</p>
-<p>　　1. 模拟用户的登录权限是<code>/bin/false</code>，修改，并登录</p>
-<p>　　2. 模拟用户的登录权限是<code>/sbin/nologin</code>，修改，并登录</p>
-<p><strong>1. 模拟用户的登录权限是<code>/bin/false</code>，修改，并登录</strong></p>
-<ol>
-<li><p>模拟用户的登录权限是<code>/bin/false</code></p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# cat /etc/passwd | grep hadoop</span><br><span class="line">hadoop:x:1000:1001::/home/hadoop:/bin/false</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>尝试登录</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# su - hadoop</span><br><span class="line">Last login: Sun Nov 17 09:37:25 CST 2019 on pts/2</span><br><span class="line">[root@aliyun ~]# 　　#登录失败</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>查看用户文件权限，并修改</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# cat /etc/passwd | grep 'hadoop'</span><br><span class="line">hadoop:x:1000:1001::/home/hadoop:/bin/bash</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>再次登录</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# su - hadoop</span><br><span class="line">Last login: Sun Nov 17 09:56:43 CST 2019 on pts/1</span><br><span class="line">[hadoop@aliyun ~]$     #登录成功</span><br></pre></td></tr></table></figure>
-
-</li>
-</ol>
-<p><strong>2. 模拟用户的登录权限是<code>/sbin/nologin</code>，修改，并登录</strong></p>
-<ol>
-<li><p>模拟用户的登录权限是<code>/sbin/nologin</code></p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# cat /etc/passwd | grep hadoop</span><br><span class="line">hadoop:x:1000:1001::/home/hadoop:/sbin/nologin</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>尝试登录</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# su - hadoop</span><br><span class="line">Last login: Sun Nov 17 09:59:35 CST 2019 on pts/1</span><br><span class="line">This account is currently not available.</span><br><span class="line">[root@aliyun ~]# 　　#登录失败</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>查看用户文件权限，并修改</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# cat /etc/passwd | grep 'hadoop'</span><br><span class="line">hadoop:x:1000:1001::/home/hadoop:/bin/bash</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>再次登录</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# su - hadoop</span><br><span class="line">Last login: Sun Nov 17 09:56:43 CST 2019 on pts/1</span><br><span class="line">[hadoop@aliyun ~]$     #登录成功</span><br></pre></td></tr></table></figure>
-
-</li>
-</ol>
-<h3 id="rwx-chmod-chown-案例"><a href="#rwx-chmod-chown-案例" class="headerlink" title="rwx------ chmod chown 案例"></a><code>rwx------</code> <code>chmod</code> <code>chown</code> 案例</h3><p>查看文件或者目录的读写执行权限</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# ll test.txt</span><br><span class="line">-rw-r--r-- 1 root root 12 Nov 12 23:36 test.txt</span><br><span class="line">r: read  4</span><br><span class="line">w: write 2 </span><br><span class="line">x: 执行  1</span><br><span class="line">-: 没权限 0</span><br></pre></td></tr></table></figure>
-
-<p>　<code>rw-</code>第一组 6 代表文件或文件夹的用户<code>root</code>，读写<br>　<code>r--</code> 第二组 4 代表文件或文件夹的用户组<code>root</code>，读<br>　<code>r--</code> 第三组 4 代表其他组的所属用户对这个文件或文件夹的权限: 读</p>
-<p><code>chmod</code> 命令用来修改文件或者目录的读写执行权限，加 <code>-R</code> 表示递归修改</p>
-<p><code>chown</code> 命令用来修改文件或者目录的属主和属组，加 <code>-R</code> 表示递归修改</p>
-<p>需求：</p>
-<p>​        1. 修改 <code>test.tx</code>t 文件的属组为<code>bigdata</code></p>
-<p>​        2.  <code>test.txt</code> 文件的权限为属主读写执行，属组读执行</p>
-<ol>
-<li><p>修改 <code>test.txt</code> 文件的属组为<code>bigdata</code></p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# chown -R :bigdata test.txt </span><br><span class="line">[root@aliyun ~]# ll test.txt </span><br><span class="line">-rw-r--r-- 1 root bigdata 12 Nov 12 23:36 test.txt</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>修改 <code>test.txt</code> 文件的权限为属主可读写执行，属组可读执行,其他可读</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# chmod -R 754 test.txt </span><br><span class="line">[root@aliyun ~]# ll test.txt </span><br><span class="line">-rwxr-xr-- 1 root bigdata 12 Nov 12 23:36 test.txt</span><br></pre></td></tr></table></figure>
-
-<p>注意： <code>-R</code> 参数，目前可认为只有<code>chown</code>和<code>chmod</code>命令有，其他都为 <code>-r</code></p>
-</li>
-</ol>
-<h3 id="其他命令-su-find-du"><a href="#其他命令-su-find-du" class="headerlink" title="其他命令 - su find du"></a>其他命令 - <code>su</code> <code>find</code> <code>du</code></h3><p><u><code>su</code>命令用来切换用户，使用<code>su -</code> 用户名的方式，切换的时候把环境也切换了</u></p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# su - hadoop　　#su - 用户名</span><br><span class="line">Last login: Sun Nov 17 10:16:08 CST 2019 on pts/2</span><br><span class="line">[hadoop@aliyun ~]$ pwd</span><br><span class="line">/home/hadoop</span><br><span class="line">[root@aliyun ~]# su hadoop　　#su 用户名</span><br><span class="line">[hadoop@aliyun root]$ pwd</span><br><span class="line">/root</span><br></pre></td></tr></table></figure>
-
-<p>需要注意 <code>.bash_profile</code> 和 <code>.bashrc</code> 两个文件中的环境生效的区别</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">.bash_profile文件 su ruoze不会执行，su - ruoze 都执行</span><br><span class="line">.bashrc文件       su ruoze执行   ，su - ruoze 都执行</span><br></pre></td></tr></table></figure>
-
-<p><u><code>find</code>命令用来查找文件，在不确定文件名的情况下使用模糊匹配</u></p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[hadoop@aliyun root]$ find /home -name '*hadoop*'</span><br><span class="line">/home/hadoop</span><br></pre></td></tr></table></figure>
-
-<p><u><code>du</code>命令用来查看文件或者目录大小</u></p>
-<p>虽然 ls -l 也可以查看文件或者目录的大小，但是 <code>ls -l</code> 显示的目录大小并不准确</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# ll -h  size.log/</span><br><span class="line">total 12K</span><br><span class="line">-rw-r--r-- 1 root root 286K Nov 17 10:24 lastlog</span><br></pre></td></tr></table></figure>
-
-<p>再使用<code>du -sh</code> 查看一次</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# du -sh size.log/</span><br><span class="line">12K    size.log/</span><br></pre></td></tr></table></figure>
-
-<p>最后进入<code>size.log</code>文件夹查看文件的大小</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun log]# du -sh lastlog</span><br><span class="line">12K    lastlog</span><br></pre></td></tr></table></figure></div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/19/linux/2/">Linux对环境变量的理解以及alias、rm、hostory的使用</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-19</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Linux/">Linux</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/DataWarehouse/">DataWarehouse</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Linux/">Linux</a></span><div class="content"><h3 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h3><ol>
+<h4 id="tar压缩解压"><a href="#tar压缩解压" class="headerlink" title="tar压缩解压"></a>tar压缩解压</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">tar -xzvf hadoop-2.6.0-cdh5.16.2.tar.gz　　　　#解压缩.ge的tar包</span><br><span class="line">tar -czvf hadoop-2.6.0-cdh5.16.2.tar.gz  hadoop-2.6.0-cdh5.16.2/*　　#压缩.ge的tar包</span><br></pre></td></tr></table></figure></div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/19/linux/2/">Linux对环境变量的理解以及alias、rm、hostory的使用</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-19</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Linux/">Linux</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/DataWarehouse/">DataWarehouse</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Linux/">Linux</a></span><div class="content"><h3 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h3><ol>
 <li>整理 全局环境变量 个人环境变量 <code>which</code>的理解</li>
 <li>整理 别名</li>
 <li>整理 删除</li>
