@@ -1,0 +1,274 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="BigData Developer"><meta name="keywords" content="yerias,TUNANのBlog,BigData"><meta name="author" content="Tunan"><meta name="copyright" content="Tunan"><title>感谢若老、J哥、师兄、前辈、同学、朋友、陌生人，在我行走在大数据道路上给我的谆谆教诲，同时此博客仅作为学习笔记存在，严禁任何人以何种理由商用，作者QQ: 971118017 | TUNANのBlog</title><link rel="shortcut icon" href="/melody-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.6.1"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.6.1"><link rel="dns-prefetch" href="https://cdn.staticfile.org"><link rel="dns-prefetch" href="https://cdn.bootcss.com"><link rel="dns-prefetch" href="https://creativecommons.org"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  }
+} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="author-info"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">Tunan</div><div class="author-info__description text-center">BigData Developer</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">Articles</span><span class="pull-right">133</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">Tags</span><span class="pull-right">30</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">Categories</span><span class="pull-right">26</span></a></div></div></div><nav class="no-bg" id="nav"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">TUNANのBlog</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/categories">Categories</a></span></div><div id="site-info"><div id="site-title">TUNANのBlog</div><div id="site-sub-title">感谢若老、J哥、师兄、前辈、同学、朋友、陌生人，在我行走在大数据道路上给我的谆谆教诲，同时此博客仅作为学习笔记存在，严禁任何人以何种理由商用，作者QQ: 971118017</div></div></nav><div id="content-outer"><div class="layout" id="content-inner"><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/20/linux/3/">熟悉Linux权限相关命令</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-20</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Linux/">Linux</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Linux/">Linux</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/DataWarehouse/">DataWarehouse</a></span><div class="content"><h3 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h3><ol>
+<li>整理 用户用户组</li>
+<li>整理 <code>sudo</code>命令</li>
+<li>整理 用户无法登录 <code>passwd</code>文件</li>
+<li>权限 <code>rwx------ chmod chown</code> 案例</li>
+<li>其他命令 <code>- su find du</code>等</li>
+</ol>
+<h3 id="用户和用户组"><a href="#用户和用户组" class="headerlink" title="用户和用户组"></a>用户和用户组</h3><p>针对用户的相关文件在：<code>/usr/sbin/user*</code></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# ll /usr/sbin/user*</span><br><span class="line">-rwxr-x---. 1 root root 118192 Nov  6  2016 /usr/sbin/useradd</span><br><span class="line">-rwxr-x---. 1 root root  80360 Nov  6  2016 /usr/sbin/userdel</span><br><span class="line">-rwxr-x---. 1 root root 113840 Nov  6  2016 /usr/sbin/usermod</span><br><span class="line">-rwsr-xr-x  1 root root  11296 Apr 13  2017 /usr/sbin/usernetctl</span><br></pre></td></tr></table></figure>
+
+<p>针对用户组的相关文件在：<code>/usr/sbin/group*</code></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# ll /usr/sbin/group*</span><br><span class="line">-rwxr-x---. 1 root root 65480 Nov  6  2016 /usr/sbin/groupadd</span><br><span class="line">-rwxr-x---. 1 root root 57016 Nov  6  2016 /usr/sbin/groupdel</span><br><span class="line">-rwxr-x---. 1 root root 57064 Nov  6  2016 /usr/sbin/groupmems</span><br><span class="line">-rwxr-x---. 1 root root 76424 Nov  6  2016 /usr/sbin/groupmod</span><br></pre></td></tr></table></figure>
+
+<p>可以打印出<code>PATH</code>路径，就会发现<code>/user/sbin</code>已经被添加在了<code>PATH</code>环境中了，可以从主机的任意位置使用这些命令</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# echo $PATH</span><br><span class="line">/opt/module/jdk1.8.0_144/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin</span><br></pre></td></tr></table></figure>
+
+<p>需求：</p>
+<p>​        1. 添加<code>hadoop</code>用户</p>
+<p>​        2. 删除<code>hadoop</code>用户</p>
+<p>​        3. 重新创建<code>hadoop</code>用户，模拟用户丢失样式，并修正样式</p>
+<p>​        4. 创建<code>bigdata</code>用户组，并把<code>hadoop</code>用户添加进这个用户组</p>
+<p>​        5. 修改<code>bigdata</code>为<code>hadoop</code>的主组</p>
+<ol>
+<li><p>添加<code>hadoop</code>用户</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# useradd hadoop</span><br><span class="line">[root@aliyun ~]# id hadoop</span><br><span class="line">uid=1000(hadoop) gid=1000(hadoop) groups=1000(hadoop)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>删除<code>hadoop</code>用户</p>
+<p>使用命令帮助查看 <code>userdel</code> 命令</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# userdel --help</span><br><span class="line">Usage: userdel [options] LOGIN</span><br><span class="line"></span><br><span class="line">Options:</span><br><span class="line">  -f, --force                   force some actions that would fail otherwise</span><br><span class="line">                                e.g. removal of user still logged in</span><br><span class="line">                                or files, even if not owned by the user</span><br><span class="line">  -h, --help                    display this help message and exit</span><br><span class="line">  -r, --remove                  remove home directory and mail spool</span><br><span class="line">  -R, --root CHROOT_DIR         directory to chroot into</span><br><span class="line">  -Z, --selinux-user            remove any SELinux user mapping for the user</span><br></pre></td></tr></table></figure>
+
+<p>会发现 <code>-r</code> 选项是删除家目录</p>
+<p>在这里我们选择删除用户的时候不删除家目录</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# userdel hadoop</span><br><span class="line">[root@aliyun ~]# id hadoop</span><br><span class="line">id: hadoop: no such user</span><br><span class="line">[root@aliyun home]# cat /etc/passwd | grep ruoze</span><br><span class="line">[root@aliyun home]# cat /etc/group | grep ruoze</span><br></pre></td></tr></table></figure>
+
+<p>因为<code>hadoop</code>该组只有<code>hadoop</code>用户，当这个用户删除时，组会校验就他自己，会自动删除</p>
+</li>
+<li><p>重新创建<code>hadoop</code>用户，模拟用户丢失样式，并修正样式</p>
+<p>创建<code>hadoop</code>用户</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# useradd hadoop</span><br><span class="line">useradd: warning: the home directory already exists.</span><br><span class="line">Not copying any file from skel directory into it.</span><br><span class="line">Creating mailbox file: File exists</span><br><span class="line">[root@aliyun ~]# id hadoop</span><br><span class="line">uid=1000(hadoop) gid=1000(hadoop) groups=1000(hadoop)</span><br></pre></td></tr></table></figure>
+
+<p>模拟用户丢失样式</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[hadoop@aliyun ~]$ ll -a .bash*</span><br><span class="line">-rw-r--r-- 1 hadoop hadoop  18 Dec  7  2016 .bash_logout</span><br><span class="line">-rw-r--r-- 1 hadoop hadoop 193 Dec  7  2016 .bash_profile</span><br><span class="line">-rw-r--r-- 1 hadoop hadoop 231 Dec  7  2016 .bashrc</span><br><span class="line">[hadoop@aliyun ~]$ rm -rf .bash*</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# su - hadoop　　　　#切换用户</span><br><span class="line">Last login: Sun Nov 17 09:29:10 CST 2019 on pts/0</span><br><span class="line">-bash-4.2$ 　　　#用户样式丢失</span><br></pre></td></tr></table></figure>
+
+<p>修正样式 (这里只有root权限才可以拷贝)</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# ll  -a /etc/skel/</span><br><span class="line">total 20</span><br><span class="line">drwxr-xr-x.  2 root root 4096 Aug 18  2017 .</span><br><span class="line">drwxr-xr-x. 81 root root 4096 Nov 17 09:27 ..</span><br><span class="line">-rw-r--r--   1 root root   18 Dec  7  2016 .bash_logout</span><br><span class="line">-rw-r--r--   1 root root  193 Dec  7  2016 .bash_profile</span><br><span class="line">-rw-r--r--   1 root root  231 Dec  7  2016 .bashrc</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# cp /etc/skel/ .bash* /home/hadoop/</span><br><span class="line">cp: omitting directory ‘/etc/skel/’</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# su - hadoop　　#样式回来了</span><br><span class="line">Last login: Sun Nov 17 09:33:39 CST 2019 on pts/2</span><br><span class="line">[hadoop@aliyun ~]$</span><br></pre></td></tr></table></figure>
+
+<p>创建<code>bigdata</code>用户组，并把<code>hadoop</code>用户添加进这个用户组</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# groupadd bigdata</span><br><span class="line">[root@aliyun ~]# usermod -a -G bigdata hadoop</span><br><span class="line">[root@aliyun ~]# id hadoop</span><br><span class="line">uid=1000(hadoop) gid=1000(hadoop) groups=1000(hadoop),1001(bigdata)</span><br></pre></td></tr></table></figure>
+
+<p><em>20200309更新</em>：<code>mysqladmin</code>的属组一里加入<code>hadoop</code>用户</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">usermod -a -G hadoop mysqladmin</span><br></pre></td></tr></table></figure>
+
+<p>修改<code>bigdata</code>为<code>hadoop</code>的属组</p>
+<p>查看命令帮助发现有一条命令是改变用户的属组的</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">-g, --gid GROUP               force use GROUP as new primary group</span><br><span class="line">[root@aliyun ~]# usermod -g bigdata hadoop　　#强制改变属组</span><br><span class="line">[root@aliyun ~]# id hadoop</span><br><span class="line">uid=1000(hadoop) gid=1001(bigdata) groups=1001(bigdata)</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h3 id="sudo命令"><a href="#sudo命令" class="headerlink" title="sudo命令"></a>sudo命令</h3><p><code>sudo</code>命令是让普通用户具备<code>root</code>用户的权限</p>
+<p>添加普通用户具备<code>root</code>权限的文件是：<code>/etc/sudoers</code></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">90 ## Allow root to run any commands anywhere </span><br><span class="line">91 root    ALL=(ALL)       ALL</span><br><span class="line">92 hadoop  ALL=(root)      NOPASSWD:ALL　　#新添加的内容</span><br></pre></td></tr></table></figure>
+
+<h3 id="用户无法登录-修改passwd文件"><a href="#用户无法登录-修改passwd文件" class="headerlink" title="用户无法登录 修改passwd文件"></a>用户无法登录 修改<code>passwd</code>文件</h3><p>在模拟用户无法登陆之前，先说明管理用户信息的文件是：<code>/etc/passwd</code></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# tail -3  /etc/passwd</span><br><span class="line">redis:x:996:994:Redis Database Server:/var/lib/redis:/sbin/nologin</span><br><span class="line">mysqladmin:x:514:101::/usr/local/mysql:/bin/bash</span><br><span class="line">hadoop:x:1000:1001::/home/hadoop:/bin/bash</span><br></pre></td></tr></table></figure>
+
+<p>需要注意的是最后一个冒号后面是用户的登陆权限</p>
+<p>需求：</p>
+<p>　　1. 模拟用户的登录权限是<code>/bin/false</code>，修改，并登录</p>
+<p>　　2. 模拟用户的登录权限是<code>/sbin/nologin</code>，修改，并登录</p>
+<p><strong>1. 模拟用户的登录权限是<code>/bin/false</code>，修改，并登录</strong></p>
+<ol>
+<li><p>模拟用户的登录权限是<code>/bin/false</code></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# cat /etc/passwd | grep hadoop</span><br><span class="line">hadoop:x:1000:1001::/home/hadoop:/bin/false</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>尝试登录</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# su - hadoop</span><br><span class="line">Last login: Sun Nov 17 09:37:25 CST 2019 on pts/2</span><br><span class="line">[root@aliyun ~]# 　　#登录失败</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看用户文件权限，并修改</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# cat /etc/passwd | grep 'hadoop'</span><br><span class="line">hadoop:x:1000:1001::/home/hadoop:/bin/bash</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>再次登录</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# su - hadoop</span><br><span class="line">Last login: Sun Nov 17 09:56:43 CST 2019 on pts/1</span><br><span class="line">[hadoop@aliyun ~]$     #登录成功</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<p><strong>2. 模拟用户的登录权限是<code>/sbin/nologin</code>，修改，并登录</strong></p>
+<ol>
+<li><p>模拟用户的登录权限是<code>/sbin/nologin</code></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# cat /etc/passwd | grep hadoop</span><br><span class="line">hadoop:x:1000:1001::/home/hadoop:/sbin/nologin</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>尝试登录</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# su - hadoop</span><br><span class="line">Last login: Sun Nov 17 09:59:35 CST 2019 on pts/1</span><br><span class="line">This account is currently not available.</span><br><span class="line">[root@aliyun ~]# 　　#登录失败</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看用户文件权限，并修改</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# cat /etc/passwd | grep 'hadoop'</span><br><span class="line">hadoop:x:1000:1001::/home/hadoop:/bin/bash</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>再次登录</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# su - hadoop</span><br><span class="line">Last login: Sun Nov 17 09:56:43 CST 2019 on pts/1</span><br><span class="line">[hadoop@aliyun ~]$     #登录成功</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h3 id="rwx-chmod-chown-案例"><a href="#rwx-chmod-chown-案例" class="headerlink" title="rwx------ chmod chown 案例"></a><code>rwx------</code> <code>chmod</code> <code>chown</code> 案例</h3><p>查看文件或者目录的读写执行权限</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# ll test.txt</span><br><span class="line">-rw-r--r-- 1 root root 12 Nov 12 23:36 test.txt</span><br><span class="line">r: read  4</span><br><span class="line">w: write 2 </span><br><span class="line">x: 执行  1</span><br><span class="line">-: 没权限 0</span><br></pre></td></tr></table></figure>
+
+<p>　<code>rw-</code>第一组 6 代表文件或文件夹的用户<code>root</code>，读写<br>　<code>r--</code> 第二组 4 代表文件或文件夹的用户组<code>root</code>，读<br>　<code>r--</code> 第三组 4 代表其他组的所属用户对这个文件或文件夹的权限: 读</p>
+<p><code>chmod</code> 命令用来修改文件或者目录的读写执行权限，加 <code>-R</code> 表示递归修改</p>
+<p><code>chown</code> 命令用来修改文件或者目录的属主和属组，加 <code>-R</code> 表示递归修改</p>
+<p>需求：</p>
+<p>​        1. 修改 <code>test.tx</code>t 文件的属组为<code>bigdata</code></p>
+<p>​        2.  <code>test.txt</code> 文件的权限为属主读写执行，属组读执行</p>
+<ol>
+<li><p>修改 <code>test.txt</code> 文件的属组为<code>bigdata</code></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# chown -R :bigdata test.txt </span><br><span class="line">[root@aliyun ~]# ll test.txt </span><br><span class="line">-rw-r--r-- 1 root bigdata 12 Nov 12 23:36 test.txt</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>修改 <code>test.txt</code> 文件的权限为属主可读写执行，属组可读执行,其他可读</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# chmod -R 754 test.txt </span><br><span class="line">[root@aliyun ~]# ll test.txt </span><br><span class="line">-rwxr-xr-- 1 root bigdata 12 Nov 12 23:36 test.txt</span><br></pre></td></tr></table></figure>
+
+<p>注意： <code>-R</code> 参数，目前可认为只有<code>chown</code>和<code>chmod</code>命令有，其他都为 <code>-r</code></p>
+</li>
+</ol>
+<h3 id="其他命令-su-find-du"><a href="#其他命令-su-find-du" class="headerlink" title="其他命令 - su find du"></a>其他命令 - <code>su</code> <code>find</code> <code>du</code></h3><p><u><code>su</code>命令用来切换用户，使用<code>su -</code> 用户名的方式，切换的时候把环境也切换了</u></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# su - hadoop　　#su - 用户名</span><br><span class="line">Last login: Sun Nov 17 10:16:08 CST 2019 on pts/2</span><br><span class="line">[hadoop@aliyun ~]$ pwd</span><br><span class="line">/home/hadoop</span><br><span class="line">[root@aliyun ~]# su hadoop　　#su 用户名</span><br><span class="line">[hadoop@aliyun root]$ pwd</span><br><span class="line">/root</span><br></pre></td></tr></table></figure>
+
+<p>需要注意 <code>.bash_profile</code> 和 <code>.bashrc</code> 两个文件中的环境生效的区别</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">.bash_profile文件 su ruoze不会执行，su - ruoze 都执行</span><br><span class="line">.bashrc文件       su ruoze执行   ，su - ruoze 都执行</span><br></pre></td></tr></table></figure>
+
+<p><u><code>find</code>命令用来查找文件，在不确定文件名的情况下使用模糊匹配</u></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[hadoop@aliyun root]$ find /home -name '*hadoop*'</span><br><span class="line">/home/hadoop</span><br></pre></td></tr></table></figure>
+
+<p><u><code>du</code>命令用来查看文件或者目录大小</u></p>
+<p>虽然 ls -l 也可以查看文件或者目录的大小，但是 <code>ls -l</code> 显示的目录大小并不准确</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# ll -h  size.log/</span><br><span class="line">total 12K</span><br><span class="line">-rw-r--r-- 1 root root 286K Nov 17 10:24 lastlog</span><br></pre></td></tr></table></figure>
+
+<p>再使用<code>du -sh</code> 查看一次</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# du -sh size.log/</span><br><span class="line">12K    size.log/</span><br></pre></td></tr></table></figure>
+
+<p>最后进入<code>size.log</code>文件夹查看文件的大小</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun log]# du -sh lastlog</span><br><span class="line">12K    lastlog</span><br></pre></td></tr></table></figure></div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/19/linux/2/">Linux对环境变量的理解以及alias、rm、hostory的使用</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-19</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Linux/">Linux</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Linux/">Linux</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/DataWarehouse/">DataWarehouse</a></span><div class="content"><h3 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h3><ol>
+<li>整理 全局环境变量 个人环境变量 <code>which</code>的理解</li>
+<li>整理 别名</li>
+<li>整理 删除</li>
+<li>整理 <code>history</code></li>
+</ol>
+<h3 id="全局环境变量"><a href="#全局环境变量" class="headerlink" title="全局环境变量"></a>全局环境变量</h3><p>全局环境变量的配置文件是：<code>/etc/profile</code></p>
+<p>全局环境变量中一般配置的是共用的程序环境 比如<code>java</code></p>
+<p>下面以<code>java</code>为例子配置</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# vim /etc/profile</span><br></pre></td></tr></table></figure>
+
+<p>java的安装路径在 <code>/usr/java</code>下，所以文件中如下配置</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">export JAVA_HOME=/usr/java/jdk1.8.0_144</span><br><span class="line">export PATH=$JAVA_HOME/bin:$PATH</span><br></pre></td></tr></table></figure>
+
+<p>需要注意的是 <code>$PATH</code>接在<code>$JAVA_HOME</code>的后面，即把<code>$JAVA_HOME</code>放在<code>$PATH</code>的最前面</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">/opt/module/jdk1.8.0_144/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/opt/module/jdk1.8.0_144/bin:/root/bin</span><br></pre></td></tr></table></figure>
+
+<h3 id="个人环境变量"><a href="#个人环境变量" class="headerlink" title="个人环境变量"></a>个人环境变量</h3><p>个人环境变量配置在 <code>~/.bashrc</code> 文件中，这里需要注意的是如果配置在 <code>~/.bash_profile</code>文件中，使用<code>ssh</code>远程连接的时候不会加载 <code>~/.bash_profile</code>，造成一些无法排查的<code>bug</code></p>
+<p>个人环境配置一些独自使用的程序变量，如果配置在用户的个人环境中，其他用户无法访问，比如在<code>hadoop</code>用户下配置 <code>hadoop</code>的环境变量，只有<code>hadoop</code>一个用户能使用</p>
+<h3 id="which的理解"><a href="#which的理解" class="headerlink" title="which的理解"></a>which的理解</h3><p>安装完程序或者配置完变量后，最好的习惯是使用<code>which</code>看一下，检查一下环境是否配置正确，否则可能遇到自以为正确的<code>bug</code></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# which java</span><br><span class="line">/opt/module/jdk1.8.0_144/bin/java</span><br></pre></td></tr></table></figure>
+
+<h3 id="别名"><a href="#别名" class="headerlink" title="别名"></a>别名</h3><p>别名的使用可以简写冗长且难以记忆或者难以书写的命令</p>
+<p>格式：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">alias [-p] [name[=value] ... ]</span><br></pre></td></tr></table></figure>
+
+<p>例子：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# alias a='ll -a'</span><br><span class="line">[root@aliyun ~]# a</span><br><span class="line">total 80</span><br><span class="line">dr-xr-x---.  6 root root 4096 Nov 15 19:46 .</span><br><span class="line">dr-xr-xr-x. 19 root root 4096 Nov  3 17:29 ..</span><br><span class="line">-rw-------   1 root root 6453 Nov 14 11:16 .bash_history</span><br><span class="line">-rw-r--r--.  1 root root   18 Dec 29  2013 .bash_logout</span><br><span class="line">-rw-r--r--.  1 root root  176 Dec 29  2013 .bash_profile</span><br><span class="line">-rw-r--r--.  1 root root  176 Dec 29  2013 .bashrc</span><br><span class="line">drwx------   3 root root 4096 Aug 18  2017 .cache</span><br></pre></td></tr></table></figure>
+
+<p>查询主机中已经存在的别名：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# alias</span><br><span class="line">alias cp='cp -i'</span><br><span class="line">alias egrep='egrep --color=auto'</span><br><span class="line">alias fgrep='fgrep --color=auto'</span><br><span class="line">alias grep='grep --color=auto'</span><br><span class="line">alias l.='ls -d .* --color=auto'</span><br><span class="line">alias ll='ls -l --color=auto'</span><br><span class="line">alias ls='ls --color=auto'</span><br><span class="line">alias mv='mv -i'</span><br><span class="line">alias rm='rm -i'</span><br><span class="line">alias which='alias | /usr/bin/which --tty-only --read-alias --show-dot --show-tilde'</span><br></pre></td></tr></table></figure>
+
+<p>永久配置别名：</p>
+<p>配置在环境变量中 <code>/etc/profile</code> ，<code>~/.bashrc</code>，<code>~/.bash_profile</code>中，即永久配置别名</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> User specific aliases and <span class="built_in">functions</span></span></span><br><span class="line"></span><br><span class="line">alias rm='rm -i'</span><br><span class="line">alias cp='cp -i'</span><br><span class="line">alias mv='mv -i'</span><br></pre></td></tr></table></figure>
+
+<h3 id="删除"><a href="#删除" class="headerlink" title="删除"></a>删除</h3><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>mkdir</code></td>
+<td>删除一个空文件</td>
+</tr>
+<tr>
+<td><code>rm -f</code></td>
+<td>直接删除文件</td>
+</tr>
+<tr>
+<td><code>rm -rf</code></td>
+<td>直接删除文件夹</td>
+</tr>
+<tr>
+<td><code>rm -rf</code></td>
+<td>是一个高危的命令</td>
+</tr>
+</tbody></table>
+<p>场景：</p>
+<p><code>shell</code>脚本中，定义变量<code>k = &quot;&quot;</code> 然后<code>rm -rf $k</code> 会默认指定根目录下</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">K=&quot;&quot;rm -rf $K 实际上是rm -rf /</span><br></pre></td></tr></table></figure>
+
+<p>解决办法是先判断k是否为空</p>
+<h3 id="history"><a href="#history" class="headerlink" title="history"></a>history</h3><p><code>history</code>命令用来查询历史记录</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# history | head -10</span><br><span class="line">    1  passwd </span><br><span class="line">    2  ls</span><br><span class="line">    3  cat /etc/hosts</span><br><span class="line">    4  yum install redis</span><br><span class="line">    5  yum install epel-release</span><br><span class="line">    6  yum install redis</span><br><span class="line">    7  df -hT</span><br><span class="line">    8  service redis start</span><br><span class="line">    9  service redis stop</span><br><span class="line">   10  service redis status</span><br></pre></td></tr></table></figure>
+
+<p>场景：</p>
+<p>莫名其妙的发现主机中的数据没了，可以查看一下历史记录用了哪些命令</p>
+<p>使用 <code>!n</code> 来快速使用一条历史命令</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# !7</span><br><span class="line">df -hT</span><br><span class="line">Filesystem     Type      Size  Used Avail Use% Mounted on</span><br><span class="line">/dev/vda1      ext4       40G   11G   27G  29% /</span><br><span class="line">devtmpfs       devtmpfs  911M     0  911M   0% /dev</span><br><span class="line">tmpfs          tmpfs     920M     0  920M   0% /dev/shm</span><br><span class="line">tmpfs          tmpfs     920M  332K  920M   1% /run</span><br><span class="line">tmpfs          tmpfs     920M     0  920M   0% /sys/fs/cgroup</span><br><span class="line">tmpfs          tmpfs     184M     0  184M   0% /run/user/0</span><br></pre></td></tr></table></figure>
+
+<p><code>history -c</code> 命令可以清空当前窗口的历史输出命令。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# history -c</span><br><span class="line">[root@aliyun ~]# history</span><br><span class="line">1  history</span><br></pre></td></tr></table></figure>
+
+<p>但是历史记录实际上保存在 <code>~/.bash_history</code>中的</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# cat .bash_history | head -10</span><br><span class="line">passwd </span><br><span class="line">ls</span><br><span class="line">cat /etc/hosts</span><br><span class="line">yum install redis</span><br><span class="line">yum install epel-release</span><br><span class="line">yum install redis</span><br><span class="line">df -hT</span><br><span class="line">service redis start</span><br><span class="line">service redis stop</span><br><span class="line">service redis status</span><br></pre></td></tr></table></figure>
+
+<p>彻底清空该文件夹的方式为：<code>cat /dell/null &gt; .bash_history</code></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# cat /dev/null &gt; .bash_history </span><br><span class="line">[root@aliyun ~]# cat .bash_history</span><br><span class="line">[root@aliyun ~]#</span><br></pre></td></tr></table></figure>
+
+</div><hr></div><div class="recent-post-item article-container"><a class="article-title" href="/2018/09/18/linux/1/">Linux操作文件和定位错误</a><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-09-18</time><span class="article-meta"><span class="article-meta__separator">|</span><i class="fa fa-inbox article-meta__icon" aria-hidden="true"></i><a class="article-meta__categories" href="/categories/Linux/">Linux</a></span><span class="article-meta tags"><span class="article-meta__separator">|</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/Linux/">Linux</a><span class="article-meta__link">-</span><i class="fa fa-tag article-meta__icon" aria-hidden="true"></i><a class="article-meta__tags" href="/tags/DataWarehouse/">DataWarehouse</a></span><div class="content"><h3 id="置空文件的一些坑"><a href="#置空文件的一些坑" class="headerlink" title="置空文件的一些坑"></a>置空文件的一些坑</h3><ol>
+<li><p>最简单的是直接创建一个空文件:</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun var]# touch test.txt | ll test.txt</span><br><span class="line">-rw-r--r-- 1 root root 0 Nov 11 22:29 test.txt</span><br><span class="line">[root@aliyun var]#</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>慎用 <code>echo &quot;&quot; &gt; test.txt</code> 这种方式置空文件</p>
+<p>如果我们使用这种方法置空文件</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun var]# echo "" &gt; test.txt</span><br><span class="line">[root@aliyun var]#  ll -h test.txt</span><br><span class="line">-rw-r--r-- 1 root root 1 Nov 11 22:31 test.txt</span><br></pre></td></tr></table></figure>
+
+<p>它不是绝对意义上的为空，文件占有一个字节的大小</p>
+</li>
+<li><p>可以更换为<code>cat /dev/null &gt; test.txt</code> 这种方式置空文件</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun var]# cat /dev/null &gt; test.txt | ll -h test.txt</span><br><span class="line">-rw-r--r-- 1 root root 0 Nov 11 22:34 test.txt</span><br></pre></td></tr></table></figure>
+
+<p>真正意义上把文件置空为0个字节</p>
+</li>
+</ol>
+<h3 id="如何定位ERROR"><a href="#如何定位ERROR" class="headerlink" title="如何定位ERROR"></a>如何定位ERROR</h3><ul>
+<li><p>文件内容很小 几十兆<br>上传给<code>windows</code>，用<code>editplus</code>工具打开，在<code>editplus</code>中搜索，定位</p>
+<p>上传下载  <code>yum install -y lrzsz</code></p>
+</li>
+<li><p>文件内容很大 至少几百兆</p>
+<p> 直接定位到<code>ERROR</code>行</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun var]# cat test.log | grep ERROR</span><br><span class="line">10 ERROR : 模拟错误</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="使用grep定位REEOR上下文"><a href="#使用grep定位REEOR上下文" class="headerlink" title="使用grep定位REEOR上下文"></a>使用<code>grep</code>定位<code>REEOR</code>上下文</h3><ol>
+<li><p>查看<code>ERROR</code>行的前十行（<code>before</code>）</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun var]# cat test.log | grep -B 10 ERROR</span><br><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">9</span><br><span class="line">10 ERROR : 模拟错误</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看<code>ERROR</code>行的后十行（<code>after</code>）</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun var]# cat test.log | grep -A 10 ERROR</span><br><span class="line">10 ERROR : 模拟错误</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看<code>ERROR</code>行的前后二十行</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun var]# cat test.log | grep -C 10 ERROR</span><br><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">9</span><br><span class="line">10 ERROR : 模拟错误</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td></tr></table></figure></li>
+</ol>
+</div><hr></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/13/">&lt;&lt;</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/13/">13</a><span class="page-number current">14</span></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By Tunan</div><div class="framework-info"><span>Driven - </span><a href="#"><span>Hexo</span></a><span class="footer-separator">|</span><span>Theme - </span><a href="#"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_site_uv"><i class="fa fa-user"></i><span id="busuanzi_value_site_uv"></span><span></span></span><span class="footer-separator">|</span><span id="busuanzi_container_site_pv"><i class="fa fa-eye"></i><span id="busuanzi_value_site_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.6.1"></script><script src="/js/fancybox.js?version=1.6.1"></script><script src="/js/sidebar.js?version=1.6.1"></script><script src="/js/copy.js?version=1.6.1"></script><script src="/js/fireworks.js?version=1.6.1"></script><script src="/js/transition.js?version=1.6.1"></script><script src="/js/scroll.js?version=1.6.1"></script><script src="/js/head.js?version=1.6.1"></script><script>if(/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+}</script></body></html>
