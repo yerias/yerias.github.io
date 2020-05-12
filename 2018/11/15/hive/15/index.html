@@ -7,12 +7,12 @@
     error: 'Copy error',
     noSupport: 'The browser does not support'
   }
-} </script></head><body><canvas class="fireworks"></canvas><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="toggle-sidebar-info text-center"><span data-toggle="Toggle article">Toggle site</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">Catalog</div><div class="sidebar-toc__progress"><span class="progress-notice">You've read</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Hive版本的元数据表（VERSION）"><span class="toc-number">1.</span> <span class="toc-text">Hive版本的元数据表（VERSION）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#VERSION"><span class="toc-number">1.1.</span> <span class="toc-text">VERSION</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Hive数据库相关的元数据表"><span class="toc-number">2.</span> <span class="toc-text">Hive数据库相关的元数据表</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#DBS"><span class="toc-number">2.1.</span> <span class="toc-text">DBS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DATABASE-PARAMS"><span class="toc-number">2.2.</span> <span class="toc-text">DATABASE_PARAMS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#FUNCS"><span class="toc-number">2.3.</span> <span class="toc-text">FUNCS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#FUNC-RU"><span class="toc-number">2.4.</span> <span class="toc-text">FUNC_RU</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Hive表和视图相关的元数据表"><span class="toc-number">3.</span> <span class="toc-text">Hive表和视图相关的元数据表</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#TBLS"><span class="toc-number">3.1.</span> <span class="toc-text">TBLS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#TABLE-PARAMS"><span class="toc-number">3.2.</span> <span class="toc-text">TABLE_PARAMS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#TBL-PRIVS"><span class="toc-number">3.3.</span> <span class="toc-text">TBL_PRIVS</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Hive文件存储信息相关的元数据表"><span class="toc-number">4.</span> <span class="toc-text">Hive文件存储信息相关的元数据表</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#SDS"><span class="toc-number">4.1.</span> <span class="toc-text">SDS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SD-PARAMS"><span class="toc-number">4.2.</span> <span class="toc-text">SD_PARAMS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SERDES"><span class="toc-number">4.3.</span> <span class="toc-text">SERDES</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SERDE-PARAM"><span class="toc-number">4.4.</span> <span class="toc-text">SERDE_PARAM</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Hive表字段相关的元数据表"><span class="toc-number">5.</span> <span class="toc-text">Hive表字段相关的元数据表</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#COLUMNS-V2"><span class="toc-number">5.1.</span> <span class="toc-text">COLUMNS_V2</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Hive表分区相关的元数据表"><span class="toc-number">6.</span> <span class="toc-text">Hive表分区相关的元数据表</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#PARTITIONS"><span class="toc-number">6.1.</span> <span class="toc-text">PARTITIONS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#PARTITION-KEYS"><span class="toc-number">6.2.</span> <span class="toc-text">PARTITION_KEYS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#PARTITION-KEY-VALS"><span class="toc-number">6.3.</span> <span class="toc-text">PARTITION_KEY_VALS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#PARTITION-PARAMS"><span class="toc-number">6.4.</span> <span class="toc-text">PARTITION_PARAMS</span></a></li></ol></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="/img/xiaoqi.jpg"></div><div class="author-info__name text-center">Tunan</div><div class="author-info__description text-center">BigData Developer</div><div class="follow-button"><a href="#">Follow Me</a></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">Articles</span><span class="pull-right">136</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">Tags</span><span class="pull-right">31</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">Categories</span><span class="pull-right">27</span></a></div><hr><div class="author-info-links"><div class="author-info-links__title text-center">Links</div><a class="author-info-links__name text-center" href="https://hadoop.apache.org/docs/r2.10.0/hadoop-project-dist/hadoop-common/SingleCluster.html" target="_blank" rel="noopener">HADOOP</a><a class="author-info-links__name text-center" href="https://cwiki.apache.org/confluence/display/Hive/" target="_blank" rel="noopener">HIVE</a><a class="author-info-links__name text-center" href="http://archive.cloudera.com/cdh5/cdh/5/" target="_blank" rel="noopener">CDH</a><a class="author-info-links__name text-center" href="http://flume.apache.org/" target="_blank" rel="noopener">FLUME</a><a class="author-info-links__name text-center" href="https://azkaban.github.io/" target="_blank" rel="noopener">AZKABAN</a><a class="author-info-links__name text-center" href="https://www.maxinhong.com/" target="_blank" rel="noopener">叶梨子</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/qingyunzong" target="_blank" rel="noopener">老铁</a><a class="author-info-links__name text-center" href="https://blog.csdn.net/jim8973/" target="_blank" rel="noopener">飞哥</a><a class="author-info-links__name text-center" href="https://vinxikk.github.io/" target="_blank" rel="noopener">vinx</a><a class="author-info-links__name text-center" href="http://dongxicheng.org/" target="_blank" rel="noopener">懂西成(Hadoop技术内幕作者)</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/xing901022/" target="_blank" rel="noopener">xingoo</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/itboys/tag/" target="_blank" rel="noopener">大葱拌豆腐</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/shishanyuan" target="_blank" rel="noopener">郭景瞻(图解Spark作者)</a></div></div></div><div id="content-outer"><div id="top-container" style="background-image: url(/img/soroush-golpoor-1497416-unsplash.jpg)"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">TUNANのBlog</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> Search</span></a><a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/categories">Categories</a></span></div><div id="post-info"><div id="post-title">Hive元数据管理</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-11-15</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/Hive/">Hive</a><div class="post-meta-wordcount"><span>Word count: </span><span class="word-count">1.6k</span><span class="post-meta__separator">|</span><span>Reading time: 5 min</span></div></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><p>众所周知，hive表中的数据是HDFS上的文件，可是hive怎么知道这些文件的内容都对应哪个字段，对应哪个分区呢？<br>就是hive的元数据管理着这一切。通常在hive-site.xml中的元数据库配置成MySQL，替换Derby。MySQL比Derby最大的优势在于可以多用户登录</p>
+} </script></head><body><canvas class="fireworks"></canvas><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="toggle-sidebar-info text-center"><span data-toggle="Toggle article">Toggle site</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">Catalog</div><div class="sidebar-toc__progress"><span class="progress-notice">You've read</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Hive版本的元数据表（VERSION）"><span class="toc-number">1.</span> <span class="toc-text">Hive版本的元数据表（VERSION）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#VERSION"><span class="toc-number">1.1.</span> <span class="toc-text">VERSION</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Hive数据库相关的元数据表"><span class="toc-number">2.</span> <span class="toc-text">Hive数据库相关的元数据表</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#DBS"><span class="toc-number">2.1.</span> <span class="toc-text">DBS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DATABASE-PARAMS"><span class="toc-number">2.2.</span> <span class="toc-text">DATABASE_PARAMS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#FUNCS"><span class="toc-number">2.3.</span> <span class="toc-text">FUNCS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#FUNC-RU"><span class="toc-number">2.4.</span> <span class="toc-text">FUNC_RU</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Hive表和视图相关的元数据表"><span class="toc-number">3.</span> <span class="toc-text">Hive表和视图相关的元数据表</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#TBLS"><span class="toc-number">3.1.</span> <span class="toc-text">TBLS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#TABLE-PARAMS"><span class="toc-number">3.2.</span> <span class="toc-text">TABLE_PARAMS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#TBL-PRIVS"><span class="toc-number">3.3.</span> <span class="toc-text">TBL_PRIVS</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Hive文件存储信息相关的元数据表"><span class="toc-number">4.</span> <span class="toc-text">Hive文件存储信息相关的元数据表</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#SDS"><span class="toc-number">4.1.</span> <span class="toc-text">SDS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SD-PARAMS"><span class="toc-number">4.2.</span> <span class="toc-text">SD_PARAMS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SERDES"><span class="toc-number">4.3.</span> <span class="toc-text">SERDES</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SERDE-PARAM"><span class="toc-number">4.4.</span> <span class="toc-text">SERDE_PARAM</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Hive表字段相关的元数据表"><span class="toc-number">5.</span> <span class="toc-text">Hive表字段相关的元数据表</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#COLUMNS-V2"><span class="toc-number">5.1.</span> <span class="toc-text">COLUMNS_V2</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Hive表分区相关的元数据表"><span class="toc-number">6.</span> <span class="toc-text">Hive表分区相关的元数据表</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#PARTITIONS"><span class="toc-number">6.1.</span> <span class="toc-text">PARTITIONS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#PARTITION-KEYS"><span class="toc-number">6.2.</span> <span class="toc-text">PARTITION_KEYS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#PARTITION-KEY-VALS"><span class="toc-number">6.3.</span> <span class="toc-text">PARTITION_KEY_VALS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#PARTITION-PARAMS"><span class="toc-number">6.4.</span> <span class="toc-text">PARTITION_PARAMS</span></a></li></ol></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="/img/xiaoqi.jpg"></div><div class="author-info__name text-center">Tunan</div><div class="author-info__description text-center">BigData Developer</div><div class="follow-button"><a href="#">Follow Me</a></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">Articles</span><span class="pull-right">137</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">Tags</span><span class="pull-right">31</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">Categories</span><span class="pull-right">27</span></a></div><hr><div class="author-info-links"><div class="author-info-links__title text-center">Links</div><a class="author-info-links__name text-center" href="https://hadoop.apache.org/docs/r2.10.0/hadoop-project-dist/hadoop-common/SingleCluster.html" target="_blank" rel="noopener">HADOOP</a><a class="author-info-links__name text-center" href="https://cwiki.apache.org/confluence/display/Hive/" target="_blank" rel="noopener">HIVE</a><a class="author-info-links__name text-center" href="http://archive.cloudera.com/cdh5/cdh/5/" target="_blank" rel="noopener">CDH</a><a class="author-info-links__name text-center" href="http://flume.apache.org/" target="_blank" rel="noopener">FLUME</a><a class="author-info-links__name text-center" href="https://azkaban.github.io/" target="_blank" rel="noopener">AZKABAN</a><a class="author-info-links__name text-center" href="https://www.maxinhong.com/" target="_blank" rel="noopener">叶梨子</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/qingyunzong" target="_blank" rel="noopener">老铁</a><a class="author-info-links__name text-center" href="https://blog.csdn.net/jim8973/" target="_blank" rel="noopener">飞哥</a><a class="author-info-links__name text-center" href="https://vinxikk.github.io/" target="_blank" rel="noopener">vinx</a><a class="author-info-links__name text-center" href="http://dongxicheng.org/" target="_blank" rel="noopener">懂西成(Hadoop技术内幕作者)</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/xing901022/" target="_blank" rel="noopener">xingoo</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/itboys/tag/" target="_blank" rel="noopener">大葱拌豆腐</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/shishanyuan" target="_blank" rel="noopener">郭景瞻(图解Spark作者)</a></div></div></div><div id="content-outer"><div id="top-container" style="background-image: url(/img/soroush-golpoor-1497416-unsplash.jpg)"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">TUNANのBlog</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> Search</span></a><a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/categories">Categories</a></span></div><div id="post-info"><div id="post-title">Hive元数据管理</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-11-15</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/Hive/">Hive</a><div class="post-meta-wordcount"><span>Word count: </span><span class="word-count">1.6k</span><span class="post-meta__separator">|</span><span>Reading time: 5 min</span></div></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><p>众所周知，hive表中的数据是HDFS上的文件，可是hive怎么知道这些文件的内容都对应哪个字段，对应哪个分区呢？<br>就是hive的元数据管理着这一切。通常在hive-site.xml中的元数据库配置成MySQL，替换Derby。MySQL比Derby最大的优势在于可以多用户登录</p>
 <figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>javax.jdo.option.ConnectionUserName<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>root<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>javax.jdo.option.ConnectionPassword<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>root<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>javax.jdo.option.ConnectionURL<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>jdbc:mysql:///metastore?createDatabaseIfNotExists=true<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>javax.jdo.option.ConnectionDriverName<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>com.mysql.jdbc.Driver<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
 <p>下面我们进MySQL看看元数据的表具体有哪些。</p>
 <h2 id="Hive版本的元数据表（VERSION）"><a href="#Hive版本的元数据表（VERSION）" class="headerlink" title="Hive版本的元数据表（VERSION）"></a>Hive版本的元数据表（VERSION）</h2><h3 id="VERSION"><a href="#VERSION" class="headerlink" title="VERSION"></a>VERSION</h3><p>这个存hive版本，有且仅有一条数据</p>
-<p><img src="https://yerias.github.io/hive_img/hive_metastore1.png" alt="hive_metastore1"></p>
+<p><img src="https://yerias.github.io/hive_img/hive_metastore1.png" alt=""></p>
 <p>该表比较简单，但很重要。</p>
 <table>
 <thead>
@@ -39,9 +39,9 @@
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Caused by: MetaException(message:<span class="function">Metastore contains multiple <span class="title">versions</span> <span class="params">(<span class="number">2</span>)</span></span></span><br></pre></td></tr></table></figure>
 
 <h2 id="Hive数据库相关的元数据表"><a href="#Hive数据库相关的元数据表" class="headerlink" title="Hive数据库相关的元数据表"></a>Hive数据库相关的元数据表</h2><p><strong>DBS和DATABASE_PARAMS这两张表通过DB_ID字段关联，dbs和funcs使用DB_ID关联，funcs和func_ru使用FUNC_ID关联</strong></p>
-<p><img src="https://yerias.github.io/hive_img/hive_metastore2.png" alt="hive_metastore2"></p>
+<p><img src="https://yerias.github.io/hive_img/hive_metastore2.png" alt=""></p>
 <h3 id="DBS"><a href="#DBS" class="headerlink" title="DBS"></a>DBS</h3><p><strong>DBS</strong>是数据库主表，字段名顾名思义，样例数据如下</p>
-<p><img src="https://yerias.github.io/hive_img/hive_metastore3.png" alt="hive_metastore3"></p>
+<p><img src="https://yerias.github.io/hive_img/hive_metastore3.png" alt=""></p>
 <p>该表存储Hive中所有数据库的基本信息，字段如下：</p>
 <table>
 <thead>
@@ -83,7 +83,7 @@
 </tr>
 </tbody></table>
 <h3 id="DATABASE-PARAMS"><a href="#DATABASE-PARAMS" class="headerlink" title="DATABASE_PARAMS"></a>DATABASE_PARAMS</h3><p><strong>DATABASE_PARAMS</strong>是创建数据库 WITH DBPROPERTIES (property_name=property_value, …)指定的参数</p>
-<p><img src="https://yerias.github.io/hive_img/hive_metastore4.png" alt="hive_metastore4"></p>
+<p><img src="https://yerias.github.io/hive_img/hive_metastore4.png" alt=""></p>
 <p>该表存储数据库的相关参数</p>
 <table>
 <thead>
@@ -110,13 +110,13 @@
 </tr>
 </tbody></table>
 <h3 id="FUNCS"><a href="#FUNCS" class="headerlink" title="FUNCS"></a>FUNCS</h3><p><strong>FUNCS</strong>是函数表</p>
-<p><img src="https://yerias.github.io/hive_img/hive_metastore5.png" alt="hive_metastore5"></p>
+<p><img src="https://yerias.github.io/hive_img/hive_metastore5.png" alt=""></p>
 <h3 id="FUNC-RU"><a href="#FUNC-RU" class="headerlink" title="FUNC_RU"></a>FUNC_RU</h3><p><strong>FUNC_RU</strong>是函数在哪个jar包中</p>
-<p><img src="https://yerias.github.io/hive_img/hive_metastore6.png" alt="hive_metastore6"></p>
+<p><img src="https://yerias.github.io/hive_img/hive_metastore6.png" alt=""></p>
 <h2 id="Hive表和视图相关的元数据表"><a href="#Hive表和视图相关的元数据表" class="headerlink" title="Hive表和视图相关的元数据表"></a>Hive表和视图相关的元数据表</h2><p><strong>主要有TBLS、TABLE_PARAMS、TBL_PRIVS，这三张表通过TBL_ID关联</strong>。</p>
-<p><img src="https://yerias.github.io/hive_img/hive_metastore7.png" alt="hive_metastore7"></p>
+<p><img src="https://yerias.github.io/hive_img/hive_metastore7.png" alt=""></p>
 <h3 id="TBLS"><a href="#TBLS" class="headerlink" title="TBLS"></a>TBLS</h3><p><strong>TBLS</strong>是表的主表，存放hive所有表的主要信息</p>
-<p><img src="https://yerias.github.io/hive_img/hive_metastore8.png" alt="hive_metastore8"></p>
+<p><img src="https://yerias.github.io/hive_img/hive_metastore8.png" alt=""></p>
 <p>该表中存储Hive表、视图、索引表的基本信息。</p>
 <table>
 <thead>
@@ -183,7 +183,7 @@
 </tr>
 </tbody></table>
 <h3 id="TABLE-PARAMS"><a href="#TABLE-PARAMS" class="headerlink" title="TABLE_PARAMS"></a>TABLE_PARAMS</h3><p><strong>TABLE_PARAMS</strong>表存储表/视图的属性信息。</p>
-<p><img src="https://yerias.github.io/hive_img/hive_metastore16.png" alt="hive_metastore16"></p>
+<p><img src="https://yerias.github.io/hive_img/hive_metastore16.png" alt=""></p>
 <table>
 <thead>
 <tr>
@@ -209,7 +209,7 @@
 </tr>
 </tbody></table>
 <h3 id="TBL-PRIVS"><a href="#TBL-PRIVS" class="headerlink" title="TBL_PRIVS"></a>TBL_PRIVS</h3><p><strong>TBL_PRIVS</strong>表存储表/视图的授权信息</p>
-<p><img src="https://yerias.github.io/hive_img/hive_metastore17.png" alt="hive_metastore17"></p>
+<p><img src="https://yerias.github.io/hive_img/hive_metastore17.png" alt=""></p>
 <table>
 <thead>
 <tr>
@@ -266,10 +266,10 @@
 </tbody></table>
 <h2 id="Hive文件存储信息相关的元数据表"><a href="#Hive文件存储信息相关的元数据表" class="headerlink" title="Hive文件存储信息相关的元数据表"></a>Hive文件存储信息相关的元数据表</h2><p>主要涉及SDS、SD_PARAMS、SERDES、SERDE_PARAMS</p>
 <p><strong>其中sds、serdes、serde_params使用SERDE_ID关联，sds和sd_params使用SD_ID关联</strong></p>
-<p><img src="https://yerias.github.io/hive_img/hive_metastore11.png" alt="hive_metastore11"></p>
+<p><img src="https://yerias.github.io/hive_img/hive_metastore11.png" alt=""></p>
 <p>由于HDFS支持的文件格式很多，而建Hive表时候也可以指定各种文件格式，Hive在将HQL解析成MapReduce时候，需要知道去哪里，使用哪种格式去读写HDFS文件，而这些信息就保存在这几张表中。</p>
 <h3 id="SDS"><a href="#SDS" class="headerlink" title="SDS"></a>SDS</h3><p>SDS是存储主表，包含数据文件的输入输出格式，所在HDFS路径，是否压缩等</p>
-<p><img src="https://yerias.github.io/hive_img/hive_metastore12.png" alt="hive_metastore12"></p>
+<p><img src="https://yerias.github.io/hive_img/hive_metastore12.png" alt=""></p>
 <p>该表保存文件存储的基本信息，如INPUT_FORMAT、OUTPUT_FORMAT、是否压缩等。</p>
 <p>TBLS表中的SD_ID与该表关联，可以获取Hive表的存储信息。</p>
 <table>
@@ -352,7 +352,7 @@
 </tr>
 </tbody></table>
 <h3 id="SERDES"><a href="#SERDES" class="headerlink" title="SERDES"></a>SERDES</h3><p>SERDES是序列化使用类的表，存储序列化使用的类信息</p>
-<p><img src="https://yerias.github.io/hive_img/hive_metastore14.png" alt="hive_metastore14"></p>
+<p><img src="https://yerias.github.io/hive_img/hive_metastore14.png" alt=""></p>
 <table>
 <thead>
 <tr>
@@ -378,7 +378,7 @@
 </tr>
 </tbody></table>
 <h3 id="SERDE-PARAM"><a href="#SERDE-PARAM" class="headerlink" title="SERDE_PARAM"></a>SERDE_PARAM</h3><p>SERDE_PARAMS存储列分隔符，行分隔符等</p>
-<p><img src="https://yerias.github.io/hive_img/hive_metastore15.png" alt="hive_metastore15"></p>
+<p><img src="https://yerias.github.io/hive_img/hive_metastore15.png" alt=""></p>
 <p>该表存储序列化的一些属性、格式信息,比如：行、列分隔符</p>
 <table>
 <thead>
@@ -404,7 +404,7 @@
 <td>,</td>
 </tr>
 </tbody></table>
-<h2 id="Hive表字段相关的元数据表"><a href="#Hive表字段相关的元数据表" class="headerlink" title="Hive表字段相关的元数据表"></a>Hive表字段相关的元数据表</h2><h3 id="COLUMNS-V2"><a href="#COLUMNS-V2" class="headerlink" title="COLUMNS_V2"></a>COLUMNS_V2</h3><p><img src="https://yerias.github.io/hive_img/hive_metastore18.png" alt="hive_metastore18"></p>
+<h2 id="Hive表字段相关的元数据表"><a href="#Hive表字段相关的元数据表" class="headerlink" title="Hive表字段相关的元数据表"></a>Hive表字段相关的元数据表</h2><h3 id="COLUMNS-V2"><a href="#COLUMNS-V2" class="headerlink" title="COLUMNS_V2"></a>COLUMNS_V2</h3><p><img src="https://yerias.github.io/hive_img/hive_metastore18.png" alt=""></p>
 <p>该表存储表对应的字段信息。</p>
 <table>
 <thead>
@@ -442,8 +442,8 @@
 </tbody></table>
 <h2 id="Hive表分区相关的元数据表"><a href="#Hive表分区相关的元数据表" class="headerlink" title="Hive表分区相关的元数据表"></a>Hive表分区相关的元数据表</h2><p>主要涉及<strong>PARTITIONS</strong>、<strong>PARTITION_KEYS</strong>、<strong>PARTITION_KEY_VALS</strong>、<strong>PARTITION_PARAMS</strong></p>
 <p><strong>其中PARTITION_KEYS和tbls关联，其余的PARTITIONS、PARTITION_KEY_VALS、PARTITION_PARAMS使用PART_ID关联</strong></p>
-<p><img src="https://yerias.github.io/hive_img/hive_metastore19.png" alt="hive_metastore19"></p>
-<h3 id="PARTITIONS"><a href="#PARTITIONS" class="headerlink" title="PARTITIONS"></a>PARTITIONS</h3><p><img src="https://yerias.github.io/hive_img/hive_metastore20.png" alt="hive_metastore20"></p>
+<p><img src="https://yerias.github.io/hive_img/hive_metastore19.png" alt=""></p>
+<h3 id="PARTITIONS"><a href="#PARTITIONS" class="headerlink" title="PARTITIONS"></a>PARTITIONS</h3><p><img src="https://yerias.github.io/hive_img/hive_metastore20.png" alt=""></p>
 <p>该表存储表分区的基本信息。</p>
 <table>
 <thead>
@@ -484,7 +484,7 @@
 <td>2</td>
 </tr>
 </tbody></table>
-<h3 id="PARTITION-KEYS"><a href="#PARTITION-KEYS" class="headerlink" title="PARTITION_KEYS"></a>PARTITION_KEYS</h3><p><img src="https://yerias.github.io/hive_img/hive_metastore21.png" alt="hive_metastore21"></p>
+<h3 id="PARTITION-KEYS"><a href="#PARTITION-KEYS" class="headerlink" title="PARTITION_KEYS"></a>PARTITION_KEYS</h3><p><img src="https://yerias.github.io/hive_img/hive_metastore21.png" alt=""></p>
 <p>该表存储分区的字段信息。</p>
 <table>
 <thead>
@@ -520,7 +520,7 @@
 <td>1</td>
 </tr>
 </tbody></table>
-<h3 id="PARTITION-KEY-VALS"><a href="#PARTITION-KEY-VALS" class="headerlink" title="PARTITION_KEY_VALS"></a>PARTITION_KEY_VALS</h3><p><img src="https://yerias.github.io/hive_img/hive_metastore22.png" alt="hive_metastore22"></p>
+<h3 id="PARTITION-KEY-VALS"><a href="#PARTITION-KEY-VALS" class="headerlink" title="PARTITION_KEY_VALS"></a>PARTITION_KEY_VALS</h3><p><img src="https://yerias.github.io/hive_img/hive_metastore22.png" alt=""></p>
 <p>该表存储分区字段值。</p>
 <table>
 <thead>
@@ -546,7 +546,7 @@
 <td>0</td>
 </tr>
 </tbody></table>
-<h3 id="PARTITION-PARAMS"><a href="#PARTITION-PARAMS" class="headerlink" title="PARTITION_PARAMS"></a>PARTITION_PARAMS</h3><p><img src="https://yerias.github.io/hive_img/hive_metastore23.png" alt="hive_metastore23"></p>
+<h3 id="PARTITION-PARAMS"><a href="#PARTITION-PARAMS" class="headerlink" title="PARTITION_PARAMS"></a>PARTITION_PARAMS</h3><p><img src="https://yerias.github.io/hive_img/hive_metastore23.png" alt=""></p>
 <p>该表存储分区的属性信息。</p>
 <table>
 <thead>
