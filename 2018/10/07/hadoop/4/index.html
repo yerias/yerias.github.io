@@ -1,0 +1,198 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="HDFS的副本存放策略&amp;HDFS的读写流程&amp;Pid文件详解&amp;HDFS常用命令&amp;HDFS的回收站机制&amp;安全模式详解&amp;单、多节点的磁盘均衡策略"><meta name="keywords" content="Hadoop,HDFS"><meta name="author" content="Tunan"><meta name="copyright" content="Tunan"><title>HDFS的副本存放策略&amp;HDFS的读写流程&amp;Pid文件详解&amp;HDFS常用命令&amp;HDFS的回收站机制&amp;安全模式详解&amp;单、多节点的磁盘均衡策略 | TUNANのBlog</title><link rel="shortcut icon" href="/melody-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.6.1"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.6.1"><link rel="dns-prefetch" href="https://cdn.staticfile.org"><link rel="dns-prefetch" href="https://cdn.bootcss.com"><link rel="dns-prefetch" href="https://creativecommons.org"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"We didn't find any results for the search: ${query}"}},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  }
+} </script></head><body><canvas class="fireworks"></canvas><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="toggle-sidebar-info text-center"><span data-toggle="Toggle article">Toggle site</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">Catalog</div><div class="sidebar-toc__progress"><span class="progress-notice">You've read</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#目标"><span class="toc-number">1.</span> <span class="toc-text">目标</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#副本放置策略"><span class="toc-number">2.</span> <span class="toc-text">副本放置策略</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#hadoop2-7-6之前的副本存放策略"><span class="toc-number">2.1.</span> <span class="toc-text">hadoop2.7.6之前的副本存放策略</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#hadoop2-8-4之后的副本存放策略"><span class="toc-number">2.2.</span> <span class="toc-text">hadoop2.8.4之后的副本存放策略</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#副本存放策略优点"><span class="toc-number">2.3.</span> <span class="toc-text">副本存放策略优点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#读写流程"><span class="toc-number">3.</span> <span class="toc-text">读写流程</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#读取流程-FSData-InputStream"><span class="toc-number">3.1.</span> <span class="toc-text">读取流程(FSData InputStream)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#写入流程-FSData-OutputStream"><span class="toc-number">3.2.</span> <span class="toc-text">写入流程(FSData OutputStream)</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#如果写数据的过程中某个DataNode发生错误，会采取以下的步骤处理。"><span class="toc-number">3.2.1.</span> <span class="toc-text">如果写数据的过程中某个DataNode发生错误，会采取以下的步骤处理。</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#pid文件"><span class="toc-number">4.</span> <span class="toc-text">pid文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#hdfs-dfs-常用命令"><span class="toc-number">5.</span> <span class="toc-text">hdfs dfs 常用命令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#回收站"><span class="toc-number">6.</span> <span class="toc-text">回收站</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#安全模式"><span class="toc-number">7.</span> <span class="toc-text">安全模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#多节点的磁盘均衡"><span class="toc-number">8.</span> <span class="toc-text">多节点的磁盘均衡</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#那么怎么做呢？"><span class="toc-number">8.1.</span> <span class="toc-text">那么怎么做呢？</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#单节点的磁盘均衡"><span class="toc-number">9.</span> <span class="toc-text">单节点的磁盘均衡</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#场景"><span class="toc-number">9.1.</span> <span class="toc-text">场景:</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#怎么做？"><span class="toc-number">9.2.</span> <span class="toc-text">怎么做？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#什么时候手动或调度执行？"><span class="toc-number">9.3.</span> <span class="toc-text">什么时候手动或调度执行？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#怎么在DataNode中挂载磁盘？"><span class="toc-number">9.4.</span> <span class="toc-text">怎么在DataNode中挂载磁盘？</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#为什么DN的生产上要挂载多个物理的磁盘目录，而不是做一个raid-磁盘阵列"><span class="toc-number">9.4.1.</span> <span class="toc-text">为什么DN的生产上要挂载多个物理的磁盘目录，而不是做一个raid(磁盘阵列)</span></a></li></ol></li></ol></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="/img/xiaoqi.jpg"></div><div class="author-info__name text-center">Tunan</div><div class="author-info__description text-center">BigData Developer</div><div class="follow-button"><a href="#">Follow Me</a></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">Articles</span><span class="pull-right">139</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">Tags</span><span class="pull-right">31</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">Categories</span><span class="pull-right">27</span></a></div><hr><div class="author-info-links"><div class="author-info-links__title text-center">Links</div><a class="author-info-links__name text-center" href="https://hadoop.apache.org/docs/r2.10.0/hadoop-project-dist/hadoop-common/SingleCluster.html" target="_blank" rel="noopener">HADOOP</a><a class="author-info-links__name text-center" href="https://cwiki.apache.org/confluence/display/Hive/" target="_blank" rel="noopener">HIVE</a><a class="author-info-links__name text-center" href="http://archive.cloudera.com/cdh5/cdh/5/" target="_blank" rel="noopener">CDH</a><a class="author-info-links__name text-center" href="http://flume.apache.org/" target="_blank" rel="noopener">FLUME</a><a class="author-info-links__name text-center" href="https://azkaban.github.io/" target="_blank" rel="noopener">AZKABAN</a><a class="author-info-links__name text-center" href="https://www.maxinhong.com/" target="_blank" rel="noopener">叶梨子</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/qingyunzong" target="_blank" rel="noopener">老铁</a><a class="author-info-links__name text-center" href="https://blog.csdn.net/jim8973/" target="_blank" rel="noopener">飞哥</a><a class="author-info-links__name text-center" href="https://vinxikk.github.io/" target="_blank" rel="noopener">vinx</a><a class="author-info-links__name text-center" href="http://dongxicheng.org/" target="_blank" rel="noopener">懂西成(Hadoop技术内幕作者)</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/xing901022/" target="_blank" rel="noopener">xingoo</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/itboys/tag/" target="_blank" rel="noopener">大葱拌豆腐</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/shishanyuan" target="_blank" rel="noopener">郭景瞻(图解Spark作者)</a><a class="author-info-links__name text-center" href="https://segmentfault.com/u/wishdaren_5c243b920a3eb" target="_blank" rel="noopener">Wish大人</a></div></div></div><div id="content-outer"><div id="top-container" style="background-image: url(/img/soroush-golpoor-1497416-unsplash.jpg)"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">TUNANのBlog</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> Search</span></a><a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/categories">Categories</a></span></div><div id="post-info"><div id="post-title">HDFS的副本存放策略&amp;HDFS的读写流程&amp;Pid文件详解&amp;HDFS常用命令&amp;HDFS的回收站机制&amp;安全模式详解&amp;单、多节点的磁盘均衡策略</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-10-07</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/Hadoop/">Hadoop</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/Hadoop/HDFS/">HDFS</a><div class="post-meta-wordcount"><span>Word count: </span><span class="word-count">3k</span><span class="post-meta__separator">|</span><span>Reading time: 10 min</span></div></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><h3 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h3><ol>
+<li>整理副本放置策略</li>
+<li>整理读写流程</li>
+<li>整理pid文件</li>
+<li>整理hdfs dfs 常用命令</li>
+<li>整理多节点，单节点的磁盘均衡</li>
+<li>整理安全模式</li>
+</ol>
+<h3 id="副本放置策略"><a href="#副本放置策略" class="headerlink" title="副本放置策略"></a>副本放置策略</h3><p>副本存放策略存在新旧两个版本</p>
+<p>具体可参考我的另一个博客:<a href="https://yerias.github.io/2018/10/11/DataWarehouse/hadoop/5/">https://yerias.github.io/2018/10/11/DataWarehouse/hadoop/5/</a></p>
+<h4 id="hadoop2-7-6之前的副本存放策略"><a href="#hadoop2-7-6之前的副本存放策略" class="headerlink" title="hadoop2.7.6之前的副本存放策略"></a>hadoop2.7.6之前的副本存放策略</h4><ul>
+<li>副本一：同机架的不同节点 </li>
+<li>副本二：同机架的另一节点 </li>
+<li>副本三：不同机架的另一节点 </li>
+<li>其他副本：随机挑选</li>
+</ul>
+<h4 id="hadoop2-8-4之后的副本存放策略"><a href="#hadoop2-8-4之后的副本存放策略" class="headerlink" title="hadoop2.8.4之后的副本存放策略"></a>hadoop2.8.4之后的副本存放策略</h4><ul>
+<li>副本一：同Client的节点上 </li>
+<li>副本二：不同机架中的节点上 </li>
+<li>副本三：同第二个副本的机架中的另一个节点上</li>
+<li>其他副本：随机挑选</li>
+</ul>
+<h4 id="副本存放策略优点"><a href="#副本存放策略优点" class="headerlink" title="副本存放策略优点"></a>副本存放策略优点</h4><ul>
+<li>提高系统的可靠性</li>
+<li>提供负载均衡</li>
+<li>提高访问效率</li>
+</ul>
+<h3 id="读写流程"><a href="#读写流程" class="headerlink" title="读写流程"></a>读写流程</h3><h4 id="读取流程-FSData-InputStream"><a href="#读取流程-FSData-InputStream" class="headerlink" title="读取流程(FSData InputStream)"></a>读取流程(FSData InputStream)</h4><p><img src="http://yerias.github.io/hadoop_img/read.jpg" alt="hdfs读取数据流程"></p>
+<ol>
+<li>首先调用FileSystem对象的open()方法，获得一个分布式文件系统(DistributedFileSystem)的实例。</li>
+<li>分布式文件系统(DistributedFileSystem)通过RPC获得文件的第一批块(Block)的位置信息，<a href="">同一个块按照副本数会返回多个位置信息</a>，这些位置信息按照Hadoop拓扑结构排序，距离客户端近的排在前面。</li>
+<li>前两步会返回一个文件系统数据输入流(FSDataInputStream)对象，该对象会被封装为分布式文件系统输入流(DFSInputStream)对象，DFSInputStream可以方便地管理DataNode和NameNode的数据流。客户端调用read方法，DFSInputStream会找出离客户端最近的DataNode并连接。</li>
+<li>数据从DataNode源源不断地流向客户端</li>
+<li>如果第一个块的数据读完了，就会管理指向第一个块的DataNode的连接，接着读取下一个块。这些操作对客户端来说是透明的，从客户端的角度看来只是在读一个持续不断的数据流。</li>
+<li>如果第一批块都读取完了，DFSInputStream就会去NameNode拿下一批块的位置信息，然后继续读，如果所有的块都读完了，这时就会关闭掉所有的流。</li>
+</ol>
+<p><code>注意:</code> 如果在读数据的时候，DFSInputStream和DataNode的通信发生异常，就会尝试连接正在读的块的排序第二近的DataNode，并且会记录哪个DataNode发生错误，剩余的块读的时候就会直接跳过该DataNode。DFSInputStream也会检查块的校验和，如果发现一个坏的块，就会先报告到NameNode，然后DFSIputStream在其它的DataNode上读取该块的数据。</p>
+<h4 id="写入流程-FSData-OutputStream"><a href="#写入流程-FSData-OutputStream" class="headerlink" title="写入流程(FSData OutputStream)"></a>写入流程(FSData OutputStream)</h4><p><img src="http://yerias.github.io/hadoop_img/write.jpg" alt="hdfs写入数据流程"></p>
+<ol>
+<li>客户端在同过调用分布式文件系统(DistributedFileSystem)的create()方法创建新文件</li>
+<li>DistributedFileSystem通过RPC调用NameNode去创建一个没有块关联的新文件，创建前NameNode会做各种校验，比如文件是否存在，客户端有没有权限等。如果通过校验，NameNode就会记录下新文件，否则就会抛出I/O异常。</li>
+<li>前两步结合，会返回文件系统数据输出流(FSDataOutputStream)的对象，与读文件的时候相似，DistributedFileSystem被封装成分布式文件系统的输出流(DFSOutputStream)。DFSOutputStream可以协调NameNode和DataNode的通信。客户端开始写数据到DFSOutputStream，DFSOutputStream会把数据切分成一个个的数据包(packet)，然后排成数据队列(data quenc)</li>
+<li>接下来，数据队列中的数据包首先输出到数据管道(多个datanode节点组成数据管道)中的第一个DataNode(写数据包)，第一个DataNode又把数据包输出到第二个DataNode中，依次类推。</li>
+<li>DFSOutputStream还维护着一个队列叫做确认队列(ack quenc)，这个队列也是由数据包组成，用于等待DataNode收到数据返回确认数据包，当数据管道中的所有DataNode都表示已经收到了确认信息的时候，这时ack quenc才会把对应的数据包移除掉。</li>
+<li>客户端完成写数据后，调用close()方法关闭写入数据流。</li>
+<li>客户端通知NameNode把文件标记为已完成。然后NameNode把文件写成功的结果反馈给客户端。此时就表示客户端已完成整个HDFS的写数据流程。</li>
+</ol>
+<h5 id="如果写数据的过程中某个DataNode发生错误，会采取以下的步骤处理。"><a href="#如果写数据的过程中某个DataNode发生错误，会采取以下的步骤处理。" class="headerlink" title="如果写数据的过程中某个DataNode发生错误，会采取以下的步骤处理。"></a>如果写数据的过程中某个DataNode发生错误，会采取以下的步骤处理。</h5><ol>
+<li>管道关闭</li>
+<li>正常的DataNode上正在写的块会有一个新ID(需要和NameNode通信)，而失败的DataNode上的那个不完整的块会在上报心跳的时候被删除。</li>
+<li>失败的DataNode会被移除出数据管道，块中剩余的数据包继续写入管道中的其他两个DataNode。</li>
+<li>NameNode会标记这个块的副本个数少于指定值，块的副本会稍后在另一个DataNode创建。</li>
+<li>有些时候多个DataNode会失败，只要<code>dfs.replication.min</code>(缺省是1个)属性定义的指定个数的DataNode写入数据成功了，整个写入过程就算成功，缺少的副本会进行异步的恢复。</li>
+</ol>
+<p><code>注意:</code> 只有调用sync()方法，客户端才确保该文件的写操作已经全部完成， 当客户端调用close()方法时，会默认调用sync()方法。</p>
+<h3 id="pid文件"><a href="#pid文件" class="headerlink" title="pid文件"></a>pid文件</h3><p>pid文件具体作用请参考我的另外一个博客:<a href="https://yerias.github.io/2018/10/12/DataWarehouse/hadoop/6/">https://yerias.github.io/2018/10/12/DataWarehouse/hadoop/6/</a></p>
+<p>在这里我们只简单说一下修改pid文件的生成目录的步骤，在修改hadoop文件的时候，hadoop最好是stop状态，否则需要kill进程。</p>
+<ol>
+<li><p>创建/home/hadoop/tmp目录</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">mkdir /home/hadoop/tmp</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>修改/home/hadoop/tmp的权限</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">chmod -R 777 /hadoop/hadoop/tmp</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>修改hadoop-env.sh文件</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">export HADOOP_PID_DIR=/home/hadoop/tmp</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>修改yarn-env.sh</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">export YARN_PID_DIR=/home/hadoop/tmp</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h3 id="hdfs-dfs-常用命令"><a href="#hdfs-dfs-常用命令" class="headerlink" title="hdfs dfs 常用命令"></a>hdfs dfs 常用命令</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[-cat [-ignoreCrc] &lt;src&gt; ...]</span><br><span class="line">[-chmod [-R] &lt;MODE[,MODE]... | OCTALMODE&gt; PATH...]</span><br><span class="line">[-chown [-R] [OWNER][:[GROUP]] PATH...]</span><br><span class="line">[-ls [-C] [-d] [-h] [-q] [-R] [-t] [-S] [-r] [-u] [&lt;path&gt; ...]]</span><br><span class="line">[-put [-f] [-p] [-l] &lt;localsrc&gt; ... &lt;dst&gt;]</span><br><span class="line">[-get [-p] [-ignoreCrc] [-crc] &lt;src&gt; ... &lt;localdst&gt;]</span><br><span class="line">[-rm [-f] [-r|-R] [-skipTrash] &lt;src&gt; ...]</span><br></pre></td></tr></table></figure>
+
+<p>这些命令很点单，和linux的作用一样，这里不做演示。。。</p>
+<h3 id="回收站"><a href="#回收站" class="headerlink" title="回收站"></a>回收站</h3><p>回收站的作用是把hdfs上删除的文件保存一定的时间然后自动删除，Apache是默认关闭的，CDH默认是开启的。</p>
+<p>Apache的参数是由<code>core-default.xml</code>文件控制的<code>fs.trash.interval</code>属性</p>
+<table>
+<thead>
+<tr>
+<th>KEY</th>
+<th>VALUE</th>
+<th>DESC</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>fs.trash.interval</td>
+<td>0</td>
+<td>检查点被删除的分钟数。如果为零，则禁用垃圾特性。单位秒</td>
+</tr>
+</tbody></table>
+<p>一般在生产环境下设置保存7天</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun hadoop]# vim core-site.xml </span><br><span class="line"></span><br><span class="line">&lt;property&gt;</span><br><span class="line">    &lt;name&gt;fs.trash.interval&lt;/name&gt;</span><br><span class="line">    &lt;value&gt;10080&lt;/value&gt;</span><br><span class="line">&lt;/property&gt;</span><br></pre></td></tr></table></figure>
+<p><code>注意:</code> 切记检查生产环境是否开启回收站,开了回收站，慎用 <code>-skipTrash</code></p>
+<h3 id="安全模式"><a href="#安全模式" class="headerlink" title="安全模式"></a>安全模式</h3><p>安全模式是hadoop的一种保护机制，安全模式下不能进行修改文件的操作，但是可以浏览目录结构、查看文件内容的。</p>
+<p>如果NN的log显示<code>Name node is in safe mode</code> ，正常手动让其离开安全模式，这种操作很少做。</p>
+<p><strong>一般进入safemode情况有:</strong></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">1. 启动或者重新启动hdfs时</span><br></pre></td></tr></table></figure>
+<pre><code>2. HDFS维护升级时
+3. 块文件损坏等。。。</code></pre><p>可以使用<code>fsck</code>检查一下HDFS的健康度，然后进行下一步操作</p>
+<p><code>hdfs fsck / :</code> 用这个命令可以检查整个文件系统的健康状况,但是要注意它不会主动恢复备份缺失的block,这个是由NameNode单独的线程异步处理的</p>
+<p><strong>fsck相关介绍:</strong></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">hdfs fsck</span><br><span class="line">　　　　Usage:DFSck &lt;path&gt; [-move | -delete | -openforwrite] [-files [-blocks [-locations | -racks]]]</span><br><span class="line">　　　　&lt;path&gt; 检查这个目录中的文件是否完整</span><br><span class="line">　　　　-move 破损的文件移至/lost+found目录</span><br><span class="line">　　　　-delete 删除破损的文件</span><br><span class="line">　　　　-openforwrite 打印正在打开写操作的文件</span><br><span class="line">　　　　-files 打印正在check的文件名</span><br><span class="line">　　　　-blocks 打印block报告(需要和-files参数一起使用)</span><br><span class="line">　　　　-locations 打印每个block的位置信息(需要和-files参数一起使用)</span><br><span class="line">　　　　-racks 打印位置信息的网络拓扑图(需要和-files参数一起使用)</span><br></pre></td></tr></table></figure>
+
+<p>一般我们会查看 / 目录下的损坏文件，然后根据损坏文件的路径手动进行<code>hdfs debug</code>修复</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">hdfs fsck / -list-corruptfileblocks</span><br></pre></td></tr></table></figure>
+
+<h3 id="多节点的磁盘均衡"><a href="#多节点的磁盘均衡" class="headerlink" title="多节点的磁盘均衡"></a>多节点的磁盘均衡</h3><p>由于集群中的一些服务器如CPU、磁盘、网络的差异，副本存放并不会一直保持均衡，这就造成某一些服务器的磁盘占用率达到90%，而另外一些服务器的磁盘占用率只有60%或者80%。所以就有必要手动进行均衡操作，事实上hadoop的sbin目录下也有这个命令</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">-rwxr-xr-x 1 hadoop hadoop 1128 Jun  3  2019 start-balancer.sh  #开始</span><br><span class="line">-rwxr-xr-x 1 hadoop hadoop 1179 Jun  3  2019 stop-balancer.sh	#停止</span><br></pre></td></tr></table></figure>
+
+<p>那么集群中的磁盘占用率怎么才算正常？这个由参数<code>threshold</code>控制，默认threshold=10，即各个服务器保持所有服务器的磁盘占用空间的平均值上下浮动10%，可能不好理解，我们用上面的占用率90%、60%和80%算一下。</p>
+<p>这三台的平均占用率是:</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">(90+60+80)/3=76%</span><br></pre></td></tr></table></figure>
+
+<p>那么<code>threshold</code>参数就控制这三台其中的任意一台的磁盘占用率不得超过86%，不得低于66%。</p>
+<h4 id="那么怎么做呢？"><a href="#那么怎么做呢？" class="headerlink" title="那么怎么做呢？"></a>那么怎么做呢？</h4><p>在进行磁盘均衡之前，我们需要重新设置一下balancer的带宽限制，在<code>hdfs-default.xml</code>文件中的<code>dfs.datanode.balance.bandwidthPerSec</code>属性，默认是10M，生产环境下一般设置为30M</p>
+<table>
+<thead>
+<tr>
+<th>KEY</th>
+<th>VALUE</th>
+<th>DESC</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>dfs.datanode.balance.bandwidthPerSec</td>
+<td>10m</td>
+<td>指定每个datanode可用于平衡目的的最大带宽(以每秒字节数为单位)。</td>
+</tr>
+</tbody></table>
+<p>在<code>hadoop</code>的<code>hdfs-site.xml</code>文件中覆盖一下</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun hadoop]# vim hdfs-site.xml </span><br><span class="line"></span><br><span class="line">&lt;property&gt;</span><br><span class="line">    &lt;name&gt;dfs.datanode.balance.bandwidthPerSec&lt;/name&gt;</span><br><span class="line">    &lt;value&gt;30m&lt;/value&gt;</span><br><span class="line">&lt;/property&gt;</span><br></pre></td></tr></table></figure>
+
+<p>怎么做？</p>
+<p>写个shell脚本，每天凌晨执行<code>./start-balancer.sh</code>调度一次，达到数据平衡，毛刺修正，调度执行完成自动关闭，不需要执行<code>./stop-balancer.sh</code>手段关闭，除非特殊情况。</p>
+<h3 id="单节点的磁盘均衡"><a href="#单节点的磁盘均衡" class="headerlink" title="单节点的磁盘均衡"></a>单节点的磁盘均衡</h3><p>在官网中的描述: </p>
+<p><a href="https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-hdfs/HDFSDiskbalancer.html" target="_blank" rel="noopener">https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-hdfs/HDFSDiskbalancer.html</a></p>
+<p>在官网中的描述中有这么一句: <code>dfs.disk.balancer.enabled must be set to true in hdfs-site.xml.</code></p>
+<p>翻译过来就是: 必须在<code>hdfs-site.xml</code>中将<code>dfs.disk.balancer.enabled</code>设置为<code>true</code>。</p>
+<p>这是因为默认情况下，群集上未启用磁盘平衡器</p>
+<p>那么我们先去设置一下</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun hadoop]# vim hdfs-site.xml </span><br><span class="line"></span><br><span class="line">&lt;property&gt;</span><br><span class="line">    &lt;name&gt;dfs.disk.balancer.enabled&lt;/name&gt;</span><br><span class="line">    &lt;value&gt;true&lt;/value&gt;</span><br><span class="line">&lt;/property&gt;</span><br></pre></td></tr></table></figure>
+
+<h4 id="场景"><a href="#场景" class="headerlink" title="场景:"></a>场景:</h4><p>假如我们现在有三个数据盘</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">/data01   90%</span><br><span class="line">/data02   60%</span><br><span class="line">/data03   80%</span><br></pre></td></tr></table></figure>
+
+<p>现在磁盘用的差不多了，准备加入一个盘<code>/data04   0%</code></p>
+<p>我们这时候是不是要进行单节点服务器的磁盘均衡？</p>
+<h4 id="怎么做？"><a href="#怎么做？" class="headerlink" title="怎么做？"></a>怎么做？</h4><ol>
+<li><p>生成hadoop001.plan.json</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">hdfs diskbalancer -plan hadoop001	#hadoop001是datanode的主机名</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>执行</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">hdfs diskbalancer -execute hadoop001.plan.json 	#hadoop001是datanode的主机名</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查询状态</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">hdfs diskbalancer -query ruozedata001 	#hadoop001是datanode的主机名</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h4 id="什么时候手动或调度执行？"><a href="#什么时候手动或调度执行？" class="headerlink" title="什么时候手动或调度执行？"></a>什么时候手动或调度执行？</h4><ol>
+<li>新盘加入</li>
+<li>监控服务器的磁盘剩余空间小于阈值10%，发邮件预警 ，手动执行</li>
+</ol>
+<h4 id="怎么在DataNode中挂载磁盘？"><a href="#怎么在DataNode中挂载磁盘？" class="headerlink" title="怎么在DataNode中挂载磁盘？"></a>怎么在DataNode中挂载磁盘？</h4><p>由<code>hdfs-default.xml</code>文件的<code>dfs.datanode.data.dir</code>属性控制</p>
+<table>
+<thead>
+<tr>
+<th>KEY</th>
+<th>VALUE</th>
+<th>DESC</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>dfs.datanode.data.dir</td>
+<td>file://${hadoop.tmp.dir}/dfs/data</td>
+<td>确定DFS数据节点应该将其块存储在本地文件系统的何处。多个目录使用逗号分隔。</td>
+</tr>
+</tbody></table>
+<p>假如我们现在有/data01,/data02,/data03,/data04四个目录需要挂载在该DataNode节点中</p>
+<p>修改<code>hdfs-site.xml</code>文件</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@aliyun hadoop]# vim hdfs-site.xml </span><br><span class="line"></span><br><span class="line">&lt;property&gt;</span><br><span class="line">    &lt;name&gt;dfs.datanode.data.dir&lt;/name&gt;</span><br><span class="line">    &lt;value&gt;/data01,/data02,/data03,/data04&lt;/value&gt;</span><br><span class="line">&lt;/property&gt;</span><br></pre></td></tr></table></figure>
+
+<h5 id="为什么DN的生产上要挂载多个物理的磁盘目录，而不是做一个raid-磁盘阵列"><a href="#为什么DN的生产上要挂载多个物理的磁盘目录，而不是做一个raid-磁盘阵列" class="headerlink" title="为什么DN的生产上要挂载多个物理的磁盘目录，而不是做一个raid(磁盘阵列)"></a>为什么DN的生产上要挂载多个物理的磁盘目录，而不是做一个raid(磁盘阵列)</h5><p>为了高效率写  高效率读</p>
+<p><code>注意:</code> 提前规划好2-3年存储量 ，避免后期加磁盘维护的工作量</p>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="mailto:undefined" target="_blank" rel="noopener">Tunan</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="http://yerias.github.io/2018/10/07/hadoop/4/">http://yerias.github.io/2018/10/07/hadoop/4/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Hadoop/">Hadoop</a><a class="post-meta__tags" href="/tags/HDFS/">HDFS</a></div><div class="social-share" data-disabled="facebook,twitter,douban,linkedin,diandian"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js@1.0.16/dist/css/share.min.css"><script src="https://cdn.jsdelivr.net/npm/social-share.js@1.0.16/dist/js/social-share.min.js"></script><nav id="pagination"><div class="prev-post pull-left"><a href="/2018/10/07/mysql/%E6%95%B0%E6%8D%AE%E9%87%8D%E5%88%B7%E6%9C%BA%E5%88%B6/"><i class="fa fa-chevron-left">  </i><span>数据重刷机制(抛砖引玉)</span></a></div><div class="next-post pull-right"><a href="/2018/10/06/hadoop/3/"><span>理解数据块、副本数、小文件的概念&amp;掌握HDFS架构&amp;掌握NN和SNN交互流程</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer class="footer-bg" style="background-image: url(/img/soroush-golpoor-1497416-unsplash.jpg)"><div class="layout" id="footer"><div class="copyright">&copy;2018 - 2020 By Tunan</div><div class="framework-info"><span>Driven - </span><a href="#"><span>Hexo</span></a><span class="footer-separator">|</span><span>Theme - </span><a href="#"><span>Melody</span></a></div><div class="footer_custom_text">大家好，我是图南，很高兴认识你们！</div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file-o"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.6.1"></script><script src="/js/fancybox.js?version=1.6.1"></script><script src="/js/sidebar.js?version=1.6.1"></script><script src="/js/copy.js?version=1.6.1"></script><script src="/js/fireworks.js?version=1.6.1"></script><script src="/js/transition.js?version=1.6.1"></script><script src="/js/scroll.js?version=1.6.1"></script><script src="/js/head.js?version=1.6.1"></script><script src="/js/search/local-search.js"></script><script>if(/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+}</script><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">Local search</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="Search for Posts"></div></div></div><hr><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>Powered by</span> <a href="https://github.com/wzpan/hexo-generator-search" target="_blank" rel="noopener" style="color:#49B1F5;">hexo-generator-search</a></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div></body></html>
