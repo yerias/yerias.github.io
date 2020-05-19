@@ -1,0 +1,144 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="Spark术语&amp;Spark提交&amp;YARN上的提交模式&amp;窄依赖&amp;宽依赖"><meta name="keywords" content="Spark"><meta name="author" content="Tunan"><meta name="copyright" content="Tunan"><title>Spark术语&amp;Spark提交&amp;YARN上的提交模式&amp;窄依赖&amp;宽依赖 | TUNANのBlog</title><link rel="shortcut icon" href="/melody-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.6.1"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.6.1"><link rel="dns-prefetch" href="https://cdn.staticfile.org"><link rel="dns-prefetch" href="https://cdn.bootcss.com"><link rel="dns-prefetch" href="https://creativecommons.org"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"We didn't find any results for the search: ${query}"}},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  }
+} </script></head><body><canvas class="fireworks"></canvas><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="toggle-sidebar-info text-center"><span data-toggle="Toggle article">Toggle site</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">Catalog</div><div class="sidebar-toc__progress"><span class="progress-notice">You've read</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#目录"><span class="toc-number">1.</span> <span class="toc-text">目录</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#术语"><span class="toc-number">2.</span> <span class="toc-text">术语</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Spark提交"><span class="toc-number">3.</span> <span class="toc-text">Spark提交</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#提交模式"><span class="toc-number">4.</span> <span class="toc-text">提交模式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#cliet模式"><span class="toc-number">4.1.</span> <span class="toc-text">cliet模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#cluster模式"><span class="toc-number">4.2.</span> <span class="toc-text">cluster模式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#窄依赖"><span class="toc-number">5.</span> <span class="toc-text">窄依赖</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#宽依赖"><span class="toc-number">6.</span> <span class="toc-text">宽依赖</span></a></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="/img/xiaoqi.jpg"></div><div class="author-info__name text-center">Tunan</div><div class="author-info__description text-center">BigData Developer</div><div class="follow-button"><a href="#">Follow Me</a></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">Articles</span><span class="pull-right">139</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">Tags</span><span class="pull-right">31</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">Categories</span><span class="pull-right">27</span></a></div><hr><div class="author-info-links"><div class="author-info-links__title text-center">Links</div><a class="author-info-links__name text-center" href="https://hadoop.apache.org/docs/r2.10.0/hadoop-project-dist/hadoop-common/SingleCluster.html" target="_blank" rel="noopener">HADOOP</a><a class="author-info-links__name text-center" href="https://cwiki.apache.org/confluence/display/Hive/" target="_blank" rel="noopener">HIVE</a><a class="author-info-links__name text-center" href="http://archive.cloudera.com/cdh5/cdh/5/" target="_blank" rel="noopener">CDH</a><a class="author-info-links__name text-center" href="http://flume.apache.org/" target="_blank" rel="noopener">FLUME</a><a class="author-info-links__name text-center" href="https://azkaban.github.io/" target="_blank" rel="noopener">AZKABAN</a><a class="author-info-links__name text-center" href="https://www.maxinhong.com/" target="_blank" rel="noopener">叶梨子</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/qingyunzong" target="_blank" rel="noopener">老铁</a><a class="author-info-links__name text-center" href="https://blog.csdn.net/jim8973/" target="_blank" rel="noopener">飞哥</a><a class="author-info-links__name text-center" href="https://vinxikk.github.io/" target="_blank" rel="noopener">vinx</a><a class="author-info-links__name text-center" href="http://dongxicheng.org/" target="_blank" rel="noopener">懂西成(Hadoop技术内幕作者)</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/xing901022/" target="_blank" rel="noopener">xingoo</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/itboys/tag/" target="_blank" rel="noopener">大葱拌豆腐</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/shishanyuan" target="_blank" rel="noopener">郭景瞻(图解Spark作者)</a><a class="author-info-links__name text-center" href="https://segmentfault.com/u/wishdaren_5c243b920a3eb" target="_blank" rel="noopener">Wish大人</a></div></div></div><div id="content-outer"><div id="top-container" style="background-image: url(/img/soroush-golpoor-1497416-unsplash.jpg)"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">TUNANのBlog</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> Search</span></a><a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/categories">Categories</a></span></div><div id="post-info"><div id="post-title">Spark术语&amp;Spark提交&amp;YARN上的提交模式&amp;窄依赖&amp;宽依赖</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-03-06</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/Spark/">Spark</a><div class="post-meta-wordcount"><span>Word count: </span><span class="word-count">1.2k</span><span class="post-meta__separator">|</span><span>Reading time: 4 min</span></div></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><ol>
+<li>Spark术语</li>
+<li>Spark提交</li>
+<li>YARN上提交模式</li>
+<li>宽依赖</li>
+<li>窄依赖</li>
+</ol>
+<h2 id="术语"><a href="#术语" class="headerlink" title="术语"></a>术语</h2><p>下表总结了关于集群概念的术语:</p>
+<table>
+<thead>
+<tr>
+<th><strong>Term</strong></th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Application</td>
+<td>Spark上的应用程序。由一个<strong>driver program</strong>和集群上的<strong>executors</strong>组成。</td>
+</tr>
+<tr>
+<td>Application jar</td>
+<td>一个包含用户的Spark应用程序的jar包</td>
+</tr>
+<tr>
+<td>Driver program</td>
+<td>运行应用程序main()函数并创建SparkContext的进程</td>
+</tr>
+<tr>
+<td>Cluster manager</td>
+<td>用于获取集群资源的外部服务(例如，standalone manager、Mesos、YARN)</td>
+</tr>
+<tr>
+<td>Deploy mode</td>
+<td>区别driver process在何处运行。在“cluster”模式下，框架启动集群内部的驱动程序。在“client”模式下，提交者启动集群外部的驱动程序。</td>
+</tr>
+<tr>
+<td>Worker node</td>
+<td>可以在集群中运行application的任何节点</td>
+</tr>
+<tr>
+<td>Executor</td>
+<td>在Worker node上被application启动的进程，它运行任务并将数据保存在内存或磁盘存储器中。每个application都有自己的Executor。</td>
+</tr>
+<tr>
+<td>Task</td>
+<td>将被发送给一个执行者的工作单元</td>
+</tr>
+<tr>
+<td>Job</td>
+<td>由多个任务组成的并行计算，这些任务在响应一个Spark操作时产生(如保存、收集)</td>
+</tr>
+<tr>
+<td>Stage</td>
+<td>每个作业被分成更小的任务集，称为阶段，这些阶段相互依赖(类似于MapReduce中的map和reduce阶段)</td>
+</tr>
+</tbody></table>
+<h2 id="Spark提交"><a href="#Spark提交" class="headerlink" title="Spark提交"></a><a href="http://spark.apache.org/docs/latest/submitting-applications.html" target="_blank" rel="noopener">Spark提交</a></h2><p>注意：在使用Spark提交之前，一定要在环境变量中配置<code>HADOOP_CONF_DIR</code>，否则hadoop的环境引不进来</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">export HADOOP_CONF_DIR=XXX</span><br></pre></td></tr></table></figure>
+
+<p>Spark支持的部署模式：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">./bin/spark-submit \</span><br><span class="line">  --class &lt;main-class&gt; \</span><br><span class="line">  --master &lt;master-url&gt; \</span><br><span class="line">  --deploy-mode &lt;deploy-mode&gt; \</span><br><span class="line">  --conf &lt;key&gt;=&lt;value&gt; \</span><br><span class="line">  ... # other options</span><br><span class="line">  &lt;application-jar&gt; \</span><br><span class="line">  [application-arguments]</span><br></pre></td></tr></table></figure>
+
+<p>一些常用的选项是：</p>
+<ul>
+<li><code>--class</code>：您的应用程序的入口点（例如<code>org.apache.spark.examples.SparkPi</code>）</li>
+<li><code>--master</code>：集群的<a href="http://spark.apache.org/docs/latest/submitting-applications.html#master-urls" target="_blank" rel="noopener">主URL</a>（例如<code>spark://23.195.26.187:7077</code>）</li>
+<li><code>--deploy-mode</code>：将驱动程序部署在工作节点（<code>cluster</code>）上还是作为外部客户端（<code>client</code>）本地部署（默认值：<code>client</code>）</li>
+<li><code>--conf</code>：键值格式的任意Spark配置属性。对于包含空格的值，将“ key = value”用引号引起来（如图所示）。</li>
+<li><code>application-jar</code>：jar包的路径，包括您的应用程序和所有依赖项。URL必须在群集内部全局可见，例如，<code>hdfs://</code>路径或<code>file://</code>所有节点上都存在的路径。</li>
+<li><code>application-arguments</code>：参数传递给您的主类的main方法（如果有）</li>
+</ul>
+<p>其他常用的选项：</p>
+<ul>
+<li><p><code>--num-executors</code>：executors的数量</p>
+</li>
+<li><p><code>--executor-memory</code>：每个executor的内存数量</p>
+</li>
+<li><p><code>--total-executor-cores 100</code>：executor的总的core数</p>
+</li>
+<li><p><code>--jars</code>：指定需要依赖的jar包，多个jar包逗号分隔，application中直接引用</p>
+</li>
+<li><p><code>--files</code>：需要依赖的文件，在application中使用SparkFiles.get(“file”)取出，同时需要放在resources目录下</p>
+</li>
+</ul>
+<p>注意：local模式默认读写HDFS数据 读本地要加<code>file://</code></p>
+<h2 id="提交模式"><a href="#提交模式" class="headerlink" title="提交模式"></a>提交模式</h2><h3 id="cliet模式"><a href="#cliet模式" class="headerlink" title="cliet模式"></a>cliet模式</h3><ol>
+<li>Driver运行在Client</li>
+<li>AM职责就是去YARN上申请资源</li>
+<li>Driver会和请求到的container/executor进行通信</li>
+<li>Driver是不能退出的</li>
+</ol>
+<p><img src="https://yerias.github.io/spark_img/Client%E6%A8%A1%E5%BC%8F.jpg" alt="Client模式"></p>
+<p><strong>Client模式控制台能看到日志</strong></p>
+<h3 id="cluster模式"><a href="#cluster模式" class="headerlink" title="cluster模式"></a>cluster模式</h3><ol>
+<li><p>Driver运行位置在AM</p>
+</li>
+<li><p>Client提交上去了  它退出对整个作业没影响</p>
+</li>
+<li><p>AM(申请资源)+Driver（调度DAG，分发任务）</p>
+<p><img src="https://yerias.github.io/spark_img/Cluster%E6%A8%A1%E5%BC%8F.jpg" alt="Cluster模式"></p>
+</li>
+</ol>
+<p><strong>控制台不能看到日志，不支持Spark-shell(Spark-SQL) ，交互性操作的都不能</strong></p>
+<h2 id="窄依赖"><a href="#窄依赖" class="headerlink" title="窄依赖"></a>窄依赖</h2><ol>
+<li>一个父RDD的分区至多被一个子RDD的某个分区使用一次</li>
+<li>一个父RDD的分区和一个子RDD的分区是唯一映射 典型的map</li>
+<li>多个父RDD的分区和一个子RDD的分区是唯一映射 典型的union</li>
+</ol>
+<p><img src="https://yerias.github.io/spark_img/%E7%AA%84%E4%BE%9D%E8%B5%96.jpg" alt="窄依赖"></p>
+<p>在窄依赖中有个特殊的join是不经过shuffle 的</p>
+<p>这个特殊的join的存在有三个条件：</p>
+<ol>
+<li>RDD1的分区数 = RDD2的分区数</li>
+<li>RDD1的分区数 = Join的分区数</li>
+<li>RDD2的分区数 = Join的分区数 </li>
+</ol>
+<p>我们看一个案例：</p>
+<figure class="highlight scala"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * rdd1、rdd2、join 三者的分区数相同，不经过shuffle</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">val</span> rdd1 = sc.parallelize(<span class="type">List</span>((<span class="string">"香蕉"</span>,<span class="number">20</span>), (<span class="string">"苹果"</span>,<span class="number">50</span>), (<span class="string">"菠萝"</span>,<span class="number">30</span>), (<span class="string">"猕猴桃"</span>, <span class="number">50</span>)),<span class="number">2</span>)</span><br><span class="line"><span class="keyword">val</span> rdd2 = sc.parallelize(<span class="type">List</span>((<span class="string">"草莓"</span>,<span class="number">90</span>), (<span class="string">"苹果"</span>,<span class="number">25</span>), (<span class="string">"菠萝"</span>,<span class="number">25</span>), (<span class="string">"猕猴桃"</span>, <span class="number">30</span>), (<span class="string">"西瓜"</span>, <span class="number">45</span>)),<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">val</span> rdd3 = rdd1.reduceByKey(_ + _)</span><br><span class="line"><span class="keyword">val</span> rdd4 = rdd2.reduceByKey(_ + _)</span><br><span class="line"></span><br><span class="line"><span class="keyword">val</span> joinRDD = rdd3.join(rdd4,<span class="number">2</span>)</span><br><span class="line">joinRDD.collect()</span><br></pre></td></tr></table></figure>
+
+<p>再看Application的DAG图，从两个 reduceByKey 到 join 是一个 stage 中的，说明没有产生 shuffle</p>
+<p><img src="https://yerias.github.io/spark_img/%E7%89%B9%E6%AE%8A%E7%9A%84Jion.jpg" alt="特殊的Jion"></p>
+<h2 id="宽依赖"><a href="#宽依赖" class="headerlink" title="宽依赖"></a>宽依赖</h2><ol>
+<li>一个父RDD的分区会被子RDD的分区使用多次</li>
+</ol>
+<p><img src="https://yerias.github.io/spark_img/%E5%AE%BD%E4%BE%9D%E8%B5%96.jpg" alt="宽依赖"></p>
+<p>除了前面那种是三个条件满足的，其他的 join 都是宽依赖</p>
+<p>我们使RDD1的分区数和RDD2的分区数相等，但是 join的分区数不相等</p>
+<figure class="highlight scala"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * rdd1、rdd2的分区数不同，但是和join的分区数不同，会经过shuffle</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">val</span> rdd1 = sc.parallelize(<span class="type">List</span>((<span class="string">"香蕉"</span>,<span class="number">20</span>), (<span class="string">"苹果"</span>,<span class="number">50</span>), (<span class="string">"菠萝"</span>,<span class="number">30</span>), (<span class="string">"猕猴桃"</span>, <span class="number">50</span>)),<span class="number">2</span>)</span><br><span class="line"><span class="keyword">val</span> rdd2 = sc.parallelize(<span class="type">List</span>((<span class="string">"草莓"</span>,<span class="number">90</span>), (<span class="string">"苹果"</span>,<span class="number">25</span>), (<span class="string">"菠萝"</span>,<span class="number">25</span>), (<span class="string">"猕猴桃"</span>, <span class="number">30</span>), (<span class="string">"西瓜"</span>, <span class="number">45</span>)),<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">val</span> rdd3 = rdd1.reduceByKey(_ + _)</span><br><span class="line"><span class="keyword">val</span> rdd4 = rdd2.reduceByKey(_ + _)</span><br><span class="line"></span><br><span class="line"><span class="keyword">val</span> joinRDD = rdd3.join(rdd4,<span class="number">4</span>)</span><br><span class="line">joinRDD.collect()</span><br></pre></td></tr></table></figure>
+
+<p>我们看DAG图，产生了stage，也就是经过了shuffle</p>
+<p><img src="https://yerias.github.io/spark_img/%E7%89%B9%E6%AE%8A%E7%9A%84Jion%E5%AE%BD%E4%BE%9D%E8%B5%96.jpg" alt="特殊的Jion宽依赖"></p>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="mailto:undefined" target="_blank" rel="noopener">Tunan</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="http://yerias.github.io/2020/03/06/spark/6/">http://yerias.github.io/2020/03/06/spark/6/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Spark/">Spark</a></div><div class="social-share" data-disabled="facebook,twitter,douban,linkedin,diandian"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js@1.0.16/dist/css/share.min.css"><script src="https://cdn.jsdelivr.net/npm/social-share.js@1.0.16/dist/js/social-share.min.js"></script><nav id="pagination"><div class="prev-post pull-left"><a href="/2020/03/07/spark/7/"><i class="fa fa-chevron-left">  </i><span>Spark之监控模块</span></a></div><div class="next-post pull-right"><a href="/2020/03/05/spark/5/"><span>Spark使用Yarn模式解决Jar乱飞情况</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer class="footer-bg" style="background-image: url(/img/soroush-golpoor-1497416-unsplash.jpg)"><div class="layout" id="footer"><div class="copyright">&copy;2018 - 2020 By Tunan</div><div class="framework-info"><span>Driven - </span><a href="#"><span>Hexo</span></a><span class="footer-separator">|</span><span>Theme - </span><a href="#"><span>Melody</span></a></div><div class="footer_custom_text">大家好，我是图南，很高兴认识你们！</div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file-o"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.6.1"></script><script src="/js/fancybox.js?version=1.6.1"></script><script src="/js/sidebar.js?version=1.6.1"></script><script src="/js/copy.js?version=1.6.1"></script><script src="/js/fireworks.js?version=1.6.1"></script><script src="/js/transition.js?version=1.6.1"></script><script src="/js/scroll.js?version=1.6.1"></script><script src="/js/head.js?version=1.6.1"></script><script src="/js/search/local-search.js"></script><script>if(/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+}</script><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">Local search</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="Search for Posts"></div></div></div><hr><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>Powered by</span> <a href="https://github.com/wzpan/hexo-generator-search" target="_blank" rel="noopener" style="color:#49B1F5;">hexo-generator-search</a></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div></body></html>

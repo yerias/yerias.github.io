@@ -1,0 +1,80 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="Spark各个版本特性"><meta name="keywords" content="Spark"><meta name="author" content="Tunan"><meta name="copyright" content="Tunan"><title>Spark各个版本特性 | TUNANのBlog</title><link rel="shortcut icon" href="/melody-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.6.1"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.6.1"><link rel="dns-prefetch" href="https://cdn.staticfile.org"><link rel="dns-prefetch" href="https://cdn.bootcss.com"><link rel="dns-prefetch" href="https://creativecommons.org"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"We didn't find any results for the search: ${query}"}},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  }
+} </script></head><body><canvas class="fireworks"></canvas><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="toggle-sidebar-info text-center"><span data-toggle="Toggle article">Toggle site</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">Catalog</div><div class="sidebar-toc__progress"><span class="progress-notice">You've read</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#各个版本特性（官方文档）"><span class="toc-number">1.</span> <span class="toc-text">各个版本特性（官方文档）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Spark-0-6-x"><span class="toc-number">1.1.</span> <span class="toc-text">Spark 0.6.x</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Spark-0-7"><span class="toc-number">1.2.</span> <span class="toc-text">Spark 0.7</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Spark-0-8"><span class="toc-number">1.3.</span> <span class="toc-text">Spark 0.8</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Spark-0-9"><span class="toc-number">1.4.</span> <span class="toc-text">Spark 0.9</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Spark-1-0"><span class="toc-number">1.5.</span> <span class="toc-text">Spark 1.0</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Spark-1-1"><span class="toc-number">1.6.</span> <span class="toc-text">Spark 1.1</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Spark-1-2"><span class="toc-number">1.7.</span> <span class="toc-text">Spark 1.2</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Spark-1-3"><span class="toc-number">1.8.</span> <span class="toc-text">Spark 1.3</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Spark-1-4"><span class="toc-number">1.9.</span> <span class="toc-text">Spark 1.4</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Spark-1-5"><span class="toc-number">1.10.</span> <span class="toc-text">Spark 1.5</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Spark-1-6"><span class="toc-number">1.11.</span> <span class="toc-text">Spark 1.6</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Spark-2-0"><span class="toc-number">1.12.</span> <span class="toc-text">Spark 2.0</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Spark-2-1"><span class="toc-number">1.13.</span> <span class="toc-text">Spark 2.1</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Spark-2-2"><span class="toc-number">1.14.</span> <span class="toc-text">Spark 2.2</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Spark-2-3"><span class="toc-number">1.15.</span> <span class="toc-text">Spark 2.3</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Spark-2-4"><span class="toc-number">1.16.</span> <span class="toc-text">Spark 2.4</span></a></li></ol></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="/img/xiaoqi.jpg"></div><div class="author-info__name text-center">Tunan</div><div class="author-info__description text-center">BigData Developer</div><div class="follow-button"><a href="#">Follow Me</a></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">Articles</span><span class="pull-right">139</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">Tags</span><span class="pull-right">31</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">Categories</span><span class="pull-right">27</span></a></div><hr><div class="author-info-links"><div class="author-info-links__title text-center">Links</div><a class="author-info-links__name text-center" href="https://hadoop.apache.org/docs/r2.10.0/hadoop-project-dist/hadoop-common/SingleCluster.html" target="_blank" rel="noopener">HADOOP</a><a class="author-info-links__name text-center" href="https://cwiki.apache.org/confluence/display/Hive/" target="_blank" rel="noopener">HIVE</a><a class="author-info-links__name text-center" href="http://archive.cloudera.com/cdh5/cdh/5/" target="_blank" rel="noopener">CDH</a><a class="author-info-links__name text-center" href="http://flume.apache.org/" target="_blank" rel="noopener">FLUME</a><a class="author-info-links__name text-center" href="https://azkaban.github.io/" target="_blank" rel="noopener">AZKABAN</a><a class="author-info-links__name text-center" href="https://www.maxinhong.com/" target="_blank" rel="noopener">叶梨子</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/qingyunzong" target="_blank" rel="noopener">老铁</a><a class="author-info-links__name text-center" href="https://blog.csdn.net/jim8973/" target="_blank" rel="noopener">飞哥</a><a class="author-info-links__name text-center" href="https://vinxikk.github.io/" target="_blank" rel="noopener">vinx</a><a class="author-info-links__name text-center" href="http://dongxicheng.org/" target="_blank" rel="noopener">懂西成(Hadoop技术内幕作者)</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/xing901022/" target="_blank" rel="noopener">xingoo</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/itboys/tag/" target="_blank" rel="noopener">大葱拌豆腐</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/shishanyuan" target="_blank" rel="noopener">郭景瞻(图解Spark作者)</a><a class="author-info-links__name text-center" href="https://segmentfault.com/u/wishdaren_5c243b920a3eb" target="_blank" rel="noopener">Wish大人</a></div></div></div><div id="content-outer"><div id="top-container" style="background-image: url(/img/soroush-golpoor-1497416-unsplash.jpg)"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">TUNANのBlog</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> Search</span></a><a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/categories">Categories</a></span></div><div id="post-info"><div id="post-title">Spark各个版本特性</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-03-24</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/Spark/">Spark</a><div class="post-meta-wordcount"><span>Word count: </span><span class="word-count">356</span><span class="post-meta__separator">|</span><span>Reading time: 1 min</span></div></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><p>参考博客：<a href="https://www.maxinhong.com/2020/04/03/68.spark各个版本特性/#more" target="_blank" rel="noopener">https://www.maxinhong.com/2020/04/03/68.spark%E5%90%84%E4%B8%AA%E7%89%88%E6%9C%AC%E7%89%B9%E6%80%A7/#more</a></p>
+<hr>
+<h1 id="各个版本特性（官方文档）"><a href="#各个版本特性（官方文档）" class="headerlink" title="各个版本特性（官方文档）"></a>各个版本特性（官方文档）</h1><p><a href="https://spark.apache.org/releases/" target="_blank" rel="noopener">https://spark.apache.org/releases/</a><br><a href="https://spark.apache.org/news/index.html" target="_blank" rel="noopener">https://spark.apache.org/news/index.html</a></p>
+<h2 id="Spark-0-6-x"><a href="#Spark-0-6-x" class="headerlink" title="Spark 0.6.x"></a>Spark 0.6.x</h2><ul>
+<li>Standalone部署模式进行了简化</li>
+</ul>
+<h2 id="Spark-0-7"><a href="#Spark-0-7" class="headerlink" title="Spark 0.7"></a>Spark 0.7</h2><ul>
+<li>Python API</li>
+<li>增加Spark Streaming</li>
+<li>支持maven build</li>
+</ul>
+<h2 id="Spark-0-8"><a href="#Spark-0-8" class="headerlink" title="Spark 0.8"></a>Spark 0.8</h2><ul>
+<li>支持MLlib库</li>
+<li>hadoop yarn正式支持</li>
+</ul>
+<h2 id="Spark-0-9"><a href="#Spark-0-9" class="headerlink" title="Spark 0.9"></a>Spark 0.9</h2><ul>
+<li>用SparkConf类来配置SparkContext</li>
+<li>spark streaming正式版发布</li>
+<li>GraphX的测试版出现</li>
+<li>mllib库升级，支持python</li>
+<li>core升级</li>
+</ul>
+<h2 id="Spark-1-0"><a href="#Spark-1-0" class="headerlink" title="Spark 1.0"></a>Spark 1.0</h2><ul>
+<li>提出spark-submit脚本和history-server</li>
+<li>yarn安全模式整合</li>
+<li>spark sql被提出</li>
+<li>java8的支持</li>
+</ul>
+<h2 id="Spark-1-1"><a href="#Spark-1-1" class="headerlink" title="Spark 1.1"></a>Spark 1.1</h2><ul>
+<li>spark增强了磁盘（非内存）的排序的速率</li>
+</ul>
+<h2 id="Spark-1-2"><a href="#Spark-1-2" class="headerlink" title="Spark 1.2"></a>Spark 1.2</h2><ul>
+<li>shuffle大升级</li>
+<li>Graphx正式版发布</li>
+</ul>
+<h2 id="Spark-1-3"><a href="#Spark-1-3" class="headerlink" title="Spark 1.3"></a>Spark 1.3</h2><ul>
+<li>新增DataFrame API</li>
+<li>Spark SQL正式脱离alpha版本</li>
+</ul>
+<h2 id="Spark-1-4"><a href="#Spark-1-4" class="headerlink" title="Spark 1.4"></a>Spark 1.4</h2><ul>
+<li>正式引入SparkR</li>
+<li>Spark Core为应用提供了REST API来获取各种信息</li>
+</ul>
+<h2 id="Spark-1-5"><a href="#Spark-1-5" class="headerlink" title="Spark 1.5"></a>Spark 1.5</h2><ul>
+<li>Spark1.5重点是对性能的提升，引入钨丝项目，该项目通过对几个底层框架的重构进一步优化Spark性能</li>
+</ul>
+<h2 id="Spark-1-6"><a href="#Spark-1-6" class="headerlink" title="Spark 1.6"></a>Spark 1.6</h2><ul>
+<li>新增Dataset API</li>
+</ul>
+<h2 id="Spark-2-0"><a href="#Spark-2-0" class="headerlink" title="Spark 2.0"></a>Spark 2.0</h2><ul>
+<li>用sparksession实现hivecontext和sqlcontext统一</li>
+<li>合并dataframe和datasets</li>
+</ul>
+<h2 id="Spark-2-1"><a href="#Spark-2-1" class="headerlink" title="Spark 2.1"></a>Spark 2.1</h2><ul>
+<li>提升ORC格式文件的读写性能</li>
+</ul>
+<h2 id="Spark-2-2"><a href="#Spark-2-2" class="headerlink" title="Spark 2.2"></a>Spark 2.2</h2><ul>
+<li>Structured Streaming的生产环境支持已经就绪</li>
+</ul>
+<h2 id="Spark-2-3"><a href="#Spark-2-3" class="headerlink" title="Spark 2.3"></a>Spark 2.3</h2><ul>
+<li>Structured Streaming 引入了低延迟的连续处理</li>
+<li>支持 stream-to-stream joins</li>
+</ul>
+<h2 id="Spark-2-4"><a href="#Spark-2-4" class="headerlink" title="Spark 2.4"></a>Spark 2.4</h2><ul>
+<li>Scala 2.12</li>
+<li>添加了35个高阶函数</li>
+</ul>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="mailto:undefined" target="_blank" rel="noopener">Tunan</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="http://yerias.github.io/2020/03/24/spark/25/">http://yerias.github.io/2020/03/24/spark/25/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Spark/">Spark</a></div><div class="social-share" data-disabled="facebook,twitter,douban,linkedin,diandian"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js@1.0.16/dist/css/share.min.css"><script src="https://cdn.jsdelivr.net/npm/social-share.js@1.0.16/dist/js/social-share.min.js"></script><nav id="pagination"><div class="prev-post pull-left"><a href="/2020/03/25/spark/26/"><i class="fa fa-chevron-left">  </i><span>Spark性能优化指南</span></a></div><div class="next-post pull-right"><a href="/2020/03/23/scala/4/"><span>Scala之闭包&amp;柯里化</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer class="footer-bg" style="background-image: url(/img/soroush-golpoor-1497416-unsplash.jpg)"><div class="layout" id="footer"><div class="copyright">&copy;2018 - 2020 By Tunan</div><div class="framework-info"><span>Driven - </span><a href="#"><span>Hexo</span></a><span class="footer-separator">|</span><span>Theme - </span><a href="#"><span>Melody</span></a></div><div class="footer_custom_text">大家好，我是图南，很高兴认识你们！</div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file-o"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.6.1"></script><script src="/js/fancybox.js?version=1.6.1"></script><script src="/js/sidebar.js?version=1.6.1"></script><script src="/js/copy.js?version=1.6.1"></script><script src="/js/fireworks.js?version=1.6.1"></script><script src="/js/transition.js?version=1.6.1"></script><script src="/js/scroll.js?version=1.6.1"></script><script src="/js/head.js?version=1.6.1"></script><script src="/js/search/local-search.js"></script><script>if(/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+}</script><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">Local search</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="Search for Posts"></div></div></div><hr><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>Powered by</span> <a href="https://github.com/wzpan/hexo-generator-search" target="_blank" rel="noopener" style="color:#49B1F5;">hexo-generator-search</a></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div></body></html>
