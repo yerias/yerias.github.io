@@ -1,0 +1,189 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="MR的执行流程&amp;初探文件压缩&amp;初探文件格式&amp;分片数与任务数&amp;shuffle的执行流程&amp;WordCount的执行流程"><meta name="keywords" content="HDFS,MapReduce"><meta name="author" content="Tunan"><meta name="copyright" content="Tunan"><title>MR的执行流程&amp;初探文件压缩&amp;初探文件格式&amp;分片数与任务数&amp;shuffle的执行流程&amp;WordCount的执行流程 | TUNANのBlog</title><link rel="shortcut icon" href="/melody-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.6.1"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.6.1"><link rel="dns-prefetch" href="https://cdn.staticfile.org"><link rel="dns-prefetch" href="https://cdn.bootcss.com"><link rel="dns-prefetch" href="https://creativecommons.org"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"We didn't find any results for the search: ${query}"}},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  }
+} </script></head><body><canvas class="fireworks"></canvas><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="toggle-sidebar-info text-center"><span data-toggle="Toggle article">Toggle site</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">Catalog</div><div class="sidebar-toc__progress"><span class="progress-notice">You've read</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#目标"><span class="toc-number">1.</span> <span class="toc-text">目标</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#mr-on-yarn流程"><span class="toc-number">2.</span> <span class="toc-text">mr on yarn流程</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#mr-on-yarn的工作流程简略分为两步"><span class="toc-number">2.1.</span> <span class="toc-text">mr on yarn的工作流程简略分为两步:</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#mr-on-yarn的工作流程详细分为八步"><span class="toc-number">2.2.</span> <span class="toc-text">mr on yarn的工作流程详细分为八步:</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#文件格式有哪些-优缺点"><span class="toc-number">3.</span> <span class="toc-text">文件格式有哪些 优缺点</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#SequenceFile"><span class="toc-number">3.1.</span> <span class="toc-text">SequenceFile</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Avro"><span class="toc-number">3.2.</span> <span class="toc-text">Avro</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#RCFile"><span class="toc-number">3.3.</span> <span class="toc-text">RCFile</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#ORC"><span class="toc-number">3.4.</span> <span class="toc-text">ORC</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Parquet"><span class="toc-number">3.5.</span> <span class="toc-text">Parquet</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#文件存储大小比较与分析"><span class="toc-number">3.6.</span> <span class="toc-text">文件存储大小比较与分析</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#不同格式文件大小对比"><span class="toc-number">3.7.</span> <span class="toc-text">不同格式文件大小对比</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#压缩格式有哪些-优缺点"><span class="toc-number">4.</span> <span class="toc-text">压缩格式有哪些 优缺点</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#压缩的好处和坏处"><span class="toc-number">4.1.</span> <span class="toc-text">压缩的好处和坏处</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#压缩格式"><span class="toc-number">4.2.</span> <span class="toc-text">压缩格式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#总结"><span class="toc-number">4.3.</span> <span class="toc-text">总结</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#应用场景"><span class="toc-number">4.4.</span> <span class="toc-text">应用场景</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Spilt–-gt-Map-Task关系"><span class="toc-number">5.</span> <span class="toc-text">Spilt–&gt;Map Task关系</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#shuffle的理解"><span class="toc-number">6.</span> <span class="toc-text">shuffle的理解</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#map端的shuffle"><span class="toc-number">6.1.</span> <span class="toc-text">map端的shuffle</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#reduce端的shuffle"><span class="toc-number">6.2.</span> <span class="toc-text">reduce端的shuffle</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#WordCount的剖解图"><span class="toc-number">7.</span> <span class="toc-text">WordCount的剖解图</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Map任务处理"><span class="toc-number">7.1.</span> <span class="toc-text">Map任务处理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Reduce任务处理"><span class="toc-number">7.2.</span> <span class="toc-text">Reduce任务处理</span></a></li></ol></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="/img/xiaoqi.jpg"></div><div class="author-info__name text-center">Tunan</div><div class="author-info__description text-center">BigData Developer</div><div class="follow-button"><a href="#">Follow Me</a></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">Articles</span><span class="pull-right">141</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">Tags</span><span class="pull-right">32</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">Categories</span><span class="pull-right">28</span></a></div><hr><div class="author-info-links"><div class="author-info-links__title text-center">Links</div><a class="author-info-links__name text-center" href="https://hadoop.apache.org/docs/r2.10.0/hadoop-project-dist/hadoop-common/SingleCluster.html" target="_blank" rel="noopener">HADOOP</a><a class="author-info-links__name text-center" href="https://cwiki.apache.org/confluence/display/Hive/" target="_blank" rel="noopener">HIVE</a><a class="author-info-links__name text-center" href="http://archive.cloudera.com/cdh5/cdh/5/" target="_blank" rel="noopener">CDH</a><a class="author-info-links__name text-center" href="http://flume.apache.org/" target="_blank" rel="noopener">FLUME</a><a class="author-info-links__name text-center" href="https://azkaban.github.io/" target="_blank" rel="noopener">AZKABAN</a><a class="author-info-links__name text-center" href="https://www.maxinhong.com/" target="_blank" rel="noopener">叶梨子</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/qingyunzong" target="_blank" rel="noopener">老铁</a><a class="author-info-links__name text-center" href="https://blog.csdn.net/jim8973/" target="_blank" rel="noopener">飞哥</a><a class="author-info-links__name text-center" href="https://vinxikk.github.io/" target="_blank" rel="noopener">vinx</a><a class="author-info-links__name text-center" href="http://dongxicheng.org/" target="_blank" rel="noopener">懂西成(Hadoop技术内幕作者)</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/xing901022/" target="_blank" rel="noopener">xingoo</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/itboys/tag/" target="_blank" rel="noopener">大葱拌豆腐</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/shishanyuan" target="_blank" rel="noopener">郭景瞻(图解Spark作者)</a><a class="author-info-links__name text-center" href="https://segmentfault.com/u/wishdaren_5c243b920a3eb" target="_blank" rel="noopener">Wish大人</a></div></div></div><div id="content-outer"><div id="top-container" style="background-image: url(/img/soroush-golpoor-1497416-unsplash.jpg)"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">TUNANのBlog</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> Search</span></a><a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/categories">Categories</a></span></div><div id="post-info"><div id="post-title">MR的执行流程&amp;初探文件压缩&amp;初探文件格式&amp;分片数与任务数&amp;shuffle的执行流程&amp;WordCount的执行流程</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-10-10</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/Hadoop/">Hadoop</a><i class="fa fa-angle-right" aria-hidden="true"></i><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/Hadoop/MapReduce/">MapReduce</a><div class="post-meta-wordcount"><span>Word count: </span><span class="word-count">4.1k</span><span class="post-meta__separator">|</span><span>Reading time: 13 min</span></div></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><h3 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h3><ol>
+<li>整理 mr on yarn流程 </li>
+<li>整理 文件格式有哪些 优缺点 </li>
+<li>整理 压缩格式有哪些 优缺点 </li>
+<li>spilt–&gt;map task关系 </li>
+<li>wordcount的剖解图 </li>
+<li>shuffle的理解 </li>
+</ol>
+<h3 id="mr-on-yarn流程"><a href="#mr-on-yarn流程" class="headerlink" title="mr on yarn流程"></a>mr on yarn流程</h3><p><img src="https://yerias.github.io/hadoop_img/rm_on_yarn.JPG" alt="rm_on_yarn"></p>
+<h4 id="mr-on-yarn的工作流程简略分为两步"><a href="#mr-on-yarn的工作流程简略分为两步" class="headerlink" title="mr on yarn的工作流程简略分为两步:"></a>mr on yarn的工作流程简略分为两步:</h4><ol>
+<li>启动应用程序管理器，申请资源。</li>
+<li>运行任务，直到任务运行完成。</li>
+</ol>
+<h4 id="mr-on-yarn的工作流程详细分为八步"><a href="#mr-on-yarn的工作流程详细分为八步" class="headerlink" title="mr on yarn的工作流程详细分为八步:"></a>mr on yarn的工作流程详细分为八步:</h4><ol>
+<li>用户向资源管理器(ResourceManager)提交作业，作业包括MapReduce应用程序管理器，启动MapReduce应用程序管理器的程序和用户自己编写的MapReduce程序。用于提交的所有作业都由ApplicationManager(全局应用程序管理器)管理。</li>
+<li>资源管理器为该应用程序分配一个容器(Container)，并与对应的节点管理器(NodeManager)通信，要求它在这个容器中启动MapReduce应用程序管理器。</li>
+<li>MapReduce应用程序管理器首先向资源管理器注册，这样用户可以直接通过资源管理器查看应用程序的运行状态，然后它将为各个任务申请资源，并监控他们的运行状态，直到运行结束，即重复步骤4-7。</li>
+<li>MapReduce应用程序管理器采用轮询的方式通过RPC协议向资源管理器申请和领取资源。</li>
+<li>MapReduce应用程序管理器申请到资源后，便与对应的节点管理器通信，要求启动任务。</li>
+<li>节点管理器为任务设置好运行环境，包括环境变量、Jar包、二进制程序等，然后将任务启动命令写到另外一个脚本中，并通过该脚本启动任务。</li>
+<li>各个任务通过RPC协议向MapReduce应用程序管理器汇报自己的状态和进度，MapReduce应用程序随时掌握各个任务的运行状态，从而可以在任务失败时重新启动任务。在应用程序运行过程中，用户可以随时通过RPC协议向MapReduce应用程序管理器查询应用程序当前的运行状态。</li>
+<li>应用程序运行完成后，MapReduce应用程序管理器向资源管理器注销并关闭自己。</li>
+</ol>
+<h3 id="文件格式有哪些-优缺点"><a href="#文件格式有哪些-优缺点" class="headerlink" title="文件格式有哪些 优缺点"></a>文件格式有哪些 优缺点</h3><p><strong>Hadoop中的文件格式大致上分为面向行和面向列两类：</strong></p>
+<ol>
+<li><p>面向行：同一行的数据存储在一起，即连续存储。SequenceFile,MapFile,Avro Datafile。采用这种方式，如果只需要访问行的一小部分数据，亦需要将整行读入内存，推迟序列化一定程度上可以缓解这个问题，但是从磁盘读取整行数据的开销却无法避免。面向行的存储适合于整行数据需要同时处理的情况。</p>
+</li>
+<li><p>面向列：整个文件被切割为若干列数据，每一列数据一起存储。Parquet , RCFile,ORCFile。面向列的格式使得读取数据时，可以跳过不需要的列，适合于只处于行的一小部分字段的情况。但是这种格式的读写需要更多的内存空间，因为需要缓存行在内存中（为了获取多行中的某一列）。同时不适合流式写入，因为一旦写入失败，当前文件无法恢复，而面向行的数据在写入失败时可以重新同步到最后一个同步点，所以Flume采用的是面向行的存储格式。</p>
+</li>
+</ol>
+<p><img src="https:////upload-images.jianshu.io/upload_images/6450093-0c5b3f7a2eceaaef.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1200/format/webp" alt="普通二维表"></p>
+<p><img src="https:////upload-images.jianshu.io/upload_images/6450093-dbe2595ee1e293b1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1200/format/webp" alt="行存储和列存储"></p>
+<p>下面介绍几种相关的文件格式，它们在Hadoop体系上被广泛使用：</p>
+<h4 id="SequenceFile"><a href="#SequenceFile" class="headerlink" title="SequenceFile"></a>SequenceFile</h4><p>SequenceFile是Hadoop API 提供的一种二进制文件,它将数据以的形式序列化到文件中。这种二进制文件内部使用Hadoop 的标准的Writable 接口实现序列化和反序列化。它与Hadoop API中的MapFile 是互相兼容的。Hive 中的SequenceFile 继承自Hadoop API 的SequenceFile,不过它的key为空,使用value 存放实际的值, 这样是为了避免MR 在运行map 阶段的排序过程。如果你用Java API 编写SequenceFile,并让Hive 读取的话,请确保使用value字段存放数据,否则你需要自定义读取这种SequenceFile 的InputFormat class 和OutputFormat class。</p>
+<p>SequenceFile的文件结构如下：</p>
+<p><img src="https:////upload-images.jianshu.io/upload_images/6450093-3f5cd8d90742ec24.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1200/format/webp" alt="SequenceFile详解图1"></p>
+<p>根据是否压缩，以及采用记录压缩还是块压缩，存储格式有所不同：</p>
+<ul>
+<li><p>不压缩:</p>
+<p>按照记录长度、Key长度、Value程度、Key值、Value值依次存储。长度是指字节数。采用指定的Serialization进行序列化。</p>
+</li>
+<li><p>Record压缩:</p>
+<p>只有value被压缩，压缩的codec保存在Header中。</p>
+</li>
+<li><p>Block压缩:</p>
+<p>多条记录被压缩在一起，可以利用记录之间的相似性，更节省空间。Block前后都加入了同步标识。Block的最小值由io.seqfile.compress.blocksize属性设置。 </p>
+</li>
+</ul>
+<p><img src="https:////upload-images.jianshu.io/upload_images/6450093-d21745547eb4c021.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1200/format/webp" alt="SequenceFile详解图1"></p>
+<h4 id="Avro"><a href="#Avro" class="headerlink" title="Avro"></a>Avro</h4><p>Avro是一种用于支持数据密集型的二进制文件格式。它的文件格式更为紧凑,若要读取大量数据时,Avro能够提供更好的序列化和反序列化性能。并 且Avro数据文件天生是带Schema定义的,所以它不需要开发者在API 级别实现自己的Writable对象。最近多个Hadoop 子项目都支持Avro 数据格式,如Pig 、Hive、Flume、Sqoop和Hcatalog。</p>
+<h4 id="RCFile"><a href="#RCFile" class="headerlink" title="RCFile"></a>RCFile</h4><p>RCFile是Hive推出的一种专门面向列的数据格式。 它遵循“先按列划分,再垂直划分”的设计理念。当查询过程中,针对它并不关心的列时,它会在IO上跳过这些列。需要说明的是,RCFile在map阶段从 远端拷贝仍然是拷贝整个数据块,并且拷贝到本地目录后RCFile并不是真正直接跳过不需要的列,并跳到需要读取的列, 而是通过扫描每一个row group的头部定义来实现的,但是在整个HDFS Block 级别的头部并没有定义每个列从哪个row group起始到哪个row group结束。所以在读取所有列的情况下,RCFile的性能反而没有SequenceFile高。</p>
+<p>Hive的Record Columnar File,这种类型的文件先将数据按行划分成Row Group，在Row Group内部，再将数据按列划分存储。其结构如下：</p>
+<p><img src="https:////upload-images.jianshu.io/upload_images/6450093-0a6f19b8bb6ee4e2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/688/format/webp" alt="RCFile详解图1"></p>
+<p>相比较于单纯地面向行和面向列：</p>
+<p><img src="https:////upload-images.jianshu.io/upload_images/6450093-0df474935c56807d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/649/format/webp" alt="RCFile详解图2"></p>
+<p><img src="https:////upload-images.jianshu.io/upload_images/6450093-6d56c39e3445288e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/615/format/webp" alt="RCFile详解图3"></p>
+<h4 id="ORC"><a href="#ORC" class="headerlink" title="ORC"></a>ORC</h4><p>ORC（Optimized Record Columnar File)提供了一种比RCFile更加高效的文件格式。其内部将数据划分为默认大小为250M的Stripe。每个Stripe包括索引、数据和Footer。索引存储每一列的最大最小值，以及列中每一行的位置。</p>
+<p><img src="https:////upload-images.jianshu.io/upload_images/6450093-1bb66728d866b469.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/580/format/webp" alt="ORCFile详解图"></p>
+<p>在Hive中，如下命令用于使用ORCFile：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">CREATE TABLE ... STORED AS ORC</span><br><span class="line"></span><br><span class="line">ALTER TABLE ... SET FILEFORMAT ORC</span><br><span class="line"></span><br><span class="line">SET hive.default.fileformat=ORC</span><br></pre></td></tr></table></figure>
+
+<h4 id="Parquet"><a href="#Parquet" class="headerlink" title="Parquet"></a>Parquet</h4><p>一种通用的面向列的存储格式，基于Google的Dremel。特别擅长处理深度嵌套的数据。</p>
+<p><img src="https:////upload-images.jianshu.io/upload_images/6450093-b45e32049ab54cbb.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1124/format/webp" alt="img"></p>
+<p>对于嵌套结构，Parquet将其转换为平面的列存储，嵌套结构通过Repeat Level和Definition Level来表示（R和D），在读取数据重构整条记录的时候，使用元数据重构记录的结构。下面是R和D的一个例子：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">AddressBook &#123;</span><br><span class="line"> contacts: &#123;</span><br><span class="line">  phoneNumber: &quot;555 987 6543&quot;</span><br><span class="line"> &#125;</span><br><span class="line"> contacts: &#123;</span><br><span class="line">&#125;&#125;</span><br><span class="line">AddressBook &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https:////upload-images.jianshu.io/upload_images/6450093-36b68fc1d8e2b99b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/577/format/webp" alt="Parquet详解图"></p>
+<h4 id="文件存储大小比较与分析"><a href="#文件存储大小比较与分析" class="headerlink" title="文件存储大小比较与分析"></a>文件存储大小比较与分析</h4><p>我们选取一个TPC-H标准测试来说明不同的文件格式在存储上的开销。因为此数据是公开的,所以读者如果对此结果感兴趣,也可以对照后面的实验自行 做一遍。Orders 表文本格式的原始大小为1.62G。 我们将其装载进Hadoop 并使用Hive 将其转化成以上几种格式,在同一种LZO 压缩模式下测试形成的文件的大小</p>
+<p><img src="https:////upload-images.jianshu.io/upload_images/6450093-34e05b3cb0e72740.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/849/format/webp" alt="文件存储大小比较与分析"></p>
+<h4 id="不同格式文件大小对比"><a href="#不同格式文件大小对比" class="headerlink" title="不同格式文件大小对比"></a>不同格式文件大小对比</h4><ul>
+<li><p>从上述实验结果可以看到,SequenceFile无论在压缩和非压缩的情况下都比原始纯文本TextFile大,其中非压缩模式下大11%, 压缩模式下大6.4%。这跟SequenceFile的文件格式的定义有关: SequenceFile在文件头中定义了其元数据,元数据的大小会根据压缩模式的不同略有不同。一般情况下,压缩都是选取block 级别进行的,每一个block都包含key的长度和value的长度,另外每4K字节会有一个sync-marker的标记。对于TextFile文件格 式来说不同列之间只需要用一个行间隔符来切分,所以TextFile文件格式比SequenceFile文件格式要小。但是TextFile 文件格式不定义列的长度,所以它必须逐个字符判断每个字符是不是分隔符和行结束符。因此TextFile 的反序列化开销会比其他二进制的文件格式高几十倍以上。</p>
+</li>
+<li><p>RCFile文件格式同样也会保存每个列的每个字段的长度。但是它是连续储存在头部元数据块中,它储存实际数据值也是连续的。另外RCFile 会每隔一定块大小重写一次头部的元数据块(称为row group,由hive.io.rcfile.record.buffer.size控制,其默认大小为4M),这种做法对于新出现的列是必须的,但是如 果是重复的列则不需要。RCFile 本来应该会比SequenceFile 文件大,但是RCFile 在定义头部时对于字段长度使用了Run Length Encoding进行压缩,所以RCFile 比SequenceFile又小一些。Run length Encoding针对固定长度的数据格式有非常高的压缩效率,比如Integer、Double和Long等占固定长度的数据类型。在此提一个特例—— Hive 0.8引入的TimeStamp 时间类型,如果其格式不包括毫秒,可表示为”YYYY-MM-DD HH:MM:SS”,那么就是固定长度占8个字节。如果带毫秒,则表示为”YYYY-MM-DD HH:MM:SS.fffffffff”,后面毫秒的部分则是可变的。</p>
+</li>
+<li><p>Avro文件格式也按group进行划分。但是它会在头部定义整个数据的模式(Schema), 而不像RCFile那样每隔一个row group就定义列的类型,并且重复多次。另外,Avro在使用部分类型的时候会使用更小的数据类型,比如Short或者Byte类型,所以Avro的数 据块比RCFile 的文件格式块更小。</p>
+</li>
+</ul>
+<h3 id="压缩格式有哪些-优缺点"><a href="#压缩格式有哪些-优缺点" class="headerlink" title="压缩格式有哪些 优缺点"></a>压缩格式有哪些 优缺点</h3><h4 id="压缩的好处和坏处"><a href="#压缩的好处和坏处" class="headerlink" title="压缩的好处和坏处"></a>压缩的好处和坏处</h4><p><strong>好处</strong></p>
+<ul>
+<li>减少存储磁盘空间</li>
+<li>降低IO(网络的IO和磁盘的IO)</li>
+<li>加快数据在磁盘和网络中的传输速度，从而提高系统的处理速度</li>
+</ul>
+<p><strong>坏处</strong></p>
+<ul>
+<li>由于使用数据时，需要先将数据解压，加重CPU负荷</li>
+</ul>
+<h4 id="压缩格式"><a href="#压缩格式" class="headerlink" title="压缩格式"></a>压缩格式</h4><p><img src="https://ruozedata.github.io/assets/blogImg/%E5%8E%8B%E7%BC%A91.png" alt="压缩格式"></p>
+<p><img src="https://ruozedata.github.io/assets/blogImg/%E5%8E%8B%E7%BC%A92.png" alt="压缩空间比较"></p>
+<p><img src="https://ruozedata.github.io/assets/blogImg/yasuo3.png" alt="压缩时间比较"></p>
+<p>可以看出，压缩空间比值越高，压缩时间越长，压缩比：<code>Snappy&gt;LZ4&gt;LZO&gt;GZIP&gt;BZIP2</code></p>
+<table>
+<thead>
+<tr>
+<th align="left">压缩格式</th>
+<th align="left">优点</th>
+<th align="left">缺点</th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>gzip</strong></td>
+<td align="left">压缩比在四种压缩方式中较高；hadoop本身支持，在应用中处理gzip格式的文件就和直接处理文本一样；有hadoop native库；大部分linux系统都自带gzip命令，使用方便</td>
+<td align="left">不支持split</td>
+<td></td>
+</tr>
+<tr>
+<td align="left"><strong>lzo</strong></td>
+<td align="left">压缩/解压速度也比较快，合理的压缩率；支持split，是hadoop中最流行的压缩格式；支持hadoop native库；需要在linux系统下自行安装lzop命令，使用方便</td>
+<td align="left">压缩率比gzip要低；hadoop本身不支持，需要安装；lzo虽然支持split，但需要对lzo文件建索引，否则hadoop也是会把lzo文件看成一个普通文件（为了支持split需要建索引，需要指定inputformat为lzo格式）</td>
+<td></td>
+</tr>
+<tr>
+<td align="left"><strong>snappy</strong></td>
+<td align="left">压缩速度快；支持hadoop native库</td>
+<td align="left">不支持split；压缩比低；hadoop本身不支持，需要安装；linux系统下没有对应的命令d. bzip2</td>
+<td></td>
+</tr>
+<tr>
+<td align="left"><strong>bzip2</strong></td>
+<td align="left">支持split；具有很高的压缩率，比gzip压缩率都高；hadoop本身支持，但不支持native；在linux系统下自带bzip2命令，使用方便</td>
+<td align="left">压缩/解压速度慢；不支持native</td>
+<td></td>
+</tr>
+</tbody></table>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>不同的场景选择不同的压缩方式，肯定没有一个一劳永逸的方法，如果选择高压缩比，那么对于cpu的性能要求要高，同时压缩、解压时间耗费也多；选择压缩比低的，对于磁盘io、网络io的时间要多，空间占据要多；对于支持分割的，可以实现并行处理。</p>
+<h4 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h4><p>一般在HDFS 、Hive、HBase中会使用；<br>当然一般较多的是结合Spark 来一起使用。</p>
+<h3 id="Spilt–-gt-Map-Task关系"><a href="#Spilt–-gt-Map-Task关系" class="headerlink" title="Spilt–&gt;Map Task关系"></a>Spilt–&gt;Map Task关系</h3><p>Reduce Task默认是1个，Map Task默认是2个，但是实际运行场景下，Map Task的个数和切片的个数保持一致，而切片的个数又与文件数和文件大小相关联。切片默认大小决定文件被分成多少个切片，执行多少个Map Task。</p>
+<table>
+<thead>
+<tr>
+<th>KEY</th>
+<th>VALUE</th>
+<th>DESC</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>mapreduce.job.maps</td>
+<td>2</td>
+<td>The default number of map tasks per job.</td>
+</tr>
+<tr>
+<td>mapreduce.job.reduces</td>
+<td>1</td>
+<td>The default number of reduce tasks per job.</td>
+</tr>
+</tbody></table>
+<h3 id="shuffle的理解"><a href="#shuffle的理解" class="headerlink" title="shuffle的理解"></a>shuffle的理解</h3><p>俩字: 洗牌</p>
+<p>shuffle阶段又可以分为Map端的shuff和reduce端的shuffle</p>
+<p><img src="https:/yerias.github.io/hadoop_img/shuffer.jpg" alt="shuffe过程"></p>
+<h4 id="map端的shuffle"><a href="#map端的shuffle" class="headerlink" title="map端的shuffle"></a>map端的shuffle</h4><ul>
+<li>map端会处理出入数据并产生中间结果，这个中间结果会写到本地磁盘，而不是HDFS。每个map的输出会先写到内存缓冲区中，当写入的数据达到设定的阈值时，系统将会启动一个线程将缓冲区的数据写到磁盘，这个过程叫做spill(溢写)。</li>
+<li>在spill之前，会先进行两次排序，首先根据数据所属的partition进行排序，然后每个partition中的数据再按key来排序，partition的目的是将记录划分到不同的reduce上，以期望能达到负载均衡，以后的reduce就会根据partition来读取自己对应的数据。接着运行combiner(如果设置了的话)，combiner的本质也是一个reduce，其目的是对将要写入到磁盘的文件先进行一次处理，这样，写入到磁盘的数据量就会减少。最后将数据写到本地磁盘产生spill文件(spill文件保存在{mapred.local.dir}指定的目录中，map任务结束后就会被删除)。</li>
+<li>最后，每个map任务可能产生多个spill文件，在每个map任务完成前，会通过多路归并算法将这些spill文件合并成一个文件。至此，map的shuffle过程就结束了。</li>
+</ul>
+<h4 id="reduce端的shuffle"><a href="#reduce端的shuffle" class="headerlink" title="reduce端的shuffle"></a>reduce端的shuffle</h4><ul>
+<li>reduce端的shuffle主要包括三个阶段，copy、sort(merge)和reduce</li>
+<li>首先将map端产生的输出文件拷贝到reduce端，但每个reduce如何知道自己应该处理哪些数据呢？因为map端进行partition的时候，实际上就相当于指定了每个reduce要处理的数据(partition就对应了reduce)，所以reduce在拷贝的数据的时候只需拷贝与自己对应的partition中的数据即可。每个reduce会处理一个或多个partiton，但需要先将自己对应的partition中的数据从每个map的输出结果中拷贝出来。</li>
+<li>接下来就是sort阶段，也称为merge阶段，因为这个阶段的主要工作是执行了归并排序。从map端拷贝到reduce端的数据都是有序的，所以很适合归并排序。最终在reduce端生产一个较大的文件作为reduce的输入。</li>
+<li>最后就是reduce阶段了，在这个过程中产生最终的输出结果，并将其写到HDFS上。</li>
+</ul>
+<h3 id="WordCount的剖解图"><a href="#WordCount的剖解图" class="headerlink" title="WordCount的剖解图"></a>WordCount的剖解图</h3><p><img src="https:/yerias.github.io/hadoop_img/wordcount.jpg" alt="wordcount执行流程"></p>
+<h4 id="Map任务处理"><a href="#Map任务处理" class="headerlink" title="Map任务处理"></a>Map任务处理</h4><ol>
+<li>读取HDFS中的文件，每一行解析成一个&lt;K,V&gt;值。每个键值对调用一次map函数。</li>
+<li>重写map()方法，接收1产生的&lt;K,V&gt;值进行处理，转为新的&lt;K,V&gt;输出。</li>
+<li>对2输出的&lt;K,V&gt;值进行分区，默认一盒分区。</li>
+<li>对不同分区中的数据进行排序(按照K)、分组。分组指的是相同Key的Value放到一个集合中。</li>
+<li>(可选)对分组后的数据进行合并。</li>
+</ol>
+<h4 id="Reduce任务处理"><a href="#Reduce任务处理" class="headerlink" title="Reduce任务处理"></a>Reduce任务处理</h4><ol>
+<li>多个Map任务的输出，按照不同的分区，通过网络copy到不同的Reduce节点上。</li>
+<li>对多个map的输出进行合并、排序。重写reduce()方法，接收的是分组后的数据，实现自己的业务逻辑，处理后产生新的&lt;K,V&gt;值输出</li>
+<li>对reduce输出的&lt;K,V&gt;写到HDFS中。</li>
+</ol>
+<hr>
+<p>整理来自：<a href="https://ruozedata.github.io/2018/04/18/、https://www.jianshu.com/p/43630456a18a" target="_blank" rel="noopener">https://ruozedata.github.io/2018/04/18/、https://www.jianshu.com/p/43630456a18a</a></p>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="mailto:undefined" target="_blank" rel="noopener">Tunan</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="http://yerias.github.io/2018/10/10/hadoop/7/">http://yerias.github.io/2018/10/10/hadoop/7/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/HDFS/">HDFS</a><a class="post-meta__tags" href="/tags/MapReduce/">MapReduce</a></div><div class="social-share" data-disabled="facebook,twitter,douban,linkedin,diandian"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js@1.0.16/dist/css/share.min.css"><script src="https://cdn.jsdelivr.net/npm/social-share.js@1.0.16/dist/js/social-share.min.js"></script><nav id="pagination"><div class="prev-post pull-left"><a href="/2018/10/10/PE/2/"><i class="fa fa-chevron-left">  </i><span>HDFS Block损坏恢复</span></a></div><div class="next-post pull-right"><a href="/2018/10/09/PE/1/"><span>DataNode OOM溢出</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer class="footer-bg" style="background-image: url(/img/soroush-golpoor-1497416-unsplash.jpg)"><div class="layout" id="footer"><div class="copyright">&copy;2018 - 2020 By Tunan</div><div class="framework-info"><span>Driven - </span><a href="#"><span>Hexo</span></a><span class="footer-separator">|</span><span>Theme - </span><a href="#"><span>Melody</span></a></div><div class="footer_custom_text">大家好，我是图南，很高兴认识你们！</div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file-o"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.6.1"></script><script src="/js/fancybox.js?version=1.6.1"></script><script src="/js/sidebar.js?version=1.6.1"></script><script src="/js/copy.js?version=1.6.1"></script><script src="/js/fireworks.js?version=1.6.1"></script><script src="/js/transition.js?version=1.6.1"></script><script src="/js/scroll.js?version=1.6.1"></script><script src="/js/head.js?version=1.6.1"></script><script src="/js/search/local-search.js"></script><script>if(/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+}</script><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">Local search</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="Search for Posts"></div></div></div><hr><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>Powered by</span> <a href="https://github.com/wzpan/hexo-generator-search" target="_blank" rel="noopener" style="color:#49B1F5;">hexo-generator-search</a></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div></body></html>

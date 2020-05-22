@@ -1,0 +1,131 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="Hive中的字符集编码若干问题"><meta name="keywords" content="Hive"><meta name="author" content="Tunan"><meta name="copyright" content="Tunan"><title>Hive中的字符集编码若干问题 | TUNANのBlog</title><link rel="shortcut icon" href="/melody-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.6.1"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.6.1"><link rel="dns-prefetch" href="https://cdn.staticfile.org"><link rel="dns-prefetch" href="https://cdn.bootcss.com"><link rel="dns-prefetch" href="https://creativecommons.org"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"We didn't find any results for the search: ${query}"}},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  }
+} </script></head><body><canvas class="fireworks"></canvas><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="toggle-sidebar-info text-center"><span data-toggle="Toggle article">Toggle site</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">Catalog</div><div class="sidebar-toc__progress"><span class="progress-notice">You've read</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#个人初始开发环境的基本情况以及Hive元数据库说明"><span class="toc-number">1.</span> <span class="toc-text">个人初始开发环境的基本情况以及Hive元数据库说明</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#验证方式"><span class="toc-number">1.1.</span> <span class="toc-text">验证方式:</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#乱码的情况"><span class="toc-number">2.</span> <span class="toc-text">乱码的情况:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#解决方式"><span class="toc-number">3.</span> <span class="toc-text">解决方式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#首先进行Mysql的编码设置"><span class="toc-number">3.1.</span> <span class="toc-text">首先进行Mysql的编码设置</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#离线安装mysql的修改方式"><span class="toc-number">3.1.1.</span> <span class="toc-text">离线安装mysql的修改方式</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#在线安装mysql的修改方式"><span class="toc-number">3.1.2.</span> <span class="toc-text">在线安装mysql的修改方式</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#针对元数据库metastore中的表-分区-视图的编码设置"><span class="toc-number">3.2.</span> <span class="toc-text">针对元数据库metastore中的表,分区,视图的编码设置</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#其他"><span class="toc-number">4.</span> <span class="toc-text">其他</span></a></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="/img/xiaoqi.jpg"></div><div class="author-info__name text-center">Tunan</div><div class="author-info__description text-center">BigData Developer</div><div class="follow-button"><a href="#">Follow Me</a></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">Articles</span><span class="pull-right">141</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">Tags</span><span class="pull-right">32</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">Categories</span><span class="pull-right">28</span></a></div><hr><div class="author-info-links"><div class="author-info-links__title text-center">Links</div><a class="author-info-links__name text-center" href="https://hadoop.apache.org/docs/r2.10.0/hadoop-project-dist/hadoop-common/SingleCluster.html" target="_blank" rel="noopener">HADOOP</a><a class="author-info-links__name text-center" href="https://cwiki.apache.org/confluence/display/Hive/" target="_blank" rel="noopener">HIVE</a><a class="author-info-links__name text-center" href="http://archive.cloudera.com/cdh5/cdh/5/" target="_blank" rel="noopener">CDH</a><a class="author-info-links__name text-center" href="http://flume.apache.org/" target="_blank" rel="noopener">FLUME</a><a class="author-info-links__name text-center" href="https://azkaban.github.io/" target="_blank" rel="noopener">AZKABAN</a><a class="author-info-links__name text-center" href="https://www.maxinhong.com/" target="_blank" rel="noopener">叶梨子</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/qingyunzong" target="_blank" rel="noopener">老铁</a><a class="author-info-links__name text-center" href="https://blog.csdn.net/jim8973/" target="_blank" rel="noopener">飞哥</a><a class="author-info-links__name text-center" href="https://vinxikk.github.io/" target="_blank" rel="noopener">vinx</a><a class="author-info-links__name text-center" href="http://dongxicheng.org/" target="_blank" rel="noopener">懂西成(Hadoop技术内幕作者)</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/xing901022/" target="_blank" rel="noopener">xingoo</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/itboys/tag/" target="_blank" rel="noopener">大葱拌豆腐</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/shishanyuan" target="_blank" rel="noopener">郭景瞻(图解Spark作者)</a><a class="author-info-links__name text-center" href="https://segmentfault.com/u/wishdaren_5c243b920a3eb" target="_blank" rel="noopener">Wish大人</a></div></div></div><div id="content-outer"><div id="top-container" style="background-image: url(/img/soroush-golpoor-1497416-unsplash.jpg)"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">TUNANのBlog</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> Search</span></a><a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/categories">Categories</a></span></div><div id="post-info"><div id="post-title">Hive中的字符集编码若干问题</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-11-01</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/Hive/">Hive</a><div class="post-meta-wordcount"><span>Word count: </span><span class="word-count">1.3k</span><span class="post-meta__separator">|</span><span>Reading time: 4 min</span></div></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><h3 id="个人初始开发环境的基本情况以及Hive元数据库说明"><a href="#个人初始开发环境的基本情况以及Hive元数据库说明" class="headerlink" title="个人初始开发环境的基本情况以及Hive元数据库说明"></a>个人初始开发环境的基本情况以及Hive元数据库说明</h3><ol>
+<li><p>hive的元数据库改成了mysql(安装完mysql之后也没有进行其它别的设置)</p>
+</li>
+<li><p>hive-site.xml中设置元数据库对应的配置为  <code>jdbc:mysql://ip:3306/metastore?createDatabaseIfNotExist=true</code></p>
+</li>
+<li><p>普通情况下咱们的mysql默认编码是latin1,但是我们在日常开发中大多数情况下需要用到utf-8编码,如果是默认latin1的话,咱们的中文存储进去容易乱码,所以说大家在遇到一些数据乱码的情况话,最好把mysql的编码改成utf-8.</p>
+</li>
+</ol>
+<p><code>注意:</code> 但是在这里要非常严重强调的一点:hive的元数据metastore在mysql的数据库,不管是数据库本身,还是里面的表编码都必须是latin1(CHARACTER SET latin1 COLLATE latin1_bin)!!!!!</p>
+<h4 id="验证方式"><a href="#验证方式" class="headerlink" title="验证方式:"></a>验证方式:</h4><p>可以通过客户端软件在数据库上右键属性查看,也可以通过命令查看</p>
+<p>mysql&gt; show create database hive_cz3q;</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">+<span class="comment">-----------+-----------------------------------------------------------------------------------------+</span></span><br><span class="line">| Database  | <span class="keyword">Create</span> <span class="keyword">Database</span>                                                                         |</span><br><span class="line">+<span class="comment">-----------+-----------------------------------------------------------------------------------------+</span></span><br><span class="line">| hive_cz3q | <span class="keyword">CREATE</span> <span class="keyword">DATABASE</span> <span class="string">`hive_cz3q`</span> <span class="comment">/*!40100 DEFAULT CHARACTER SET latin1 COLLATE latin1_bin */</span> |</span><br><span class="line">+<span class="comment">-----------+-----------------------------------------------------------------------------------------+</span></span><br></pre></td></tr></table></figure>
+
+<p>不然会有类似如下的错误:</p>
+<p> <img src="https://yerias.github.io/hive_img/610238-20170903131046858-396716990.png" alt="图片1"></p>
+<p>那么怎么修改mysql的编码为utf8呢?这里提供了在线安装修改和离线方式安装下的修改方式供大家选择!</p>
+<h3 id="乱码的情况"><a href="#乱码的情况" class="headerlink" title="乱码的情况:"></a>乱码的情况:</h3><p> 向hive的表中 创建表,表语句部分如下:</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> ods.ods_order</span><br><span class="line">(</span><br><span class="line">   ORDER_ID             <span class="built_in">int</span> <span class="keyword">comment</span> <span class="string">'订单ID'</span>,</span><br><span class="line">   ORDER_NO             <span class="built_in">varchar</span>(<span class="number">30</span>)  <span class="keyword">comment</span> <span class="string">'订单编号（唯一字段），</span></span><br><span class="line"><span class="string">   DEALER_ID            int comment '</span>门店<span class="keyword">ID</span><span class="string">',</span></span><br><span class="line"><span class="string">   CUST_ID              int comment '</span>客户<span class="keyword">ID</span><span class="string">',</span></span><br></pre></td></tr></table></figure>
+
+<p>在创建表的时候，字段可以有 comment，但是 comment 建议不要用中文说明，因为我们说过，hive 的 metastore 支持的字符集是 latin1，所以中文写入的时候会有编码问题，如下图！ </p>
+<p>然后通过desc ods_order 查看 对应的comment中是中文的地方,通过Xshell显示全部都是 “?” 问号.  同时确认了Xshell支持显示中文(排除Xshell的问题).</p>
+<p><code>以上就是说Hive在字段定义时的Comment中文乱码问题.</code></p>
+<p><img src="https://yerias.github.io/hive_img/610238-20170903134309687-1604377616.png" alt="图片2"></p>
+<p>有了上述的问题，那么我们该如何去解决注释中文乱码问题呢？ </p>
+<h3 id="解决方式"><a href="#解决方式" class="headerlink" title="解决方式"></a>解决方式</h3><h4 id="首先进行Mysql的编码设置"><a href="#首先进行Mysql的编码设置" class="headerlink" title="首先进行Mysql的编码设置"></a>首先进行Mysql的编码设置</h4><h5 id="离线安装mysql的修改方式"><a href="#离线安装mysql的修改方式" class="headerlink" title="离线安装mysql的修改方式"></a>离线安装mysql的修改方式</h5><ol>
+<li><p>修改编码,设置为utf8</p>
+<p>拷贝 mysql 的配置文件/usr/share/mysql/my-small.cnf 到/etc/my.cnf </p>
+<p>在mysql 配置文件/etc/my.cnf 中增加以下内容</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[client]下面增加</span><br><span class="line">default-character-set=utf8</span><br><span class="line">在[mysqld]下面增加</span><br><span class="line">default-character-set=utf8</span><br><span class="line">init_connect='SET NAMES utf8'</span><br></pre></td></tr></table></figure>
+
+<p><em>2020/03/09更新</em>：<code>default-character-set=utf8</code>，如果这样改会导致5.7版本mysql无法打开所以要改为 <code>character-set-server=utf8</code>，(可选)改完后，要删除数据库中所有数据，才能使用。``````````</p>
+</li>
+<li><p>重启mysql 服务(这样确保缺省编码是utf8)</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">service mysqld restart</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>验证编码是否改成了utf8:</p>
+<p>输入命令 “\s”</p>
+<p><img src="https://yerias.github.io/hive_img/610238-20170903132119671-1333763157.png" alt="图片3"></p>
+<p>输入命令:show variables like ‘char%’</p>
+<p><img src="https://yerias.github.io/hive_img/610238-20170903132210124-717565896.png" alt="图片4"></p>
+<p>输入命令:show variables like “colla%”;</p>
+<p> <img src="https://yerias.github.io/hive_img/610238-20170903132350968-1341436179.png" alt="图片5"></p>
+<p>OK修改成功!</p>
+</li>
+<li><p>这样在启动hive,向hive中插入的表中comment等有汉字的情况,就可以正常的显示(如下为本人测试的部分显示结果):</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">0: jdbc:hive2://localhost:10000/ods&gt; desc ods_order;</span><br><span class="line">+<span class="comment">--------------------------+-----------------------+---------------------------------------------------------------------------------------------------------------------------------------------+--+</span></span><br><span class="line">|         col_name         |       data_type       |                                                                   <span class="keyword">comment</span>                                                                   |</span><br><span class="line">+<span class="comment">--------------------------+-----------------------+---------------------------------------------------------------------------------------------------------------------------------------------+--+</span></span><br><span class="line">| order_id                 | <span class="built_in">int</span>                   | 订单<span class="keyword">ID</span>                                                                                                                                        |</span><br><span class="line">| order_no                 | <span class="built_in">varchar</span>(<span class="number">30</span>)           | 订单编号（唯一字段），前缀字符表示订单来源：a，Andriod；b，微博；c，WEB；e，饿了么；i，Iphone；m，Mobile；x，微信； z，中粮我买网；l，其它。 接着<span class="number">3</span>位数字代表订单城市编号；接着字符z与后面的真正订单编号分隔。这套机制从<span class="number">2014</span>年<span class="number">12</span>月开始实施。</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h5 id="在线安装mysql的修改方式"><a href="#在线安装mysql的修改方式" class="headerlink" title="在线安装mysql的修改方式"></a>在线安装mysql的修改方式</h5><ol>
+<li><p>修改编码,设置为utf-8</p>
+<p> 在 mysql 配置文件/etc/my.cnf（不需要拷贝）中[mysqld]的下面增加以下内容</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">init_connect='SET collation_connection = utf8_unicode_ci'</span><br><span class="line">init_connect='SET NAMES utf8'</span><br><span class="line">character-set-server=utf8</span><br><span class="line">collation-server=utf8_unicode_ci</span><br><span class="line">skip-character-set-client-handshake</span><br></pre></td></tr></table></figure>
+
+<p> <img src="https://yerias.github.io/hive_img/610238-20170903133604796-492434925.png" alt="图片6"></p>
+</li>
+<li><p>重启mysqld服务</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">service mysqld restart</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>和离线方式一样验证编码是否确实修改;</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">show variables like 'char%';</span><br></pre></td></tr></table></figure>
+
+<p> <img src="https://yerias.github.io/hive_img/610238-20170903133820296-974086333.png" alt="图片7"></p>
+</li>
+</ol>
+<h4 id="针对元数据库metastore中的表-分区-视图的编码设置"><a href="#针对元数据库metastore中的表-分区-视图的编码设置" class="headerlink" title="针对元数据库metastore中的表,分区,视图的编码设置"></a>针对元数据库metastore中的表,分区,视图的编码设置</h4><p>因为我们知道 metastore 支持数据库级别，表级别的字符集是 latin1，那么我们<code>只需要把相应注释的地方的字符集由 latin1 改成 utf-8</code>，就可以了。用到注释的就三个地方，表、分区、视图。如下修改分为两个步骤：</p>
+<ol>
+<li><p>进入数据库 Metastore 中执行以下 5 条 SQL 语句 </p>
+<ol>
+<li>修改表字段注解和表注解<br>alter table COLUMNS_V2 modify column COMMENT varchar(256) character set utf8<br>alter table TABLE_PARAMS modify column PARAM_VALUE varchar(4000) character set utf8</li>
+<li>修改分区字段注解：<br>alter table PARTITION_PARAMS modify column PARAM_VALUE varchar(4000) character set utf8 ;<br>alter table PARTITION_KEYS modify column PKEY_COMMENT varchar(4000) character set utf8</li>
+<li>修改索引注解：<br>alter table INDEX_PARAMS modify column PARAM_VALUE varchar(4000) character set utf8;</li>
+</ol>
+</li>
+<li><p>修改 metastore 的连接 URL</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">&lt;property&gt;</span><br><span class="line">    &lt;name&gt;javax.jdo.option.ConnectionURL&lt;/name&gt;</span><br><span class="line">    &lt;value&gt;jdbc:mysql://IP:3306/db_name?createDatabaseIfNotExist=true&amp;amp;useUnicode=true&amp;amp;characterEncoding=UTF-8&lt;/value&gt;</span><br><span class="line">    &lt;description&gt;JDBC connect string for a JDBC metastore&lt;/description&gt;</span><br><span class="line">&lt;/property&gt;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<p><strong>测试结果：</strong></p>
+<p><img src="https://yerias.github.io/hive_img/610238-20170903134604093-93033588.png" alt="图片8"></p>
+<p>以上就能完美的解决这个问题.</p>
+<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><p>有时候在使用xml作为配置文件的时候，应该要使用xml的编码规则来进行适当的设置。如<code>&amp;</code>在xml文件中应该写为<code>&amp;amp;</code></p>
+<p>下面给出xml中一些特殊符号的编码转换：</p>
+<table>
+<thead>
+<tr>
+<th>代码</th>
+<th>符号</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>&amp;lt;</code></td>
+<td>&lt;</td>
+<td>小于号</td>
+</tr>
+<tr>
+<td><code>&amp;gt;</code></td>
+<td>&gt;</td>
+<td>大于号</td>
+</tr>
+<tr>
+<td><code>&amp;amp;</code></td>
+<td>&amp;</td>
+<td>and字符</td>
+</tr>
+<tr>
+<td><code>&amp;apos;</code></td>
+<td>‘</td>
+<td>单引号</td>
+</tr>
+<tr>
+<td><code>&amp;quot;</code></td>
+<td>“</td>
+<td>双引号</td>
+</tr>
+</tbody></table>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="mailto:undefined" target="_blank" rel="noopener">Tunan</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="http://yerias.github.io/2018/11/01/hive/1/">http://yerias.github.io/2018/11/01/hive/1/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Hive/">Hive</a></div><div class="social-share" data-disabled="facebook,twitter,douban,linkedin,diandian"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js@1.0.16/dist/css/share.min.css"><script src="https://cdn.jsdelivr.net/npm/social-share.js@1.0.16/dist/js/social-share.min.js"></script><nav id="pagination"><div class="prev-post pull-left"><a href="/2018/11/02/hive/2/"><i class="fa fa-chevron-left">  </i><span>谷粒影音8道SQL题(各种Top N)</span></a></div><div class="next-post pull-right"><a href="/2018/10/16/hadoop/12/"><span>MR调优之压缩</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer class="footer-bg" style="background-image: url(/img/soroush-golpoor-1497416-unsplash.jpg)"><div class="layout" id="footer"><div class="copyright">&copy;2018 - 2020 By Tunan</div><div class="framework-info"><span>Driven - </span><a href="#"><span>Hexo</span></a><span class="footer-separator">|</span><span>Theme - </span><a href="#"><span>Melody</span></a></div><div class="footer_custom_text">大家好，我是图南，很高兴认识你们！</div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file-o"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.6.1"></script><script src="/js/fancybox.js?version=1.6.1"></script><script src="/js/sidebar.js?version=1.6.1"></script><script src="/js/copy.js?version=1.6.1"></script><script src="/js/fireworks.js?version=1.6.1"></script><script src="/js/transition.js?version=1.6.1"></script><script src="/js/scroll.js?version=1.6.1"></script><script src="/js/head.js?version=1.6.1"></script><script src="/js/search/local-search.js"></script><script>if(/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+}</script><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">Local search</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="Search for Posts"></div></div></div><hr><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>Powered by</span> <a href="https://github.com/wzpan/hexo-generator-search" target="_blank" rel="noopener" style="color:#49B1F5;">hexo-generator-search</a></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div></body></html>
