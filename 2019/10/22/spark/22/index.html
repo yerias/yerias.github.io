@@ -18,8 +18,8 @@
 <p><img src="https://yerias.github.io/spark_img/group-topic-partition-offset.jpg" alt="group-topic-partition-offset"></p>
 <p><strong>Kafka在保存Offset的时候，实际上是将Consumer Group和partition对应的offset以消息的方式保存在__consumers_offsets这个topic中</strong>。</p>
 <p>下图展示了__consumers_offsets中保存的offset消息的格式：</p>
-<p><img src="https://yerias.github.io/spark_img/_consumers_offsets.jpg" alt="_consumers_offsets"></p>
-<p><img src="https://yerias.github.io/spark_img/__consumers_offsets_data.jpg" alt="__consumers_offsets_data"></p>
+<p><img src="https://yerias.github.io/spark_img/consumers_offsets.jpg" alt=""></p>
+<p><img src="https://yerias.github.io/spark_img/consumers_offsets_data.jpg" alt=""></p>
 <p>如图所示，一条offset消息的格式为groupid-topic-partition -&gt; offset。因此consumer pull消息时，已知groupid和topic，又通过Coordinator分配partition的方式获得了对应的partition，自然能够通过Coordinator查找__consumers_offsets的方式获得最新的offset了。</p>
 <h2 id="Kafka-Offset-的几种管理方式"><a href="#Kafka-Offset-的几种管理方式" class="headerlink" title="Kafka Offset 的几种管理方式"></a>Kafka Offset 的几种管理方式</h2><ul>
 <li><code>Spark Checkpoint：</code>在 Spark Streaming 执行Checkpoint 操作时，将 Kafka Offset 一并保存到 HDFS 中。这种方式的问题在于：当 Spark Streaming 应用升级或更新时，以及当Spark 本身更新时，Checkpoint 可能无法恢复。因而，不推荐采用这种方式。</li>
