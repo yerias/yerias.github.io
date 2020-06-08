@@ -32,10 +32,9 @@
 </li>
 <li><p>sum,count,max,min 等 UDAF，不怕数据倾斜问题，hadoop 在 map 端的汇总合并优化，使 数据倾斜不成问题</p>
 </li>
-<li><p>count(distinct userid)，在数据量大的情况下，效率较低，如果是多 count(distinct userid,month)效率更低，因为 count(distinct)是按 group by 字段分组，按 distinct 字段排序， 一般这种分布方式是很</p>
+<li><p>count(distinct userid)，在数据量大的情况下，效率较低，如果是多 count(distinct userid,month)效率更低，因为 count(distinct)是按 group by 字段分组，按 distinct 字段排序， 一般这种分布方式是很倾斜的，比如 PV 数据，淘宝一天 30 亿的 pv，如果按性别分组，分 配 2 个 reduce，每个 reduce 期望处理 15 亿数据，但现实必定是男少女多</p>
 </li>
 </ol>
-<p>倾斜的，比如 PV 数据，淘宝一天 30 亿的 pv，如果按性别分组，分 配 2 个 reduce，每个 reduce 期望处理 15 亿数据，但现实必定是男少女多</p>
 <h2 id="优化常用手段"><a href="#优化常用手段" class="headerlink" title="优化常用手段"></a>优化常用手段</h2><ol>
 <li><p>好的模型设计事半功倍</p>
 </li>
@@ -45,11 +44,11 @@
 </li>
 <li><p>设置合理的 MapReduce 的 task 数，能有效提升性能。(比如，10w+级别的计算，用 160个 reduce，那是相当的浪费，1 个足够)</p>
 </li>
-<li><p>了解数据分布，自己动手解决数据倾斜问题是个不错的选择。这是通用的算法优化，但 算法优化有时不能适应特定业务背景，开发人员了解业务，了解数据，可以通过业务逻辑精 确有效的解决数据倾斜问题</p>
+<li><p>了解数据分布，自己动手解决数据倾斜问题是个不错的选择。这是通用的算法优化，但 算法优化有时不能适应特定业务背景，开发人员了解业务，了解数据，可以通过业务逻辑精确有效的解决数据倾斜问题</p>
 </li>
 <li><p>数据量较大的情况下，慎用 count(distinct)，group by 容易产生倾斜问题</p>
 </li>
-<li><p>对小文件进行合并，是行之有效的提高调度效率的方法，假如所有的作业设置合理的文 件数，对云梯的整体调度效率也会产生积极的正向影响</p>
+<li><p>对小文件进行合并，是行之有效的提高调度效率的方法，假如所有的作业设置合理的文件数，对云梯的整体调度效率也会产生积极的正向影响</p>
 </li>
 <li><p>优化时把握整体，单个作业最优不如整体最优</p>
 </li>
@@ -68,7 +67,7 @@
 <h2 id="怎样做笛卡尔积"><a href="#怎样做笛卡尔积" class="headerlink" title="怎样做笛卡尔积"></a>怎样做笛卡尔积</h2><p>当 Hive 设定为严格模式（hive.mapred.mode=strict）时，不允许在 HQL 语句中出现笛卡尔积， 这实际说明了 Hive 对笛卡尔积支持较弱。因为找不到 Join key，Hive 只能使用 1 个 reducer 来完成笛卡尔积。</p>
 <p>当然也可以使用 limit 的办法来减少某个表参与 join 的数据量，但对于需要笛卡尔积语义的 需求来说，经常是一个大表和一个小表的 Join 操作，结果仍然很大（以至于无法用单机处 理），这时 MapJoin才是最好的解决办法。MapJoin，顾名思义，会在 Map 端完成 Join 操作。 这需要将 Join 操作的一个或多个表完全读入内存。</p>
 <p>PS：MapJoin 在子查询中可能出现未知 BUG。在大表和小表做笛卡尔积时，规避笛卡尔积的 方法是，给 Join 添加一个 Join key，<strong>原理很简单：将小表扩充一列 join key，并将小表的条目复制数倍，join</strong> <strong>key 各不相同；将大表扩充一列 join key 为随机数。</strong></p>
-<p><strong>精髓就在于复制几倍，最后就有几个 reduce 来做，而且大表的数据是前面小表扩张 key 值 范围里面随机出来的，所以复制了几倍 n，就相当于这个随机范围就有多大 n，那么相应的， 大表的数据就被随机的分为了 n 份。并且最后处理所用的 reduce 数量也是 n，而且也不会 出现数据倾斜。</strong></p>
+<p><strong>精髓就在于复制几倍，最后就有几个 reduce 来做，而且大表的数据是前面小表扩张 key 值 范围里面随机出来的，所以复制了几倍 n，就相当于这个随机范围就有多大 n，那么相应的， 大表的数据就被随机的分为了 n 份。并且最后处理所用的 reduce 数量也是 n，而且也不会出现数据倾斜。</strong></p>
 <h2 id="怎样写-in-exists-语句"><a href="#怎样写-in-exists-语句" class="headerlink" title="怎样写 in/exists 语句"></a>怎样写 in/exists 语句</h2><p>虽然经过测验，hive1.2.1 也支持 in/exists 操作，但还是推荐使用 hive 的一个高效替代方案：<strong>left semi join</strong></p>
 <p>比如说：</p>
 <figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> a.id, a.name <span class="keyword">from</span> a <span class="keyword">where</span> a.id <span class="keyword">in</span> (<span class="keyword">select</span> b.id <span class="keyword">from</span> b);</span><br><span class="line"><span class="keyword">select</span> a.id, a.name <span class="keyword">from</span> a <span class="keyword">where</span> <span class="keyword">exists</span> (<span class="keyword">select</span> <span class="keyword">id</span> <span class="keyword">from</span> b <span class="keyword">where</span> a.id = b.id);</span><br></pre></td></tr></table></figure>
@@ -92,7 +91,7 @@
 <p><img src="https://yerias.github.io/hive_img/%E8%AE%BE%E7%BD%AEmap%E4%BB%BB%E5%8A%A1%E6%95%B0%E9%87%8F.png" alt="设置map任务数量"></p>
 <p>输入分片大小的计算是这么计算出来的：</p>
 <p><strong>long splitSize = Math.max(minSize, Math.min(maxSize, blockSize))</strong></p>
-<p>默认情况下，输入分片大小和 HDFS 集群默认数据块大小一致，也就是默认一个数据块，启 用一个 MapTask 进行处理，这样做的好处是避免了服务器节点之间的数据传输，提高 job 处 理效率</p>
+<p>默认情况下，输入分片大小和 HDFS 集群默认数据块大小一致，也就是默认一个数据块，启 用一个 MapTask 进行处理，这样做的好处是避免了服务器节点之间的数据传输，提高 job 处理效率</p>
 <p>两种经典的控制 MapTask 的个数方案：减少 MapTask 数或者增加 MapTask 数</p>
 <ol>
 <li>减少 MapTask 数是通过合并小文件来实现，这一点主要是针对数据源</li>
@@ -107,7 +106,7 @@
 <h2 id="设置合理的-reduceTask-的数量"><a href="#设置合理的-reduceTask-的数量" class="headerlink" title="设置合理的 reduceTask 的数量"></a>设置合理的 reduceTask 的数量</h2><p>Hadoop MapReduce 程序中，reducer 个数的设定极大影响执行效率，这使得 Hive 怎样决定 reducer 个数成为一个关键问题。遗憾的是 Hive 的估计机制很弱，不指定 reducer 个数的情 况下，Hive 会猜测确定一个 reducer 个数，基于以下两个设定：</p>
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">hive.exec.reducers.bytes.per.reducer（默认为 256000000）</span><br><span class="line">hive.exec.reducers.max（默认为 1009）</span><br><span class="line">mapreduce.job.reduces=-1（设置一个常量 reducetask 数量）</span><br></pre></td></tr></table></figure>
 
-<p>计算 reducer 数的公式很简单： N=min(参数 2，总输入数据量/参数 1) 通常情况下，有必要手动指定 reducer 个数。考虑到 map 阶段的输出数据量通常会比输入有 大幅减少，因此即使不设定 reducer 个数，重设参数 2 还是必要的。</p>
+<p>计算 reducer 数的公式很简单： N=min(参数 2，总输入数据量/参数 1) 通常情况下，有必要手动指定 reducer 个数。考虑到 map 阶段的输出数据量通常会比输入有大幅减少，因此即使不设定 reducer 个数，重设参数 2 还是必要的。</p>
 <p><strong>依据 Hadoop 的经验，可以将参数 2 设定为 0.95*(集群中 datanode 个数)。</strong> </p>
 <h2 id="合并-MapReduce-操作"><a href="#合并-MapReduce-操作" class="headerlink" title="合并 MapReduce 操作"></a>合并 MapReduce 操作</h2><p>Multi-group by 是 Hive 的一个非常好的特性，它使得 Hive 中利用中间结果变得非常方便。 例如：</p>
 <figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">FROM (<span class="keyword">SELECT</span> a.status, b.school, b.gender <span class="keyword">FROM</span> status_updates a <span class="keyword">JOIN</span> <span class="keyword">profiles</span> b <span class="keyword">ON</span> (a.userid =</span><br><span class="line">b.userid <span class="keyword">and</span> a.ds=<span class="string">'2009-03-20'</span> ) ) subq1</span><br><span class="line"><span class="keyword">INSERT</span> OVERWRITE <span class="keyword">TABLE</span> gender_summary <span class="keyword">PARTITION</span>(ds=<span class="string">'2009-03-20'</span>)</span><br><span class="line"><span class="keyword">SELECT</span> subq1.gender, <span class="keyword">COUNT</span>(<span class="number">1</span>) <span class="keyword">GROUP</span> <span class="keyword">BY</span> subq1.gender</span><br><span class="line"><span class="keyword">INSERT</span> OVERWRITE <span class="keyword">TABLE</span> school_summary <span class="keyword">PARTITION</span>(ds=<span class="string">'2009-03-20'</span>)</span><br><span class="line"><span class="keyword">SELECT</span> subq1.school, <span class="keyword">COUNT</span>(<span class="number">1</span>) <span class="keyword">GROUP</span> <span class="keyword">BY</span> subq1.school</span><br></pre></td></tr></table></figure>
