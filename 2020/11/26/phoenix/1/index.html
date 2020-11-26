@@ -1,0 +1,193 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="phoenix的二级索引"><meta name="keywords" content="Phoenix"><meta name="author" content="Tunan"><meta name="copyright" content="Tunan"><title>phoenix的二级索引 | TUNANのBlog</title><link rel="shortcut icon" href="/melody-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.6.1"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.6.1"><link rel="dns-prefetch" href="https://cdn.staticfile.org"><link rel="dns-prefetch" href="https://cdn.bootcss.com"><link rel="dns-prefetch" href="https://creativecommons.org"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"We didn't find any results for the search: ${query}"}},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  }
+} </script></head><body><canvas class="fireworks"></canvas><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="toggle-sidebar-info text-center"><span data-toggle="Toggle article">Toggle site</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">Catalog</div><div class="sidebar-toc__progress"><span class="progress-notice">You've read</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#目录"><span class="toc-number">1.</span> <span class="toc-text">目录</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Phoenix配置"><span class="toc-number">2.</span> <span class="toc-text">Phoenix配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Phoenix创建二级索引"><span class="toc-number">3.</span> <span class="toc-text">Phoenix创建二级索引</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Phoenix基本优化"><span class="toc-number">4.</span> <span class="toc-text">Phoenix基本优化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Phoenix表优化"><span class="toc-number">5.</span> <span class="toc-text">Phoenix表优化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Phoenix性能优化"><span class="toc-number">6.</span> <span class="toc-text">Phoenix性能优化</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-SALT-BUCKETS"><span class="toc-number">6.1.</span> <span class="toc-text">1. SALT_BUCKETS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-Pre-split"><span class="toc-number">6.2.</span> <span class="toc-text">2. Pre-split</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-分列族"><span class="toc-number">6.3.</span> <span class="toc-text">3. 分列族</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-使用压缩"><span class="toc-number">6.4.</span> <span class="toc-text">4. 使用压缩</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-二级索引"><span class="toc-number">6.5.</span> <span class="toc-text">5. 二级索引</span></a></li></ol></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="/img/xiaoqi.jpg"></div><div class="author-info__name text-center">Tunan</div><div class="author-info__description text-center">BigData Developer</div><div class="follow-button"><a href="#">Follow Me</a></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">Articles</span><span class="pull-right">175</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">Tags</span><span class="pull-right">37</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">Categories</span><span class="pull-right">33</span></a></div><hr><div class="author-info-links"><div class="author-info-links__title text-center">Links</div><a class="author-info-links__name text-center" href="https://hadoop.apache.org/docs/r2.10.0/hadoop-project-dist/hadoop-common/SingleCluster.html" target="_blank" rel="noopener">HADOOP</a><a class="author-info-links__name text-center" href="https://cwiki.apache.org/confluence/display/Hive/" target="_blank" rel="noopener">HIVE</a><a class="author-info-links__name text-center" href="http://archive.cloudera.com/cdh5/cdh/5/" target="_blank" rel="noopener">CDH</a><a class="author-info-links__name text-center" href="http://flume.apache.org/" target="_blank" rel="noopener">FLUME</a><a class="author-info-links__name text-center" href="https://azkaban.github.io/" target="_blank" rel="noopener">AZKABAN</a><a class="author-info-links__name text-center" href="https://www.maxinhong.com/" target="_blank" rel="noopener">叶梨子</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/qingyunzong" target="_blank" rel="noopener">老铁</a><a class="author-info-links__name text-center" href="https://blog.csdn.net/jim8973/" target="_blank" rel="noopener">飞哥</a><a class="author-info-links__name text-center" href="https://vinxikk.github.io/" target="_blank" rel="noopener">vinx</a><a class="author-info-links__name text-center" href="http://dongxicheng.org/" target="_blank" rel="noopener">懂西成(Hadoop技术内幕作者)</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/xing901022/" target="_blank" rel="noopener">xingoo</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/itboys/tag/" target="_blank" rel="noopener">大葱拌豆腐</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/shishanyuan" target="_blank" rel="noopener">郭景瞻(图解Spark作者)</a><a class="author-info-links__name text-center" href="https://segmentfault.com/u/wishdaren_5c243b920a3eb" target="_blank" rel="noopener">Wish大人</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/huxi2b/" target="_blank" rel="noopener">huxi_2b(kafka)</a></div></div></div><div id="content-outer"><div id="top-container" style="background-image: url(/img/soroush-golpoor-1497416-unsplash.jpg)"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">TUNANのBlog</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> Search</span></a><a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/categories">Categories</a></span></div><div id="post-info"><div id="post-title">phoenix的二级索引</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-11-26</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/Phoenix/">Phoenix</a><div class="post-meta-wordcount"><span>Word count: </span><span class="word-count">4.7k</span><span class="post-meta__separator">|</span><span>Reading time: 16 min</span></div></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><ol>
+<li>Phoenix配置</li>
+<li>Phoenix创建二级索引</li>
+<li>Phoenix基本优化</li>
+<li>Phoenix表优化</li>
+<li>Phoenix性能优化</li>
+</ol>
+<h2 id="Phoenix配置"><a href="#Phoenix配置" class="headerlink" title="Phoenix配置"></a>Phoenix配置</h2><p><strong><a href="http://phoenix.apache.org/secondary_indexing.html?spm=a2c4e.10696291.0.0.111819a4Ua6e9c" target="_blank" rel="noopener">官方文档</a></strong></p>
+<ol>
+<li><p>添加如下配置到Hbase的Hregionserver节点的hbase-site.xml </p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- phoenix regionserver 配置参数 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>hbase.regionserver.wal.codec<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>org.apache.hadoop.hbase.regionserver.wal.IndexedWALEditCodec<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>hbase.region.server.rpc.scheduler.factory.class<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>org.apache.hadoop.hbase.ipc.PhoenixRpcSchedulerFactory<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">description</span>&gt;</span>Factory to create the Phoenix RPC Scheduler that uses separate queues for index and metadata updates<span class="tag">&lt;/<span class="name">description</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>hbase.rpc.controllerfactory.class<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>org.apache.hadoop.hbase.ipc.controller.ServerRpcControllerFactory<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">description</span>&gt;</span>Factory to create the Phoenix RPC Scheduler that uses separate queues for index and metadata updates<span class="tag">&lt;/<span class="name">description</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>添加如下配置到Hbase中Hmaster节点的hbase-site.xml中</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="comment">&lt;!-- phoenix master 配置参数 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>hbase.master.loadbalancer.class<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>org.apache.phoenix.hbase.index.balancer.IndexLoadBalancer<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>hbase.coprocessor.master.classes<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>org.apache.phoenix.hbase.index.master.IndexMasterObserver<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>常见问题汇总</p>
+<p>注意：网上配置文档里有这一条，但在实际测试中（测试环境hbase-1.3.1，网上0.98.6），加入该条的regionserver会在hbase启动时失败，对应节点上没有HregionServer进程，去掉该配置后正常启动，且能正常创建local index。</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>hbase.coprocessor.regionserver.classes<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>org.apache.hadoop.hbase.regionserver.LocalIndexMerger<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ol>
+<h2 id="Phoenix创建二级索引"><a href="#Phoenix创建二级索引" class="headerlink" title="Phoenix创建二级索引"></a>Phoenix创建二级索引</h2><ol>
+<li><p>全局索引 <strong>global index</strong>是默认的索引格式</p>
+<p>适用于<strong>多读少写</strong>的业务场景。写数据的时候会消耗大量开销，因为索引表也要更新，而索引表是分布在不同的数据节点上的，跨节点的数据传输带来了较大的性能消耗。</p>
+<p>在读数据的时候Phoenix会选择索引表来降低查询消耗的时间。如果想查询的字段不是索引字段的话索引表不会被使用，也就是说不会带来查询速度的提升。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 全局索引必须是查询语句中所有列都包含在全局索引中，它才会生效。</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">INDEX</span> MY_INDEX <span class="keyword">ON</span> STUDENT(<span class="string">"info"</span>.<span class="string">"dt"</span>);</span><br></pre></td></tr></table></figure>
+
+<p> 查询语句：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="string">"dt"</span> <span class="keyword">from</span> STUDENT <span class="keyword">where</span> <span class="string">"dt"</span> &gt;= <span class="string">'2018-08-08'</span>; <span class="comment">#可以使用到索引表MY_INDEX</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> <span class="string">"name"</span>,<span class="string">"age"</span>,<span class="string">"dt"</span> <span class="keyword">from</span> STUDENT <span class="keyword">where</span> <span class="string">"dt"</span> &gt;= <span class="string">'2018-08-08'</span>; <span class="comment">#这样子就不会用到索引表MY_INDEX,因为name和age不在索引表中;</span></span><br></pre></td></tr></table></figure>
+
+<p> <strong>所以使用全局索引，必须要所有的列都包含在索引中。那么怎样才能使用上索引呢？有两种方法：</strong></p>
+<ul>
+<li><p>创建索引的时候使用覆盖索引</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">INDEX</span> MY_INDEX <span class="keyword">ON</span> STUDENT(<span class="string">"info"</span>.<span class="string">"dt"</span>) <span class="keyword">INCLUDE</span>(<span class="string">"info"</span>.<span class="string">"name"</span>, <span class="string">"info"</span>.<span class="string">"age"</span>); <span class="comment"># INCLUED之前的索引，只能建立一个才会走range scan索引，不然就是full scan</span></span><br></pre></td></tr></table></figure>
+
+<p>这种索引会把name加到索引表里面，同时name也会随着原数据表中的变化而变化。这种方式很明显的缺点是索引表的大小较大，然后就是全局索引不适合写特别多的情况。</p>
+<p> <strong>Covered Index 覆盖索引</strong>的二级索引。这种索引在获取数据的过程中，内部不需要再去HBase上获取任何数据，你查询需要返回的列的数据都会被存储在索引中。<code>要想达到这种效果，你的select 的列，where 的列都需要在索引中出现</code>。</p>
+<p>注意<strong>关键字INCLUDE（注意跟异步索引的区别）</strong>，就是包含需要返回数据结果的列。这种索引方式的最大好处就是速度快，而我们也知道，索引就是空间换时间，所以缺点也很明显，存储空间耗费较多。Phoenix的索引其实就是建了一张HBase的表。你可以通过HBase Shell的list命令看到。</p>
+</li>
+<li><p>使用类似于Oracle的Hint，强制索引</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="comment">/*+ INDEX(STUDENT MY_INDEX)*/</span> <span class="string">"name"</span>,<span class="string">"age"</span> <span class="keyword">from</span> STUDENT <span class="keyword">where</span> <span class="string">"dt"</span> &gt;= <span class="string">'2018-08-08'</span>;</span><br></pre></td></tr></table></figure>
+
+<p>查询引擎会使用MY_INDEX这个索引，由于它会发现索引表中没有name，age数据，所以每一行它都会去原数据表中获取name，age的值。这个强制索引只有在你认为索引有比较好的选择性的时候才是好的选择，也就是说dt大于2018-08-08的行数不多。不然的话，使用Phoenix默认的全表扫描的性能也许会更好。</p>
+</li>
+</ul>
+</li>
+<li><p>本地索引 Local index适用于写操作频繁的场景</p>
+<p>本地索引适合那些<strong>写多读少</strong>，或者存储空间有限的场景。和全局索引一样，Phoenix也会在查询的时候自动选择是否使用本地索引。</p>
+<p><strong>索引数据和真实数据存储在同一台机器上，这样做主要是为了避免网络数据传输的开销</strong>。如果你的查询条件没有完全覆盖索引列，本地索引还是可以生效。因为无法提前确定数据在哪个Region上，所以在读数据的时候，还需要检查每个Region上的数据而带来一些性能损耗。</p>
+<p>如下示例，创建了本地索引</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">LOCAL</span> <span class="keyword">INDEX</span> my_index <span class="keyword">ON</span> my_table (my_index)</span><br></pre></td></tr></table></figure>
+
+<p>local index的设计方式，<strong>索引数据直接写在原表rowkey中，</strong>列族不写任何实际信息，local index的rowkey的设计方位是:</p>
+<ol>
+<li>原数据region的start key+”\x00”+二级索引字段1+”\x00”+二级索引字段2(复合索引)…+”\x00”+原rowkey<br>第一条信息”原数据region的start key”，这样做的目的是保证索引数据和原数据在一个region上，定位到二级索引后根据原rowkey就可以很快在本region上获取到其它信息，减少网络开销和检索成本。</li>
+<li>查询的时候，会在不同的region里面分别对二级索引字段定位，查到原rowkey后在本region上获取到其它信息。</li>
+<li>因为这种索引设计方式只写索引数据，省了不少空间的占用，根据索引信息拿到原rowkey后再根据rowkey到原数据里面获取其它信息。所以这种表的应用<strong>场景定位</strong>是<code>写的快，读得慢</code>。</li>
+</ol>
+</li>
+<li><p>local index 和 global index 比较</p>
+<ol>
+<li><p>索引数据</p>
+<p>global index单独把索引数据存到一张表里，保证了原始数据的安全，侵入性小。</p>
+<p>local index把数据写到原始数据里面，侵入性强，原表的数据量=原始数据+索引数据，使原始数据更大</p>
+</li>
+<li><p>性能方面</p>
+<p>global index要多写出来一份数据，写的压力就大一点，但读的速度就非常快。</p>
+<p>local index只用写一份索引数据，节省不少空间，但多了一步通过rowkey查找数据，写的速度非常快，读的速度就没有直接取自己的列族数据快。</p>
+</li>
+</ol>
+</li>
+<li><p>异步创建索引</p>
+<p>一般我们可以使用CREATE INDEX来创建一个索引，这是一种同步的方法。但是有时候我们创建索引的表非常大，我们需要等很长时间。<strong>Phoenix 4.5</strong>以后有一个异步创建索引的方式，使用关键字ASYNC来创建索引：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">index</span> MY_INDEX <span class="keyword">on</span> FRUITS(<span class="string">"info"</span>.<span class="string">"name"</span>) <span class="keyword">include</span> (<span class="string">"info"</span>.<span class="string">"color"</span>) async;</span><br></pre></td></tr></table></figure>
+
+<p>这时候创建的索引表中不会有数据。你还必须要单独的使用命令行工具来执行数据的创建。当语句给执行的时候，后端会启动一个map reduce任务，只有等到这个任务结束，数据都被生成在索引表中后，这个索引才能被使用。启动工具的方法：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$&#123;HBASE_HOME&#125;/bin/hbase org.apache.phoenix.mapreduce.index.IndexTool \</span><br><span class="line">--schema MY_SCHEMA \</span><br><span class="line">--data-table FRUITS --index-table MY_INDEX \</span><br><span class="line">--output-path ASYNC_IDX_HFILES</span><br></pre></td></tr></table></figure>
+
+<p>注:</p>
+<ol>
+<li><p><code>--schema MY_SCHEMA</code>，不加这个就是默认的schema</p>
+</li>
+<li><p>注意上边尽量不要用小写，即使””双引号里边写的是小写它也不识别;</p>
+</li>
+</ol>
+<p>这个任务不会因为客户端给关闭而结束，是在后台运行。你可以在指定的文件ASYNC_IDX_HFILES中找到最终实行的结果。</p>
+<figure class="highlight properties"><table><tr><td class="code"><pre><span class="line"><span class="meta">2019-10-10</span> <span class="string">15:04:01,579 INFO  [main] index.IndexTool: Loading HFiles from ASYNC_IDX_HFILES/MY_INDEX</span></span><br><span class="line"><span class="meta">2019-10-10</span> <span class="string">15:04:01,723 WARN  [main] mapreduce.LoadIncrementalHFiles: Skipping non-directory hdfs://hadoop101:9000/user/kris/ASYNC_IDXEX/_SUCCESS</span></span><br><span class="line"><span class="meta">2019-10-10</span> <span class="string">15:04:01,909 INFO  [LoadIncrementalHFiles-0] hfile.CacheConfig: Created cacheConfig: CacheConfig:disabled</span></span><br><span class="line"><span class="meta">2019-10-10</span> <span class="string">15:04:01,985 INFO  [LoadIncrementalHFiles-0] mapreduce.LoadIncrementalHFiles: Trying to load hfile=hdfs://hadoop101:9000/usIDX_HFILES/MY_INDEX/info/6b69a7babd4e4c629b6bee988cf15c5d first=water\x001005 last=watermelon\x001006</span></span><br><span class="line"><span class="meta">2019-10-10</span> <span class="string">15:04:02,136 INFO  [main] index.IndexToolUtil:  Updated the status of the index MY_INDEX to ACTIVE</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>综上三种提升效率查询方式</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">1） <span class="keyword">CREATE</span> <span class="keyword">INDEX</span> my_index <span class="keyword">ON</span> my_table (v1) <span class="keyword">INCLUDE</span> (v2)</span><br><span class="line"><span class="number">2</span>） <span class="keyword">SELECT</span> <span class="comment">/*+ INDEX(my_table my_index) */</span> v2 <span class="keyword">FROM</span> my_table <span class="keyword">WHERE</span> v1 = <span class="string">'foo'</span></span><br><span class="line"><span class="number">3</span>） <span class="keyword">CREATE</span> <span class="keyword">LOCAL</span> <span class="keyword">INDEX</span> my_index <span class="keyword">ON</span> my_table (v1)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>如何删除索引</p>
+<p>use “test”，再删索引 <code>drop index &quot;my_index&quot; on &quot;student&quot;</code>不行，必须前边加schema，默认的不需要加</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">DROP</span> <span class="keyword">INDEX</span> <span class="string">"my_index"</span> <span class="keyword">ON</span> <span class="string">"test"</span>.<span class="string">"student"</span></span><br></pre></td></tr></table></figure>
+
+<p>用phoenix只是用hbase自身实现了hbase自己的二级索引，用hbase自己rowkey查询的特点来设计索引数据的rowkey，性能方面完全要靠一次检索索引数据的数据量大小了。</p>
+</li>
+</ol>
+<h2 id="Phoenix基本优化"><a href="#Phoenix基本优化" class="headerlink" title="Phoenix基本优化"></a>Phoenix基本优化</h2><p>可以在hbase-site.xml里配置以下调优参数</p>
+<figure class="highlight properties"><table><tr><td class="code"><pre><span class="line"><span class="attr">index.builder.threads.max</span></span><br><span class="line"><span class="attr">o</span> <span class="string">为主表更新操作建立索引的最大线程数</span></span><br><span class="line"><span class="attr">o</span> <span class="string">Default: 10</span></span><br><span class="line"></span><br><span class="line"><span class="attr">index.builder.threads.keepalivetime</span></span><br><span class="line"><span class="attr">o</span> <span class="string">上面线程的超时时间</span></span><br><span class="line"><span class="attr">o</span> <span class="string">Default: 60</span></span><br><span class="line"></span><br><span class="line"><span class="attr">index.writer.threads.max</span></span><br><span class="line"><span class="attr">o</span> <span class="string">将索引写到索引表的最大线程数</span></span><br><span class="line"><span class="attr">o</span> <span class="string">Default: 10</span></span><br><span class="line"></span><br><span class="line"><span class="attr">index.writer.threads.keepalivetime</span></span><br><span class="line"><span class="attr">o</span> <span class="string">上面线程的超时时间</span></span><br><span class="line"><span class="attr">o</span> <span class="string">Default: 60</span></span><br><span class="line"></span><br><span class="line"><span class="attr">hbase.htable.threads.max</span></span><br><span class="line"><span class="attr">o</span> <span class="string">同时最多有这么多线程往索引表写入数据</span></span><br><span class="line"><span class="attr">o</span> <span class="string">Default: 2,147,483,647</span></span><br><span class="line"></span><br><span class="line"><span class="attr">hbase.htable.threads.keepalivetime</span></span><br><span class="line"><span class="attr">o</span> <span class="string">上面线程的超时时间</span></span><br><span class="line"><span class="attr">o</span> <span class="string">Default: 60</span></span><br><span class="line"></span><br><span class="line"><span class="attr">index.tablefactory.cache.size</span></span><br><span class="line"><span class="attr">o</span> <span class="string">缓存10个往索引表写数据的线程</span></span><br><span class="line"><span class="attr">o</span> <span class="string">Default: 10</span></span><br><span class="line"></span><br><span class="line"><span class="attr">org.apache.phoenix.regionserver.index.handler.count</span></span><br><span class="line"><span class="attr">o</span> <span class="string">处理全局索引写请求时，可以使用的线程数。</span></span><br><span class="line"><span class="attr">o</span> <span class="string">默认值: 30</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="Phoenix表优化"><a href="#Phoenix表优化" class="headerlink" title="Phoenix表优化"></a>Phoenix表优化</h2><p>Phoenix客户端在成功提交一个操作并且得到成功响应后，就代表你所做的操作已经成功应用到原表和相关的索引表中。换句话说，索引表的维护和处理原表数据是同步的，并且各自是强一致性保证的。但是因为索引表和原表是在不同的表中，根据表的属性和索引的类型，当服务端崩溃导致一次提交失败时，原表和索引表中的数据就会有一些变化。所以在使用二级索引的时候，就要根据需求个用例充分考虑。</p>
+<p>下面列出了一些不同级别的一致性保证供你选择。</p>
+<p><strong>事务表</strong></p>
+<p>如果把表定义成事务表（Transactional），你将获得最高级别的一致性保证。原表的操作和索引表的操作完全就是一个原子操作。如果提交失败，原表和索引表的数据都不会被更新，如果启用了这种级别的一致性，你的原表和索引表永远都保持同步。目前这个功能还是beta版本阶段，它是实现依赖于另一个Apache项目Apache Tephra。它是一个分布式事务框架。</p>
+<p>那为什么不把所有的表都设置能事务的呢？特别是一些被声明了是不可变的表（只写一次，不修改的表），因为这个时候事务的损耗是非常小的。但是一旦你的表中的数据会变化，那么你就要承担一些冲突检测和事务管理器的开销；同时做事务表中建二级索引，会潜在的降低系统的可用性，因为原表和二级索引表都必须可用行，不然都会失败。</p>
+<p><strong>不可变表</strong></p>
+<p>不可变表中的数据之写入一次，之后就再也不会被更新了。对于这种表，Phoenix会做特别的优化，降低写入的损耗和增量维护的损耗。这类数据通常就是一些时间序列的数据，比如日志、事件、或者传感器的周期数据等等。这类表结构需要在见表的时候加上 IMMUTABLE_ROWS=true 语句，这样数据表就会被优化。默认建表是可变的。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> HAO2 (k <span class="built_in">VARCHAR</span> PRIMARY <span class="keyword">KEY</span>, v <span class="built_in">VARCHAR</span>) IMMUTABLE_ROWS=<span class="literal">true</span>;</span><br></pre></td></tr></table></figure>
+
+<p>在不可变表上面建的所有的索引都是不可变的。对于全局的不可变索引来说，索引全部由客户端来维护，原表的数据变化会触发索引的修改。本地索引在服务端维护。需要注意的是，Phoenix没有强制在一张申明了不可变的原表上修改数据，索引将不再与原表同步。</p>
+<p>如果你有一个已经存在的表，想把不可变索引修改成可变索引的话，可以用如下语句实现：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> HAO2 <span class="keyword">set</span> IMMUTABLE_ROWS = <span class="literal">false</span>;</span><br></pre></td></tr></table></figure>
+
+<p>另外，非事务性、不可变表的索引没有自动处理提交失败的机制。保持表和索引之间的一致性留给客户端处理。因为更新是幂等的，最简单的解决方案是客户端不断尝试直到成功。</p>
+<p><strong>易变的表</strong></p>
+<p>对于非事务的可变表，我们通过添加索引更新到原表的WAL日志里来维护索引信息的更新。只有当WAL同步后，才会去真的更新索引或原表。Phoenix写索引文件是并行的，这样有助于性能的提高，吞吐量增大。如果我们正在更新索引的时候，服务器挂了，我们会找到对应的WAL，重新执行所有的更新。更新的幂等性保证了数据的准确性。</p>
+<p>不过需要注意一下几点：</p>
+<ul>
+<li><p>由于是非事务表，有时候也可能出现原表和索引表的数据不同步。</p>
+</li>
+<li><p>就像上文所说，Phoenix是有可能在很短暂的时间里数据和索引不一致的，但是这是一个很短的过程，一般来说不会有影响。</p>
+</li>
+<li><p>HBase保证了每一个数据行或索引行都保证要么写入，要么丢失，你不可能看到一条数据有部分列写入而部分列没有写入。</p>
+</li>
+<li><p>数据是先入HBase原表，然后再插入索引表。</p>
+</li>
+</ul>
+<p>为了保证易变的表和索引同步，Phoenix主要提供三种级别：</p>
+<ol>
+<li><p>如果不一致，禁止原表写入</p>
+<p>这是最高级别的一致性级别，需要也别设置。当索引表更新出错的时候，原表会暂时禁用，不能写或更新数据。这个时候索引会自动重建，等索引和原表同步后，索引和原表才能恢复使用。</p>
+<p>主要有两个配置项配置在服务端：</p>
+<ul>
+<li><code>phoenix.index.failure.block.write</code>：是否禁止原表的写入，这个需要设置成true，不然索引的重建追不上原表数据的增加。</li>
+<li><code>phoenix.index.failure.handling.rebuild</code>：默认true，在索引表出错后，是否自动启动后台任务，重建索引。</li>
+</ul>
+</li>
+<li><p>如果不一致，禁用索引表</p>
+<p>这是Phoenix的默认级别。如果写入索引表失败，索引表会标记成失效并且禁用索引，然后启动后台任务重建部分索引，等到完成之后再次激活索引。这种级别下，索引的失效和重建不会影响HBase原表的操作，只是在查询的时候索引不能使用了。</p>
+<p>主要有二个服务端配置项：</p>
+<ul>
+<li><code>phoenix.index.failure.handling.rebuild</code>：默认是true，是否在索引操作失败后自动后台重建索引。</li>
+<li><code>phoenix.index.failure.handling.rebuild.interval</code>：检测是否要部分重建索引的时间间隔，多少毫秒检测一次。默认值是：10000，也就是10秒。</li>
+</ul>
+</li>
+<li><p>如果不一致，需要人工重建索引</p>
+<p>这是最低级别的同步策略。如果写入索引失败，Phoenix不会自动重建，而是需要人工命令重建索引。</p>
+<p>服务端配置如下：</p>
+<ul>
+<li><code>phoenix.index.failure.handling.rebuild</code>：需要设置成false，不自动重建。</li>
+</ul>
+</li>
+</ol>
+<p><strong>索引重建</strong></p>
+<p>Phoenix的索引重建是把索引表清空后重新装配数据。入上文所说，重建有可能是某个操作失败后系统后台自动的行为，也可以是人工来重建。人工重建的语法如下：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">alter</span> <span class="keyword">index</span> index1_local <span class="keyword">on</span> hao1 <span class="keyword">rebuild</span>;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="Phoenix性能优化"><a href="#Phoenix性能优化" class="headerlink" title="Phoenix性能优化"></a>Phoenix性能优化</h2><h3 id="1-SALT-BUCKETS"><a href="#1-SALT-BUCKETS" class="headerlink" title="1. SALT_BUCKETS"></a>1. SALT_BUCKETS</h3><p>HBASE建表之初默认一个region，当写入数据超过region分裂阈值时才会触发region分裂。我们可以通过SALT_BUCKETS方法加盐，在表构建之初就对表进行预分区。SALT_BUCKETS值的范围是1~256（2的8次方），一般将预分区的数量设置为0.5～1 倍核心数。</p>
+<p>加盐的原理是在原始的rowkey前加上一个byte，并填充由rowkey计算得出的hash值，使得原本连续的rowkeys被均匀打散到多个region中，有效地解决了读写热点问题。较多的region同时也增加了表读写并行度，从而提升了HBase表的读写效率。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">#表指定分区数</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> test_salt</span><br><span class="line"> (</span><br><span class="line">  hrid         <span class="built_in">varchar</span> <span class="keyword">not</span> <span class="literal">null</span> primary <span class="keyword">key</span>,</span><br><span class="line">  parentid     <span class="built_in">bigint</span>,</span><br><span class="line">  departmentid <span class="built_in">varchar</span></span><br><span class="line"> )SALT_BUCKETS=<span class="number">40</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">#索引指定分区数</span></span><br><span class="line">(索引不指定预分区数时，其默认分区数与表保持一致)</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">INDEX</span> idx_test_salt_departmentid <span class="keyword">ON</span> TESTN(departmentid) SALT_BUCKETS=<span class="number">20</span>;</span><br></pre></td></tr></table></figure>
+
+<p>加盐原理图解</p>
+<p><img src="https://yerias.github.io/hbase/61a956c0470a1ec720736515aec5df50643.jpg" alt=""></p>
+<h3 id="2-Pre-split"><a href="#2-Pre-split" class="headerlink" title="2. Pre-split"></a>2. Pre-split</h3><p>除了使用加盐直接指定分区数外，我们也可以使用split on手动设置分区。这种方法同样是在构建之初就对表进行预分区，较多的region能够增加hbase的并行度，从而提升读取、写入效率。由于对rowkey不引入额外的byte，因此不会改变rowkey的原始顺序。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">#对表指定五个分区</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> test_split</span><br><span class="line"> (</span><br><span class="line">  hrid         <span class="built_in">varchar</span>,</span><br><span class="line">  parentid     <span class="built_in">bigint</span>,</span><br><span class="line">  departmentid <span class="built_in">varchar</span></span><br><span class="line"><span class="keyword">CONSTRAINT</span> my_pk PRIMARY <span class="keyword">KEY</span> (departmentid, hrid))</span><br><span class="line"><span class="keyword">SPLIT</span> <span class="keyword">ON</span> (<span class="string">'market'</span>,<span class="string">'device'</span>,<span class="string">'develop'</span>,<span class="string">'sale'</span>);</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-分列族"><a href="#3-分列族" class="headerlink" title="3. 分列族"></a>3. 分列族</h3><p>由于HBase表的不同列族是分开存储，因此把相关性大的列放在同一个列族，能够减少数据检索时扫描的数据量，从而提升读的效率。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">#对列指定a、b两个列族</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> test_cf</span><br><span class="line"> (</span><br><span class="line">  a.hrid         <span class="built_in">varchar</span> <span class="keyword">not</span> <span class="literal">null</span> primary <span class="keyword">key</span>,</span><br><span class="line">  a.parentid     <span class="built_in">bigint</span>,</span><br><span class="line">  b.departmentid <span class="built_in">varchar</span></span><br><span class="line"> );</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-使用压缩"><a href="#4-使用压缩" class="headerlink" title="4. 使用压缩"></a>4. 使用压缩</h3><p>在数据量大的表上可以使用压缩算法来减少存储占用空间，从而提高性能 。常用的压缩方法有GZ，lzo等。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">#对表实施GZ压缩</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> test_compress</span><br><span class="line"> (</span><br><span class="line">  hrid         <span class="built_in">varchar</span> <span class="keyword">not</span> <span class="literal">null</span> primary <span class="keyword">key</span>,</span><br><span class="line">  parentid     <span class="built_in">bigint</span>,</span><br><span class="line">  departmentid <span class="built_in">varchar</span></span><br><span class="line"> )COMPRESSION=<span class="string">'GZ'</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="5-二级索引"><a href="#5-二级索引" class="headerlink" title="5. 二级索引"></a>5. 二级索引</h3><p>以Phoenix的全局索引为例，对departmentid建立全局索引，实际上是建立了一张索引表，索引表的rowkey由departmentid与原表rowkey拼接而来。<strong>由于departmentid是索引表rowkey的主维度，因此能够快速被查找并获取到对应的原表rowkey，再通过原表rowkey可以从原表中快速获取数据。</strong></p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">#建表</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> test_index</span><br><span class="line"> (</span><br><span class="line">  hrid         <span class="built_in">varchar</span> <span class="keyword">not</span> <span class="literal">null</span> primary <span class="keyword">key</span>,</span><br><span class="line">  parentid     <span class="built_in">bigint</span>,</span><br><span class="line">  departmentid <span class="built_in">varchar</span></span><br><span class="line"> );</span><br><span class="line"></span><br><span class="line"><span class="comment">#对departmentid建立全局索引</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">INDEX</span> idx_test_index_departmentid <span class="keyword">ON</span> test_index(departmentid);</span><br></pre></td></tr></table></figure></div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="mailto:undefined" target="_blank" rel="noopener">Tunan</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="http://yerias.github.io/2020/11/26/phoenix/1/">http://yerias.github.io/2020/11/26/phoenix/1/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Phoenix/">Phoenix</a></div><div class="social-share" data-disabled="facebook,twitter,douban,linkedin,diandian"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js@1.0.16/dist/css/share.min.css"><script src="https://cdn.jsdelivr.net/npm/social-share.js@1.0.16/dist/js/social-share.min.js"></script><nav id="pagination"><div class="next-post pull-right"><a href="/2020/11/25/hadoop/15/"><span>Hadoop多目录输出</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer class="footer-bg" style="background-image: url(/img/soroush-golpoor-1497416-unsplash.jpg)"><div class="layout" id="footer"><div class="copyright">&copy;2018 - 2020 By Tunan</div><div class="framework-info"><span>Driven - </span><a href="#"><span>Hexo</span></a><span class="footer-separator">|</span><span>Theme - </span><a href="#"><span>Melody</span></a></div><div class="footer_custom_text">大家好，我是图南，很高兴认识你们！</div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file-o"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.6.1"></script><script src="/js/fancybox.js?version=1.6.1"></script><script src="/js/sidebar.js?version=1.6.1"></script><script src="/js/copy.js?version=1.6.1"></script><script src="/js/fireworks.js?version=1.6.1"></script><script src="/js/transition.js?version=1.6.1"></script><script src="/js/scroll.js?version=1.6.1"></script><script src="/js/head.js?version=1.6.1"></script><script src="/js/search/local-search.js"></script><script>if(/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+}</script><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">Local search</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="Search for Posts"></div></div></div><hr><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>Powered by</span> <a href="https://github.com/wzpan/hexo-generator-search" target="_blank" rel="noopener" style="color:#49B1F5;">hexo-generator-search</a></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div></body></html>
