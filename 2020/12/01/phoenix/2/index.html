@@ -32,8 +32,8 @@
 <li><p>完美支持Hbase二级索引创建。</p>
 </li>
 </ol>
-<h3 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h3><p><img src="E:%5Chexo%5Cyeriasblog%5Cthemes%5Cmelody%5Csource%5Cphoenix%5C1247221-20190703080345081-71998722.png" alt=""></p>
-<h3 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h3><p><img src="E:%5Chexo%5Cyeriasblog%5Cthemes%5Cmelody%5Csource%5Cphoenix%5C1247221-20190703080323534-1178982359.png" alt=""></p>
+<h3 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h3><p><img src="https://yerias.github.io/phoenix/1247221-20190703080345081-71998722.png" alt=""></p>
+<h3 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h3><p><img src="https://yerias.github.io/phoenix/1247221-20190703080323534-1178982359.png" alt=""></p>
 <h2 id="Phoenix安装部署"><a href="#Phoenix安装部署" class="headerlink" title="Phoenix安装部署"></a>Phoenix安装部署</h2><p><a href="https://www.jianshu.com/p/be4a03f77e3d" target="_blank" rel="noopener">CDH集成phoenix</a>   <a href="https://my.oschina.net/hblt147/blog/3016196" target="_blank" rel="noopener">https://my.oschina.net/hblt147/blog/3016196</a></p>
 <p>官方网址： <a href="http://phoenix.apache.org/index.html" target="_blank" rel="noopener">http://phoenix.apache.org/index.html</a></p>
 <p><a href="https://archive.apache.org/dist/phoenix/?C=M;O=A" target="_blank" rel="noopener">https://archive.apache.org/dist/phoenix/?C=M;O=A</a></p>
@@ -72,7 +72,7 @@
 
 <h3 id="操作视图"><a href="#操作视图" class="headerlink" title="操作视图"></a>操作视图</h3><ol>
 <li><p>创建视图</p>
-<p><img src="E:%5Chexo%5Cyeriasblog%5Cthemes%5Cmelody%5Csource%5Cphoenix%5C1247221-20191014172200201-2024849451.png" alt=""></p>
+<p><img src="https://yerias.github.io/phoenix/1247221-20191014172200201-2024849451.png" alt=""></p>
 <figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">VIEW</span> test_view <span class="keyword">AS</span> <span class="keyword">SELECT</span> *  <span class="keyword">FROM</span> <span class="keyword">test</span> <span class="keyword">where</span> description <span class="keyword">in</span> (<span class="string">'S1'</span>,<span class="string">'S2'</span>,<span class="string">'S3'</span>)</span><br><span class="line">除此之外，我们还能在视图上创建视图</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">VIEW</span> test_view1 <span class="keyword">AS</span> <span class="keyword">SELECT</span> *  <span class="keyword">FROM</span> test_view <span class="keyword">where</span> description != <span class="string">'S1'</span>; //视图没办法只获取一部分数据的数据的,只能<span class="keyword">select</span> *</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>删除视图：</p>
@@ -82,7 +82,7 @@
 </ol>
 <h3 id="操作表"><a href="#操作表" class="headerlink" title="操作表"></a>操作表</h3><ol>
 <li><p>创建表：</p>
-<p><img src="E:%5Chexo%5Cyeriasblog%5Cthemes%5Cmelody%5Csource%5Cphoenix%5C1247221-20191014165455873-758172404.png" alt=""></p>
+<p><img src="https://yerias.github.io/phoenix/1247221-20191014165455873-758172404.png" alt=""></p>
 <figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="keyword">IF</span> <span class="keyword">NOT</span> <span class="keyword">EXISTS</span> us_population (</span><br><span class="line">State <span class="built_in">CHAR</span>(<span class="number">2</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">City <span class="built_in">VARCHAR</span> <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">Population <span class="built_in">BIGINT</span></span><br><span class="line"><span class="keyword">CONSTRAINT</span> my_pk PRIMARY <span class="keyword">KEY</span> (state, city));</span><br></pre></td></tr></table></figure>
 
 <p>在phoenix中，默认情况下，表名等会自动转换为大写，若要小写，使用双引号，如”us_population”。</p>
