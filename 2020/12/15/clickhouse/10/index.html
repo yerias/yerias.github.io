@@ -1,0 +1,110 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="ClickHouse MergeTree原理"><meta name="keywords" content="ClickHouse"><meta name="author" content="Tunan"><meta name="copyright" content="Tunan"><title>ClickHouse MergeTree原理 | TUNANのBlog</title><link rel="shortcut icon" href="/melody-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.6.1"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.6.1"><link rel="dns-prefetch" href="https://cdn.staticfile.org"><link rel="dns-prefetch" href="https://cdn.bootcss.com"><link rel="dns-prefetch" href="https://creativecommons.org"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"We didn't find any results for the search: ${query}"}},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  }
+} </script></head><body><canvas class="fireworks"></canvas><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="toggle-sidebar-info text-center"><span data-toggle="Toggle article">Toggle site</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">Catalog</div><div class="sidebar-toc__progress"><span class="progress-notice">You've read</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#创建表"><span class="toc-number">1.</span> <span class="toc-text">创建表</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#建表语句"><span class="toc-number">1.1.</span> <span class="toc-text">建表语句</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#参数说明"><span class="toc-number">1.2.</span> <span class="toc-text">参数说明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#样例说明"><span class="toc-number">1.3.</span> <span class="toc-text">样例说明</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#数据存储"><span class="toc-number">2.</span> <span class="toc-text">数据存储</span></a></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="/img/xiaoqi.jpg"></div><div class="author-info__name text-center">Tunan</div><div class="author-info__description text-center">BigData Developer</div><div class="follow-button"><a href="#">Follow Me</a></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">Articles</span><span class="pull-right">192</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">Tags</span><span class="pull-right">38</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">Categories</span><span class="pull-right">34</span></a></div><hr><div class="author-info-links"><div class="author-info-links__title text-center">Links</div><a class="author-info-links__name text-center" href="https://hadoop.apache.org/docs/r2.10.0/hadoop-project-dist/hadoop-common/SingleCluster.html" target="_blank" rel="noopener">HADOOP</a><a class="author-info-links__name text-center" href="https://cwiki.apache.org/confluence/display/Hive/" target="_blank" rel="noopener">HIVE</a><a class="author-info-links__name text-center" href="http://archive.cloudera.com/cdh5/cdh/5/" target="_blank" rel="noopener">CDH</a><a class="author-info-links__name text-center" href="http://flume.apache.org/" target="_blank" rel="noopener">FLUME</a><a class="author-info-links__name text-center" href="https://azkaban.github.io/" target="_blank" rel="noopener">AZKABAN</a><a class="author-info-links__name text-center" href="https://www.maxinhong.com/" target="_blank" rel="noopener">叶梨子</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/qingyunzong" target="_blank" rel="noopener">老铁</a><a class="author-info-links__name text-center" href="https://blog.csdn.net/jim8973/" target="_blank" rel="noopener">飞哥</a><a class="author-info-links__name text-center" href="https://vinxikk.github.io/" target="_blank" rel="noopener">vinx</a><a class="author-info-links__name text-center" href="http://dongxicheng.org/" target="_blank" rel="noopener">懂西成(Hadoop技术内幕作者)</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/xing901022/" target="_blank" rel="noopener">xingoo</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/itboys/tag/" target="_blank" rel="noopener">大葱拌豆腐</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/shishanyuan" target="_blank" rel="noopener">郭景瞻(图解Spark作者)</a><a class="author-info-links__name text-center" href="https://segmentfault.com/u/wishdaren_5c243b920a3eb" target="_blank" rel="noopener">Wish大人</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/huxi2b/" target="_blank" rel="noopener">huxi_2b(kafka)</a></div></div></div><div id="content-outer"><div id="top-container" style="background-image: url(/img/soroush-golpoor-1497416-unsplash.jpg)"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">TUNANのBlog</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> Search</span></a><a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/categories">Categories</a></span></div><div id="post-info"><div id="post-title">ClickHouse MergeTree原理</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-12-15</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/ClickHouse/">ClickHouse</a><div class="post-meta-wordcount"><span>Word count: </span><span class="word-count">2.1k</span><span class="post-meta__separator">|</span><span>Reading time: 6 min</span></div></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><p><code>MergeTree</code>引擎以及隶属于<code>MergeTree</code>引擎族的所有引擎是Clickhouse表引擎中最重要, 最强大的引擎.</p>
+<p>MergeTree引擎族中的引擎被设计用于将大量数据写入表中. 这些数据被快速的写入每个表的每个part, 然后在Clickhouse底层会进行多个parts的合并(merge). 这种形式的处理比在插入过程中不断重写存储中的数据要高效得多.</p>
+<p>主要的功能点:</p>
+<ul>
+<li><p>存储按主键(primary key)排序的数据.</p>
+<p>这允许用户可以创建一个小型的稀疏索引, 有利于更快的在表中找到索要的数据.</p>
+</li>
+<li><p>如果<code>partitioning key</code>被设置, 分片(partitions)可以被使用.</p>
+<p>Clickhouse支持某些带分区的操作, 对于同一份数据进行处理, 带有分区的操作会比一般操作更有效. 当在查询语句中指定了分区后, Clickhouse会根据分区信息来进行数据的切分, 这样极大程度上提升了查询的性能.</p>
+</li>
+<li><p>数据副本机制支持(Replication)</p>
+<p>ReplicatedMergeTree并引擎提供了数据副本机制.</p>
+</li>
+<li><p>支持数据采样</p>
+<p>如果必要, 可以在表中设置数据采样方式.</p>
+</li>
+</ul>
+<h2 id="创建表"><a href="#创建表" class="headerlink" title="创建表"></a>创建表</h2><h3 id="建表语句"><a href="#建表语句" class="headerlink" title="建表语句"></a>建表语句</h3><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> [<span class="keyword">IF</span> <span class="keyword">NOT</span> <span class="keyword">EXISTS</span>] [db.]table_name [<span class="keyword">ON</span> CLUSTER cluster]</span><br><span class="line">(</span><br><span class="line">    name1 [type1] [<span class="keyword">DEFAULT</span>|<span class="keyword">MATERIALIZED</span>|<span class="keyword">ALIAS</span> expr1] [TTL expr1],</span><br><span class="line">    name2 [type2] [<span class="keyword">DEFAULT</span>|<span class="keyword">MATERIALIZED</span>|<span class="keyword">ALIAS</span> expr2] [TTL expr2],</span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">INDEX</span> index_name1 expr1 <span class="keyword">TYPE</span> type1(...) GRANULARITY value1,</span><br><span class="line">    <span class="keyword">INDEX</span> index_name2 expr2 <span class="keyword">TYPE</span> type2(...) GRANULARITY value2</span><br><span class="line">) <span class="keyword">ENGINE</span> = MergeTree()</span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> expr</span><br><span class="line">[<span class="keyword">PARTITION</span> <span class="keyword">BY</span> expr]</span><br><span class="line">[PRIMARY <span class="keyword">KEY</span> expr]</span><br><span class="line">[<span class="keyword">SAMPLE</span> <span class="keyword">BY</span> expr]</span><br><span class="line">[TTL expr [<span class="keyword">DELETE</span>|<span class="keyword">TO</span> DISK <span class="string">'xxx'</span>|<span class="keyword">TO</span> VOLUME <span class="string">'xxx'</span>], ...]</span><br><span class="line">[<span class="keyword">SETTINGS</span> <span class="keyword">name</span>=<span class="keyword">value</span>, ...]</span><br></pre></td></tr></table></figure>
+
+<h3 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明"></a>参数说明</h3><ul>
+<li><p><code>ENGINE</code>: 指定该表所使用的的引擎. 如果引擎需要一些具体的参数, 需要进行相应的设置, <code>MergeTree</code>引擎不需要, 例如<code>ReplicatedMergeTree</code>:</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">Copy ENGINE=ReplicatedMergeTree('/clickhouse/tables/<span class="comment">#_tenant_id_#/#__appname__#/#_at_date_#/&#123;shard&#125;/hits', '&#123;replica&#125;')</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>ORDER BY</code>: 按指定字段进行排序</p>
+<p>支持设置的值为元组(一个列名或任意多字段表达式), 例如:</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">Copy ORDER BY (CounterID, EventDate)</span><br></pre></td></tr></table></figure>
+
+<p>如果创建表的时候, 没有使用<code>PRIMARY KEY</code>修饰词来显式指定主键, 那么Clickhouse会将<code>ORDER BY</code>指定的字段作为主键处理.</p>
+<p>如果该表不需要排序, 可以使用<code>ORDER BY tuple()</code>语法.</p>
+</li>
+<li><p><code>PARTITION BY</code>: 指定分区字段, 可选</p>
+<p>分区字段一般是一个<code>Date</code>类型或者<code>DateTime</code>类型的字段. 如果想按照月进行分区, 可以使用<code>toYYYYMM(date_column)</code>表达式, 那么分区字段的格式就是<code>YYYYMM</code>.</p>
+</li>
+<li><p><code>PAIMARY KEY</code>: 主键, 可选</p>
+<p>默认情况下, 在Clickhouse中主键都是和排序字段(<code>ORDER BY</code>子句指定字段)是一致的, 所以在大多数情况下, 不需要单独指定主键. 如果需要两者不一致, 详情可见<a href="https://clickhouse.tech/docs/en/engines/table-engines/mergetree-family/mergetree/#choosing-a-primary-key-that-differs-from-the-sorting-key" target="_blank" rel="noopener">differs from the sorting key</a>.</p>
+</li>
+<li><p><code>SAMPLE BY</code>: 取样表达式, 可选</p>
+<p>如果使用了<code>SAMPLE BY</code>子句, 那么<code>SAMPLE BY</code>指定的字段必须是主键(或排序字段)所包含的字段. 例如:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">SAMPLE BY intHash32(USERID)</span><br><span class="line">ORDER BY (CounterID, EventDate, intHash32(UserID))</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>TTL</code>: 一些被指定的规则, 涉及存储数据行的存储时长, 以及确定数据parts的自动移除逻辑. 可选</p>
+<p>TTL表达式必须包含一个<code>Date</code>类型或者<code>DateTime</code>类型的字段作为一个结果值, 例如:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Copy TTL date + INTERVAL 1 DAY</span><br></pre></td></tr></table></figure>
+
+<p>这种类型的规则<code>DELETE|TO DISK &#39;xxx&#39;|TO VOLUME &#39;xxx&#39;</code>指定了当表达式条件被满足时对数据parts处理的操作: 删除过期的行, 移除数据parts(如果该数据parts中所有的行都满足条件)到指定的位置<code>TO DISK &#39;XXX&#39;</code>.规则的默认类型是<code>DELETE</code>. 可以指定多个规则组成一条表达式, 但是<code>DELETE</code>规则不成超过一条.</p>
+<p>查看更多细节: <a href="https://clickhouse.tech/docs/en/engines/table-engines/mergetree-family/mergetree/#table_engine-mergetree-ttl" target="_blank" rel="noopener">TTL for columns and tables</a>.</p>
+</li>
+<li><p><code>SETTINGS</code>: 设置<code>MergeTree</code>引擎的附加的参数, 可选</p>
+<ul>
+<li><p><code>index_graularity</code></p>
+<p>索引标记之间的最大数据行数. 默认值: 8192.</p>
+</li>
+<li><p><code>index_graularity_bytes</code></p>
+<p>数据颗粒的最大大小, 单位bytes, 默认值: 10MB. 若要仅按行数限制颗粒大小, 请设置为0(不推荐).</p>
+</li>
+<li><p><code>min_index_granularity_bytes</code></p>
+<p>数据颗粒的最小大小, 单位bytes, 默认值: 1024b. 该值是为了防止意外创建<code>index_graularity_bytes</code>值很低的表.</p>
+</li>
+<li><p><code>enable_mixed_granularity_parts</code></p>
+<p>同样是设置数据颗粒的最大大小, 该参数用于过渡取代<code>index_graularity_bytes</code>. 在<code>v19.11</code>版本前, 只有<code>index_granularity</code>用于控制颗粒大小.当查询数据涉及到大量的行(几十或几百兆)时, <code>index_granularity_bytes</code>参数提高了Clickhouse的性能. 如果你的表拥有大量的行时, 可以为表启用这个参数来提高查询的性能.</p>
+</li>
+<li><p><code>use_minimalistic_part_header_in_zookeeper</code></p>
+<p>在Zookeeper中数据parts_headers存储的方式. 如果设置为1, 则Zookeeper中存储的数据较少, 具体可以参考<a href="https://clickhouse.tech/docs/en/operations/server-configuration-parameters/settings/#server-settings-use_minimalistic_part_header_in_zookeeper" target="_blank" rel="noopener">setting description</a>.</p>
+</li>
+<li><p><code>min_merge_bytes_to_use_direct_io</code></p>
+<p>使用直接I/O访问存储磁盘所需的merge操作的最小数据量. merge数据parts时, Clickhouse会计算所有要合并的数据的总存储空间, 如果超过<code>min_merge_bytes_to_use_direct_io</code>设定的值, Clickhouse会使用直接I/O接口(O_DIRECT选项)读取和写入数据到磁盘. 如果设置为0, 则直接I/O被禁用, 默认值: 10M.</p>
+</li>
+<li><p><code>merge_with_ttl_timeout</code></p>
+<p>重复合并TTL的最小延迟时间, 单位秒, 默认值: 1 day.</p>
+</li>
+<li><p><code>write_final_mark</code></p>
+<p>启用或禁用在数据部分的末尾(最后一个字节之后)写入最后的索引标记. 默认值: 1, 不要关闭.</p>
+</li>
+<li><p><code>merge_max_block_size</code></p>
+<p>合并操作时, 每个块的最大行数, 默认值: 8192.</p>
+</li>
+<li><p><code>storage_policy</code></p>
+<p>存储策略, 详见<a href="https://clickhouse.tech/docs/en/engines/table-engines/mergetree-family/mergetree/#table_engine-mergetree-multiple-volumes" target="_blank" rel="noopener">Using Multiple Block Devices for Data Storage</a>.</p>
+</li>
+<li><p><code>min_bytes_for_wide_part</code>, <code>min_rows_for_wide_part</code></p>
+<p>数据部分中可存储为Wide格式的最小字节数/行数. 可以设置这些设置中的一个, 两个或全部.</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="样例说明"><a href="#样例说明" class="headerlink" title="样例说明"></a>样例说明</h3><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">ENGINE MergeTree() </span><br><span class="line">PARTITION BY toYYYYMM(EventDate) </span><br><span class="line">ORDER BY (CounterID, EventDate, intHash32(UserID)) </span><br><span class="line">SAMPLE BY intHash32(UserID) </span><br><span class="line">SETTINGS index_granularity=8192</span><br></pre></td></tr></table></figure>
+
+<p>在这个样例中, 设置了按月份进行分区.</p>
+<p>同时设置了一个表达式 -&gt; 按用户ID进行Hash采样. 这样就可以为每个CounterID和EventDate伪随机化(pseudorandomize)表中的数据. 如果你在选择数据时定义了一个SAMPLE子句, Clickhouse将会为用户的子集返回一个均匀的伪随机化的数据样本.</p>
+<p>index_granularity设置可以省略, 因为8192是默认值.</p>
+<h2 id="数据存储"><a href="#数据存储" class="headerlink" title="数据存储"></a>数据存储</h2><p>一个表由按主键排序的数据parts组成.</p>
+<p>当在表中插入数据时, 会创建单独的数据parts, 并对每个数据parts按主键进行字典排序. 例如, 如果主键是(CounterID, Date), 则该部分的数据会按照CounterID排序, 在每个CounterID内, 再按照Date排序.</p>
+<p>属于不同分片的数据会被分隔成不同的part. 在Clickhouse底层, ck合并数据parts成为更有效的存储结构. 属于不同分片的parts不会被merge. Merge机制并不能保证所有具有相同主键的行都在同一个数据parts.</p>
+<p>数据parts可以用宽(<strong>Wide</strong>)或者紧凑(<strong>Compact</strong>)格式来存储. 在Wide格式中, 每一列都会被存储在磁盘的一个单独的文件中, 在Compact格式中, 所有的列都会被存在在同一个文件中. Compact格式可以用来提高小规模和频繁插入的性能(涉及到写入到更少的文件中).</p>
+<p>数据存储格式有表引擎的<code>min_bytes_for_wide_part</code>和<code>min_rows_for_wide_part</code>参数控制. 如果数据parts的字节数小于相应的设置项, 则该部分以Compact格式存储, 反之以Wide格式存储. 如果这两个参数未被设置, 将会默认以Wide格式存储.</p>
+<p>每个数据part在逻辑上被划分成颗粒(granule). 一个颗粒是Clickhouse在读取选中数据时, 最小的不可分割的数据集单位. Clickhouse不会拆分行或者字段值, 所以每个颗粒总是包含整数单位的行. 颗粒的第一行是用该行的主键值进行标记的. 对于每个数据part来说, Clickhouse都会创建一个索引文件来存储这些标记(mark). 对于每一列而言, 无论它是否是主键, Clickhouse都会存储相同的标记. 这些标记可以帮助查询的时候直接在列文件中找到数据.</p>
+<p>颗粒的大小收到表引擎<code>index_granularity</code>和<code>index_granularity_bytes</code>参数的限制. 根据行的大小, 一个颗粒中的行数在[1, index_granularity]范围内. 如果单行的大小大于设置值, 那么颗粒的大小可以超过index_granularity_bytes. 在这种情况下, 颗粒的大小等于行的大小.</p>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="mailto:undefined" target="_blank" rel="noopener">Tunan</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="http://yerias.github.io/2020/12/15/clickhouse/10/">http://yerias.github.io/2020/12/15/clickhouse/10/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/ClickHouse/">ClickHouse</a></div><div class="social-share" data-disabled="facebook,twitter,douban,linkedin,diandian"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js@1.0.16/dist/css/share.min.css"><script src="https://cdn.jsdelivr.net/npm/social-share.js@1.0.16/dist/js/social-share.min.js"></script><nav id="pagination"><div class="next-post pull-right"><a href="/2020/12/15/%E5%9C%BA%E6%99%AF%E9%97%AE%E9%A2%98/1/"><span>每年总成绩都有提升的学生</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer class="footer-bg" style="background-image: url(/img/soroush-golpoor-1497416-unsplash.jpg)"><div class="layout" id="footer"><div class="copyright">&copy;2018 - 2020 By Tunan</div><div class="framework-info"><span>Driven - </span><a href="#"><span>Hexo</span></a><span class="footer-separator">|</span><span>Theme - </span><a href="#"><span>Melody</span></a></div><div class="footer_custom_text">大家好，我是图南，很高兴认识你们！</div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file-o"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.6.1"></script><script src="/js/fancybox.js?version=1.6.1"></script><script src="/js/sidebar.js?version=1.6.1"></script><script src="/js/copy.js?version=1.6.1"></script><script src="/js/fireworks.js?version=1.6.1"></script><script src="/js/transition.js?version=1.6.1"></script><script src="/js/scroll.js?version=1.6.1"></script><script src="/js/head.js?version=1.6.1"></script><script src="/js/search/local-search.js"></script><script>if(/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+}</script><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">Local search</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="Search for Posts"></div></div></div><hr><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>Powered by</span> <a href="https://github.com/wzpan/hexo-generator-search" target="_blank" rel="noopener" style="color:#49B1F5;">hexo-generator-search</a></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div></body></html>
