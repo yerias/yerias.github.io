@@ -1,0 +1,119 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="Flink State Backends"><meta name="keywords" content="Flink"><meta name="author" content="Tunan"><meta name="copyright" content="Tunan"><title>Flink State Backends | TUNANのBlog</title><link rel="shortcut icon" href="/melody-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.6.1"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.6.1"><link rel="dns-prefetch" href="https://cdn.staticfile.org"><link rel="dns-prefetch" href="https://cdn.bootcss.com"><link rel="dns-prefetch" href="https://creativecommons.org"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"We didn't find any results for the search: ${query}"}},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  }
+} </script></head><body><canvas class="fireworks"></canvas><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="toggle-sidebar-info text-center"><span data-toggle="Toggle article">Toggle site</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">Catalog</div><div class="sidebar-toc__progress"><span class="progress-notice">You've read</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#目录"><span class="toc-number">1.</span> <span class="toc-text">目录</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#State-Backends"><span class="toc-number">2.</span> <span class="toc-text">State Backends</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#可用的-State-Backends"><span class="toc-number">2.1.</span> <span class="toc-text">可用的 State Backends</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MemoryStateBackend"><span class="toc-number">2.2.</span> <span class="toc-text">MemoryStateBackend</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#FsStateBackend"><span class="toc-number">2.3.</span> <span class="toc-text">FsStateBackend</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RocksDBStateBackend"><span class="toc-number">2.4.</span> <span class="toc-text">RocksDBStateBackend</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#设置每个-Job-的-State-Backend"><span class="toc-number">2.5.</span> <span class="toc-text">设置每个 Job 的 State Backend</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#设置默认的（全局的）-State-Backend"><span class="toc-number">2.6.</span> <span class="toc-text">设置默认的（全局的） State Backend</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#增量快照"><span class="toc-number">2.7.</span> <span class="toc-text">增量快照</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#三种State-Backends对比"><span class="toc-number">2.8.</span> <span class="toc-text">三种State Backends对比</span></a></li></ol></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="/img/xiaoqi.jpg"></div><div class="author-info__name text-center">Tunan</div><div class="author-info__description text-center">BigData Developer</div><div class="follow-button"><a href="#">Follow Me</a></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">Articles</span><span class="pull-right">201</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">Tags</span><span class="pull-right">38</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">Categories</span><span class="pull-right">34</span></a></div><hr><div class="author-info-links"><div class="author-info-links__title text-center">Links</div><a class="author-info-links__name text-center" href="https://hadoop.apache.org/docs/r2.10.0/hadoop-project-dist/hadoop-common/SingleCluster.html" target="_blank" rel="noopener">HADOOP</a><a class="author-info-links__name text-center" href="https://cwiki.apache.org/confluence/display/Hive/" target="_blank" rel="noopener">HIVE</a><a class="author-info-links__name text-center" href="http://archive.cloudera.com/cdh5/cdh/5/" target="_blank" rel="noopener">CDH</a><a class="author-info-links__name text-center" href="http://flume.apache.org/" target="_blank" rel="noopener">FLUME</a><a class="author-info-links__name text-center" href="https://azkaban.github.io/" target="_blank" rel="noopener">AZKABAN</a><a class="author-info-links__name text-center" href="https://www.maxinhong.com/" target="_blank" rel="noopener">叶梨子</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/qingyunzong" target="_blank" rel="noopener">老铁</a><a class="author-info-links__name text-center" href="https://blog.csdn.net/jim8973/" target="_blank" rel="noopener">飞哥</a><a class="author-info-links__name text-center" href="https://vinxikk.github.io/" target="_blank" rel="noopener">vinx</a><a class="author-info-links__name text-center" href="http://dongxicheng.org/" target="_blank" rel="noopener">懂西成(Hadoop技术内幕作者)</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/xing901022/" target="_blank" rel="noopener">xingoo</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/itboys/tag/" target="_blank" rel="noopener">大葱拌豆腐</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/shishanyuan" target="_blank" rel="noopener">郭景瞻(图解Spark作者)</a><a class="author-info-links__name text-center" href="https://segmentfault.com/u/wishdaren_5c243b920a3eb" target="_blank" rel="noopener">Wish大人</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/huxi2b/" target="_blank" rel="noopener">huxi_2b(kafka)</a></div></div></div><div id="content-outer"><div id="top-container" style="background-image: url(/img/soroush-golpoor-1497416-unsplash.jpg)"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">TUNANのBlog</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> Search</span></a><a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/categories">Categories</a></span></div><div id="post-info"><div id="post-title">Flink State Backends</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2021-04-11</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/Flink/">Flink</a><div class="post-meta-wordcount"><span>Word count: </span><span class="word-count">1.6k</span><span class="post-meta__separator">|</span><span>Reading time: 5 min</span></div></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><ol start="5">
+<li>State Backends</li>
+</ol>
+<h2 id="State-Backends"><a href="#State-Backends" class="headerlink" title="State Backends"></a>State Backends</h2><p>用 Data Stream API 编写的程序通常以各种形式保存状态：</p>
+<ul>
+<li>在 Window 触发之前要么收集元素、要么聚合</li>
+<li>转换函数可以使用 key/value 格式的状态接口来存储状态</li>
+<li>转换函数可以实现 <code>CheckpointedFunction</code> 接口，使其本地变量具有容错能力</li>
+</ul>
+<p>在启动 CheckPoint 机制时，状态会随着 CheckPoint 而持久化，以防止数据丢失、保障恢复时的一致性。 状态内部的存储格式、状态在 CheckPoint 时如何持久化以及持久化在哪里均取决于选择的 <strong>State Backend</strong>。</p>
+<h3 id="可用的-State-Backends"><a href="#可用的-State-Backends" class="headerlink" title="可用的 State Backends"></a>可用的 State Backends</h3><p>Flink 内置了以下这些开箱即用的 state backends ：</p>
+<ul>
+<li><em>MemoryStateBackend</em></li>
+<li><em>FsStateBackend</em></li>
+<li><em>RocksDBStateBackend</em></li>
+</ul>
+<p>如果不设置，默认使用 MemoryStateBackend。</p>
+<h3 id="MemoryStateBackend"><a href="#MemoryStateBackend" class="headerlink" title="MemoryStateBackend"></a>MemoryStateBackend</h3><p>在 <em>MemoryStateBackend</em> 内部，数据以 Java 对象的形式存储在堆中。 Key/value 形式的状态和窗口算子持有存储着状态值、触发器的 hash table。</p>
+<p>在 CheckPoint 时，State Backend 对状态进行快照，并将快照信息作为 CheckPoint 应答消息的一部分发送给 JobManager(master)，同时 JobManager 也将快照信息存储在堆内存中。</p>
+<p>MemoryStateBackend 能配置异步快照。强烈建议使用异步快照来防止数据流阻塞，注意，异步快照默认是开启的。 用户可以在实例化 <code>MemoryStateBackend</code> 的时候，将相应布尔类型的构造参数设置为 <code>false</code> 来关闭异步快照（仅在 debug 的时候使用），例如：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">env.setStateBackend(<span class="keyword">new</span> MemoryStateBackend(MAX_MEM_STATE_SIZE, <span class="keyword">false</span>));</span><br></pre></td></tr></table></figure>
+
+<p>MemoryStateBackend 的限制：</p>
+<ul>
+<li>默认情况下，每个独立的状态大小限制是 5 MB。在 MemoryStateBackend 的构造器中可以增加其大小。</li>
+<li>无论配置的最大状态内存大小（MAX_MEM_STATE_SIZE）有多大，都不能大于 akka frame 大小（看<a href="https://ci.apache.org/projects/flink/flink-docs-release-1.10/zh/ops/config.html" target="_blank" rel="noopener">配置参数</a>）。</li>
+<li>聚合后的状态必须能够放进 JobManager 的内存中。</li>
+</ul>
+<p>MemoryStateBackend 适用场景：</p>
+<ul>
+<li>本地开发和调试。</li>
+<li>状态很小的 Job，例如：由每次只处理一条记录的函数（Map、FlatMap、Filter 等）构成的 Job。Kafka Consumer 仅仅需要非常小的状态。</li>
+</ul>
+<p>建议同时将 <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.10/zh/ops/memory/mem_setup.html#managed-memory" target="_blank" rel="noopener">managed memory</a> 设为0，以保证将最大限度的内存分配给 JVM 上的用户代码。</p>
+<h3 id="FsStateBackend"><a href="#FsStateBackend" class="headerlink" title="FsStateBackend"></a>FsStateBackend</h3><p><em>FsStateBackend</em> 需要配置一个文件系统的 URL（类型、地址、路径），例如：”hdfs://namenode:40010/flink/checkpoints” 或 “file:///data/flink/checkpoints”。</p>
+<p>FsStateBackend 将正在运行中的状态数据保存在 TaskManager 的内存中。CheckPoint 时，将状态快照写入到配置的文件系统目录中。 少量的元数据信息存储到 JobManager 的内存中（高可用模式下，将其写入到 CheckPoint 的元数据文件中）。</p>
+<p>FsStateBackend 默认使用异步快照来防止 CheckPoint 写状态时对数据处理造成阻塞。 用户可以在实例化 <code>FsStateBackend</code> 的时候，将相应布尔类型的构造参数设置为 <code>false</code> 来关闭异步快照，例如：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">env.setStateBackend(<span class="keyword">new</span> FsStateBackend(<span class="string">"hdfs://hadoop:9000/flink/rocks_state_backend"</span>))</span><br></pre></td></tr></table></figure>
+
+<p>FsStateBackend 适用场景:</p>
+<ul>
+<li>状态比较大、窗口比较长、key/value 状态比较大的 Job。</li>
+<li>所有高可用的场景。</li>
+</ul>
+<p>建议同时将 <a href="https://ci.apache.org/projects/flink/flink-docs-release-1.10/zh/ops/memory/mem_setup.html#managed-memory" target="_blank" rel="noopener">managed memory</a> 设为0，以保证将最大限度的内存分配给 JVM 上的用户代码。</p>
+<h3 id="RocksDBStateBackend"><a href="#RocksDBStateBackend" class="headerlink" title="RocksDBStateBackend"></a>RocksDBStateBackend</h3><p><em>RocksDBStateBackend</em> 需要配置一个文件系统的 URL （类型、地址、路径），例如：”hdfs://namenode:40010/flink/checkpoints” 或 “file:///data/flink/checkpoints”。</p>
+<p>RocksDBStateBackend 将正在运行中的状态数据保存在 <a href="http://rocksdb.org/" target="_blank" rel="noopener">RocksDB</a> 数据库中，RocksDB 数据库默认将数据存储在 TaskManager 的数据目录。 CheckPoint 时，整个 RocksDB 数据库被 checkpoint 到配置的文件系统目录中。 少量的元数据信息存储到 JobManager 的内存中（高可用模式下，将其存储到 CheckPoint 的元数据文件中）。RocksDBStateBackend 只支持异步快照。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">env.setStateBackend(<span class="keyword">new</span> RocksDBStateBackend(filebackend, <span class="keyword">true</span>));</span><br></pre></td></tr></table></figure>
+
+<p>RocksDBStateBackend 的限制：</p>
+<ul>
+<li>由于 RocksDB 的 JNI API 构建在 byte[] 数据结构之上, 所以每个 key 和 value 最大支持 2^31 字节。 重要信息: RocksDB 合并操作的状态（例如：ListState）累积数据量大小可以超过 2^31 字节，但是会在下一次获取数据时失败。这是当前 RocksDB JNI 的限制。</li>
+</ul>
+<p>RocksDBStateBackend 的适用场景：</p>
+<ul>
+<li>状态非常大、窗口非常长、key/value 状态非常大的 Job。</li>
+<li>所有高可用的场景。</li>
+</ul>
+<p>注意，你可以保留的状态大小仅受磁盘空间的限制。与状态存储在内存中的 FsStateBackend 相比，RocksDBStateBackend 允许存储非常大的状态。 然而，这也意味着使用 RocksDBStateBackend 将会使应用程序的最大吞吐量降低。 所有的读写都必须序列化、反序列化操作，这个比基于堆内存的 state backend 的效率要低很多。</p>
+<p><a href="https://ci.apache.org/projects/flink/flink-docs-release-1.10/zh/ops/state/state_backends.html" target="_blank" rel="noopener">更多的进阶操作查看官网</a></p>
+<h3 id="设置每个-Job-的-State-Backend"><a href="#设置每个-Job-的-State-Backend" class="headerlink" title="设置每个 Job 的 State Backend"></a>设置每个 Job 的 State Backend</h3><p><code>StreamExecutionEnvironment</code> 可以对每个 Job 的 State Backend 进行设置，如下所示：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">val env = StreamExecutionEnvironment.getExecutionEnvironment()</span><br><span class="line">env.setStateBackend(<span class="keyword">new</span> FsStateBackend(<span class="string">"hdfs://namenode:40010/flink/checkpoints"</span>))</span><br></pre></td></tr></table></figure>
+
+<p>如果你想在 IDE 中使用 <code>RocksDBStateBackend</code>，或者需要在作业中通过编程方式动态配置 <code>RocksDBStateBackend</code>，必须添加以下依赖到 Flink 项目中。</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.flink<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>flink-statebackend-rocksdb_2.11<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.10.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">scope</span>&gt;</span>provided<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="设置默认的（全局的）-State-Backend"><a href="#设置默认的（全局的）-State-Backend" class="headerlink" title="设置默认的（全局的） State Backend"></a>设置默认的（全局的） State Backend</h3><p>在 <code>flink-conf.yaml</code> 可以通过键 <code>state.backend</code> 设置默认的 State Backend。</p>
+<p>可选值包括 <em>jobmanager</em> (MemoryStateBackend)、<em>filesystem</em> (FsStateBackend)、<em>rocksdb</em> (RocksDBStateBackend)， 或使用实现了 state backend 工厂 <a href="https://github.com/apache/flink/blob/master/flink-runtime/src/main/java/org/apache/flink/runtime/state/StateBackendFactory.java" target="_blank" rel="noopener">StateBackendFactory</a> 的类的全限定类名， 例如： RocksDBStateBackend 对应为 <code>org.apache.flink.contrib.streaming.state.RocksDBStateBackendFactory</code>。</p>
+<p><code>state.checkpoints.dir</code> 选项指定了所有 State Backend 写 CheckPoint 数据和写元数据文件的目录。 你能在这里找到关于 CheckPoint 目录结构的详细信息。</p>
+<p>配置文件的部分示例如下所示：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"># 用于存储 operator state 快照的 State Backend</span><br><span class="line">state.backend: filesystem</span><br><span class="line"></span><br><span class="line"># 存储快照的目录</span><br><span class="line">state.checkpoints.dir: hdfs:<span class="comment">//namenode:40010/flink/checkpoints</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="增量快照"><a href="#增量快照" class="headerlink" title="增量快照"></a>增量快照</h3><p>RocksDBStateBackend 支持<em>增量快照</em>。不同于产生一个包含所有数据的全量备份，增量快照中只包含自上一次快照完成之后被修改的记录，因此可以显著减少快照完成的耗时。</p>
+<p>虽然状态数据量很大时我们推荐使用增量快照，但这并不是默认的快照机制，您需要通过下述配置手动开启该功能：</p>
+<ul>
+<li>在 <code>flink-conf.yaml</code> 中设置：<code>state.backend.incremental: true</code> 或者</li>
+<li>在代码中按照右侧方式配置（来覆盖默认配置）：<code>RocksDBStateBackend backend = new RocksDBStateBackend(filebackend, true);</code></li>
+</ul>
+<h3 id="三种State-Backends对比"><a href="#三种State-Backends对比" class="headerlink" title="三种State Backends对比"></a>三种State Backends对比</h3><table>
+<thead>
+<tr>
+<th>类别</th>
+<th>State</th>
+<th>Checkpoint</th>
+<th>场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>MemoryStateBackend</td>
+<td>存在taskManager上的</td>
+<td>jobmanager</td>
+<td>测试</td>
+</tr>
+<tr>
+<td>FsStateBackend</td>
+<td>存在taskManager上的</td>
+<td>fs</td>
+<td>测试/部分生产</td>
+</tr>
+<tr>
+<td>RocksDBStateBackend</td>
+<td>存在RocksDB上</td>
+<td>hdfs</td>
+<td>生产</td>
+</tr>
+</tbody></table>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="mailto:undefined" target="_blank" rel="noopener">Tunan</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="http://yerias.github.io/2021/04/11/flink/6/">http://yerias.github.io/2021/04/11/flink/6/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Flink/">Flink</a></div><div class="social-share" data-disabled="facebook,twitter,douban,linkedin,diandian"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js@1.0.16/dist/css/share.min.css"><script src="https://cdn.jsdelivr.net/npm/social-share.js@1.0.16/dist/js/social-share.min.js"></script><nav id="pagination"><div class="prev-post pull-left"><a href="/2021/04/11/flink/7/"><i class="fa fa-chevron-left">  </i><span>Flink 高效读写HBase</span></a></div><div class="next-post pull-right"><a href="/2021/04/11/flink/5/"><span>Flink Checkpoint &amp;&amp; Savepoint</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer class="footer-bg" style="background-image: url(/img/soroush-golpoor-1497416-unsplash.jpg)"><div class="layout" id="footer"><div class="copyright">&copy;2018 - 2021 By Tunan</div><div class="framework-info"><span>Driven - </span><a href="#"><span>Hexo</span></a><span class="footer-separator">|</span><span>Theme - </span><a href="#"><span>Melody</span></a></div><div class="footer_custom_text">大家好，我是图南，很高兴认识你们！</div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file-o"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.6.1"></script><script src="/js/fancybox.js?version=1.6.1"></script><script src="/js/sidebar.js?version=1.6.1"></script><script src="/js/copy.js?version=1.6.1"></script><script src="/js/fireworks.js?version=1.6.1"></script><script src="/js/transition.js?version=1.6.1"></script><script src="/js/scroll.js?version=1.6.1"></script><script src="/js/head.js?version=1.6.1"></script><script src="/js/search/local-search.js"></script><script>if(/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+}</script><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">Local search</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="Search for Posts"></div></div></div><hr><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>Powered by</span> <a href="https://github.com/wzpan/hexo-generator-search" target="_blank" rel="noopener" style="color:#49B1F5;">hexo-generator-search</a></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div></body></html>
