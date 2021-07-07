@@ -4,6 +4,135 @@
   
     
     <entry>
+      <title>Hadoop切分纯文本时对某一行跨两个分片这种情况的处理</title>
+      <link href="/2021/07/07/hadoop/19/"/>
+      <url>/2021/07/07/hadoop/19/</url>
+      
+        <content type="html"><![CDATA[<p>当我们提交一个MapReduce程序来处理一个或多个纯文本时，Hadoop会根据设置的分片（split）大小把文件切分成多个（InputSplit），然后分配给MapReduce程序处理。而由于Hadoop对文件做切分的时候，只考虑分片大小，而不管切分的时候会不会把某一行分成两半（事实上，一个分片的结尾正好是一个换行符的概率很低）。那么，在MapReduce程序处理每一行文本的时候，我们会不会得到一个不完整的行？</p><p>事实上，Hadoop对这种某一行跨两个分片的情况进行了特殊的处理。通常Hadoop使用的InputSplit是FileSplit，一个FileSplit主要存储了三个信息。</p><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">&lt;path, start, 分片length&gt;</span><br></pre></td></tr></table></figure><p>假设根据设置分片大小为100，那么一个250字节大小的文件切分之后，我们会得到如下的FileSplit：</p><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">&lt;path, <span class="number">0</span>, <span class="number">100</span>&gt;</span><br><span class="line">&lt;path, <span class="number">100</span>, <span class="number">100</span>&gt;</span><br><span class="line">&lt;path, <span class="number">200</span>, <span class="number">50</span>&gt;</span><br></pre></td></tr></table></figure><p>（具体的切分算法可以参考FileInputFormat的实现）</p><p>因此，事实上，每个MapReduce程序得到的只是类似</p><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">&lt;path, <span class="number">0</span>, <span class="number">100</span>&gt;</span><br></pre></td></tr></table></figure><p>的信息。当MapReduce程序开始执行时，会根据path构建一个FSDataInputStream，定位到start，然后开始读取数据。在处理一个FileSplit的最后一行时，当读取到一个FileSplit的最后一个字符时，如果不是换行符，那么会继续读取下一个FileSplit的内容，直到读取到下一个FileSplit的第一个换行符。这样子就保证我们不会得到一个不完整的行了。</p><p>那么当MapReduce在处理下一个FileSplit的时候，怎么知道上一个FileSplit有没有已经处理了这个FileSplit的第一行内容？</p><p>我们只需要检查一下前一个FileSplit的最后一个字符是不是换行符，如果是，那么当前Split的第一行还没有被处理，如果不是，表示当前Split的第一行已经被处理，我们应该跳过。</p><p>在LineRecordReader中，使用了一个很巧妙的方法来实现上述的逻辑，把当前FileSplit的start减一，然后跳过第一行。</p><p>新版本的hadoop已经有所修改，不再用这种方式来保证读取完整的一行数据。最新的方法时：保证每个分片读取完成后的当前读取位置要处于下一分片中。对应的，除了第一个分片以外，每个分片都会在读取时跳过首行。这种改动简化了冗余的逻辑。</p><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">while</span> (getFilePosition() &lt;= end || in.needAdditionalRecordAfterSplit()) &#123;</span><br><span class="line">    key.set(pos);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> newSize = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (pos == <span class="number">0</span>) &#123;</span><br><span class="line">        newSize = skipUtfByteOrderMark(value);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        newSize = in.readLine(value, maxLineLength, maxBytesToConsume(pos));</span><br><span class="line">        pos += newSize;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (newSize == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (newSize &lt; maxLineLength) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// line too long. try again</span></span><br><span class="line">    LOG.info(<span class="string">"Skipped line of size "</span> + newSize + <span class="string">" at pos "</span> + (pos - newSize));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>事实上，InputSplit只是一个逻辑上的概念，跟HDFS本身的block等机制无关，HDFS的好处是让我们可以假设MapReduce程序只是在处理一个本地的文件。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Hadoop </category>
+          
+          <category> HDFS </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Hadoop </tag>
+            
+            <tag> HDFS </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>NIO读写文件&amp;缓冲流读写hdfs文件代码</title>
+      <link href="/2021/07/05/java/12/"/>
+      <url>/2021/07/05/java/12/</url>
+      
+        <content type="html"><![CDATA[<h2 id="NIO读写文件"><a href="#NIO读写文件" class="headerlink" title="NIO读写文件"></a>NIO读写文件</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">nioTest</span><span class="params">()</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">        String path = <span class="string">"D:\\\\BaiduYunDownload\\\\access_2013_05_30.log"</span>;</span><br><span class="line">        File file = <span class="keyword">new</span> File(path);</span><br><span class="line">        FileInputStream fis = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            fis = <span class="keyword">new</span> FileInputStream(file);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (FileNotFoundException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        FileChannel fileChannel = fis.getChannel();</span><br><span class="line">        <span class="keyword">int</span> capacity = <span class="number">1024</span>;</span><br><span class="line">        ByteBuffer buffer = ByteBuffer.allocate(capacity);</span><br><span class="line">        String outputPath = <span class="string">"D:\\\\BaiduYunDownload\\\\access.log"</span>;</span><br><span class="line">        File outputFile = <span class="keyword">new</span> File(outputPath);</span><br><span class="line">        File parentFile = outputFile.getParentFile();</span><br><span class="line">        <span class="keyword">if</span>(!parentFile.exists()) file.mkdirs();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            outputFile.createNewFile();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        FileOutputStream fos = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            fos = <span class="keyword">new</span> FileOutputStream(outputFile);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (FileNotFoundException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        FileChannel outputFileChannel = fos.getChannel();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">while</span>(fileChannel.read(buffer) != -<span class="number">1</span>) &#123;</span><br><span class="line">                buffer.flip();</span><br><span class="line">                outputFileChannel.write(buffer);</span><br><span class="line">                buffer.clear();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                fis.close();</span><br><span class="line">            &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                fos.close();</span><br><span class="line">            &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                fileChannel.close();</span><br><span class="line">            &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                outputFileChannel.close();</span><br><span class="line">            &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure><p><strong>大体思路：</strong></p><p>分别创建读文件流和写文件流的通道，设定缓冲区大小，读取字符到缓冲区。此时切换“”读“”模式到“写”模式，写入缓冲区内的字符到写文件通道，然后清空缓存区，循环上述过程。</p><p><strong>特殊情况：</strong></p><p>当文本中出现中文时，可能导致因设置的capacity而无法一次性读取完一个汉字（只读了一半），进而出现中文乱码现象。按理来说是这样的，但是在jdk1.8环境下测试多个测试案例未发现中文乱码现象。假设出现中文乱码，可尝试以下代码：</p><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Charset charset = Charset.forName(<span class="string">"GBK"</span>);</span><br><span class="line">charset.decode(buffer);</span><br></pre></td></tr></table></figure><p>如果还不行，那么需要通过拼接汉字来解决中文乱码问题。</p><p><strong>为什么NIO读取文件速度快？</strong></p><p>因为它是非阻塞的，读取数据时，如果内核IO操作完成，则读取数据并返回；如果未完成，则返回失败。</p><p>而阻塞方式的读取数据，如果数据未准备好，则重新读取数据，因此比较耗时。 </p><p><strong>拓展：</strong></p><p>NIO不仅是非阻塞的，还是同步的。因为客户端发送的连接请求都会注册到多路复用器上，多路复用器轮询IO，当有IO请求时，启动一个线程处理。而对于异步方式，当有IO请求，需要等待通知才启动线程处理。</p><p><strong>clear() compact()的区别</strong></p><p>clear 清除缓冲区的内容，compact清除缓冲区中已经读取过的内容。</p><p><strong>为什么使用传统方式：缓冲流读取hdfs文件？</strong></p><p>读取hdfs文件需要用FSDataOutputStream和FSDataInputStream，而这两种流均不支持创建通道，因此无法使用NIO完成输入输出。</p><h2 id="缓冲流读写hdfs文件代码"><a href="#缓冲流读写hdfs文件代码" class="headerlink" title="缓冲流读写hdfs文件代码"></a>缓冲流读写hdfs文件代码</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">readAndWriteHdfs</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123; </span><br><span class="line">FileSystem fileSystem = getFileSystem();</span><br><span class="line">    Path inputPath = <span class="keyword">new</span> Path(url+<span class="string">"/access.log"</span>);</span><br><span class="line">    FSDataInputStream fsDataInputStream = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        fsDataInputStream = fileSystem.open(inputPath);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">    &#125;</span><br><span class="line">    Reader reader = <span class="keyword">new</span> InputStreamReader(fsDataInputStream,<span class="string">"UTF-8"</span>);</span><br><span class="line">    BufferedReader bufferedReader = <span class="keyword">new</span> BufferedReader(reader);</span><br><span class="line">    FSDataOutputStream fsDataOutputStream = fileSystem.create(<span class="keyword">new</span> Path(url+<span class="string">"/test.log"</span>));</span><br><span class="line">    Writer writer = <span class="keyword">new</span> OutputStreamWriter(fsDataOutputStream,<span class="string">"UTF-8"</span>);</span><br><span class="line">    BufferedWriter bufferedWriter = <span class="keyword">new</span> BufferedWriter(writer);</span><br><span class="line">    String content = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">while</span>((content = bufferedReader.readLine()) != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">byte</span>[] bytes = content.getBytes(<span class="string">"UTF-8"</span>);</span><br><span class="line">        bufferedWriter.write(<span class="keyword">new</span> String(bytes)+<span class="string">"\n"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    bufferedWriter.close();</span><br><span class="line">    writer.close();</span><br><span class="line">    fsDataOutputStream.close();</span><br><span class="line">    bufferedReader.close();</span><br><span class="line">    reader.close();</span><br><span class="line">    fsDataInputStream.close();</span><br><span class="line">    fileSystem.close();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>按行读需要在读取的每行末尾添加换行符号，unix操作系统添加”\n”,windows操作系统添加”\r\n”。</p><p>如果不按行读，而逐个读取字节，可能会出现中文乱码现象，暂时没有找到解决方案。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Java </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Java </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Hive与MapReduce小文件合并问题</title>
+      <link href="/2021/07/05/hive/35/"/>
+      <url>/2021/07/05/hive/35/</url>
+      
+        <content type="html"><![CDATA[<p>近来我们公司搞小文件治理（小于10Mb），小文件太多的危害就不此赘述了。公司的开发人员提供的合并小文件治理配置如下：</p><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- 设置小文件合并</span></span><br><span class="line"><span class="keyword">set</span> hive.merge.mapfiles=<span class="literal">true</span>;</span><br><span class="line"><span class="keyword">set</span> hive.merge.mapredfiles=<span class="literal">true</span>;</span><br><span class="line"><span class="keyword">set</span> hive.merge.size.per.task = <span class="number">256000000</span> ;</span><br><span class="line"><span class="keyword">set</span> hive.merge.smallfiles.avgsize= <span class="number">256000000</span> ;</span><br></pre></td></tr></table></figure><p>看上去配置的没啥问题，不管是Map-only，还是MapReduce都考虑到了，只要输出的文件小于这个值，就重新启动一个MR去执行文件合并。看也符合Hive官网的配置解释</p><p><img src="https://yerias.github.io/hive_img/20200702221555548.png" alt=""></p><p>然而现实并非如此，原分析表数据在HDFS存储为551个小文件，下面所有的测试都是基于这个文件。</p><p><img src="https://yerias.github.io/hive_img/20200702221840232.png" alt=""></p><h2 id="测试代码方案1"><a href="#测试代码方案1" class="headerlink" title="测试代码方案1"></a>测试代码方案1</h2><p>设置启动map前文件合并，先使用官方默认配置，实现文件合并测试</p><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">set</span>  hive.input.format = org.apache.hadoop.hive.ql.io.CombineHiveInputFormat; <span class="comment">--官方默认值，也是当前平台默认值</span></span><br><span class="line"><span class="keyword">set</span>  hive.merge.smallfiles.avgsize=<span class="number">16000000</span>;  <span class="comment">--官方默认值，也是当前平台默认值</span></span><br><span class="line"><span class="keyword">set</span>  hive.merge.size.per.task=<span class="number">256000000</span>;  <span class="comment">--官方默认值，也是当前平台默认值</span></span><br><span class="line"><span class="keyword">set</span>  hive.merge.mapfiles  =<span class="literal">true</span> ;       <span class="comment">--官方默认值，也是当前平台默认值</span></span><br><span class="line"><span class="keyword">set</span>  hive.merge.mapredfiles = <span class="literal">true</span> ;  <span class="comment">--官方默认值，也是当前平台默认值</span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">table</span> <span class="keyword">if</span> <span class="keyword">exists</span> FDM_SOR.T_FSA_BHVR_NEW_EXPO_D_tmp_tmp;</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> FDM_SOR.t_fsa_bhvr_new_expo_d_tmp_tmp</span><br><span class="line"><span class="keyword">stored</span> <span class="keyword">as</span> orc </span><br><span class="line"><span class="keyword">as</span> </span><br><span class="line"><span class="keyword">select</span> </span><br><span class="line">*  </span><br><span class="line"><span class="keyword">from</span> FDM_SOR.t_fsa_bhvr_new_expo_d </span><br><span class="line"><span class="keyword">where</span> stat_date = <span class="string">'20200630'</span></span><br></pre></td></tr></table></figure><p>结果：只产生了438个文件，看样子效果不错，文件变少了，但是发现还是有很多小于16Mb的文件，为啥设置了不管用呢，是不是set hive.merge.smallfiles.avgsize官方的默认值给的太小了。需要加大。</p><p><img src="https://yerias.github.io/hive_img/2020070222241734.png" alt=""></p><p><img src="https://yerias.github.io/hive_img/20200702223037498.png" alt=""></p><h2 id="测试代码方案2"><a href="#测试代码方案2" class="headerlink" title="测试代码方案2"></a>测试代码方案2</h2><p>设置启动map前文件合并，将set hive.merge.smallfiles.avgsize值加大，增加文件合并的Size。按照官方的说法当输出的文件平均小于16Mb时系统会再启动一个MR进行文件合并。这下该管用了吧，请看：</p><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">set</span>  hive.input.format = org.apache.hadoop.hive.ql.io.CombineHiveInputFormat; <span class="comment">--官方默认值，也是当前平台默认值</span></span><br><span class="line"><span class="keyword">set</span>  hive.merge.smallfiles.avgsize=<span class="number">256000000</span>;  <span class="comment">--改了这个值，由默认的16Mb，改成256Mb</span></span><br><span class="line"><span class="keyword">set</span>  hive.merge.size.per.task=<span class="number">256000000</span>;  <span class="comment">--官方默认值，也是当前平台默认值</span></span><br><span class="line"><span class="keyword">set</span>  hive.merge.mapfiles  =<span class="literal">true</span> ;  <span class="comment">--官方默认值，也是当前平台默认值</span></span><br><span class="line"><span class="keyword">set</span>  hive.merge.mapredfiles = <span class="literal">true</span> ;  <span class="comment">--官方默认值，也是当前平台默认值</span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">table</span> <span class="keyword">if</span> <span class="keyword">exists</span> FDM_SOR.T_FSA_BHVR_NEW_EXPO_D_tmp_tmp;</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> FDM_SOR.t_fsa_bhvr_new_expo_d_tmp_tmp</span><br><span class="line"><span class="keyword">stored</span> <span class="keyword">as</span> orc </span><br><span class="line"><span class="keyword">as</span> </span><br><span class="line"><span class="keyword">select</span> </span><br><span class="line">*  </span><br><span class="line"><span class="keyword">from</span> FDM_SOR.t_fsa_bhvr_new_expo_d </span><br><span class="line"><span class="keyword">where</span> stat_date = <span class="string">'20200630'</span></span><br></pre></td></tr></table></figure><p>废话不多说，上结果请看</p><p><img src="https://yerias.github.io/hive_img/2020070222325692.png" alt=""></p><p><img src="https://yerias.github.io/hive_img/20200702223533296.png" alt=""></p><p>结果分析：没错，第一次MR因为Combinetext启动了438个map和上面一样，果然接着又启动了一个MR,进行输出后的文件合并。看样子很DIAO。合并要求文件大小不小256Mb，然后实际呢？pappa。文件虽然减少了很多到351个，但依然有很多小文件，很多小于10Mb的文件</p><h2 id="测试代码方案3"><a href="#测试代码方案3" class="headerlink" title="测试代码方案3"></a>测试代码方案3</h2><p>放大招，功夫有没有，代码走一走，加上split参数</p><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">set</span> mapred.max.split.size=<span class="number">256000000</span>;  </span><br><span class="line"><span class="keyword">set</span> mapred.min.split.size.per.node=<span class="number">100000000</span>;</span><br><span class="line"><span class="keyword">set</span> mapred.min.split.size.per.rack=<span class="number">100000000</span>;</span><br><span class="line"><span class="keyword">set</span> hive.input.format=org.apache.hadoop.hive.ql.io.CombineHiveInputFormat;</span><br><span class="line"><span class="keyword">set</span> hive.merge.mapfiles = <span class="literal">true</span> ;</span><br><span class="line"><span class="keyword">set</span> hive.merge.mapredfiles = <span class="literal">true</span> ;</span><br><span class="line"><span class="keyword">set</span> hive.merge.size.per.task = <span class="number">256000000</span> ;</span><br><span class="line"><span class="keyword">set</span> hive.merge.smallfiles.avgsize=<span class="number">160000000</span> ;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">table</span> <span class="keyword">if</span> <span class="keyword">exists</span> FDM_SOR.T_FSA_BHVR_NEW_EXPO_D_tmp_tmp;</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> FDM_SOR.T_FSA_BHVR_NEW_EXPO_D_tmp_tmp</span><br><span class="line"><span class="keyword">stored</span> <span class="keyword">as</span> orc </span><br><span class="line"><span class="keyword">as</span> </span><br><span class="line"><span class="keyword">select</span> </span><br><span class="line">*  </span><br><span class="line"><span class="keyword">from</span> FDM_SOR.T_FSA_BHVR_NEW_EXPO_D </span><br><span class="line"><span class="keyword">where</span> stat_date = <span class="string">'20200630'</span></span><br></pre></td></tr></table></figure><p>废话不多说，上结果请看：</p><p><img src="https://yerias.github.io/hive_img/20200702224351672.png" alt=""></p><p><img src="https://yerias.github.io/hive_img/20200702224508497.png" alt=""></p><p>结果分析: 这下好了，全是大文件，44大文件，每个大文件都是辣么大，最小的都是48Mb。为啥加了split参数以后就生效了呢。前面单独合并小文件参数没啥效果呢？网上随便搜一下，都是这种配置这种参数的？</p><h2 id="答案揭晓"><a href="#答案揭晓" class="headerlink" title="答案揭晓"></a>答案揭晓</h2><p>因为设置上面四个参数，看上去规定了map结束，MR结束合并文件，如果文件平均小于smallfiles.avgsize启动一个新的MRj进行文件的二次合并。如果启动mr合并文件，没有问题。但是忽略了一个问题，你重新启动一个mr合并文件，这个mr是不是需要进行文件split，你这个参数搞小了，那就会产生很多task，很多map，比如很多小文件就是一个map，最终还是产生很多小文件（因为合并小文件的mr只有map）。所以必须要配合split参数才有用。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Hive </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Hive </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>hive报错：running beyond physical memory limits. Current usage: 2.0 GB of 2 GB physica终极解决方式</title>
+      <link href="/2021/07/04/hive/34/"/>
+      <url>/2021/07/04/hive/34/</url>
+      
+        <content type="html"><![CDATA[<h2 id="案例描述"><a href="#案例描述" class="headerlink" title="案例描述"></a>案例描述</h2><p>hive有个定时任务平时正常，没有啥问题，正常一般大概执行1个小时左右，但是今天突然报错了，报错代码：：running beyond physical memory limits. Current usage: 2.0 GB of 2 GB physical memory used; 3.9 GB of 4.2 GB virtual memory used. Killing container。</p><h2 id="分析解决"><a href="#分析解决" class="headerlink" title="分析解决"></a>分析解决</h2><p>看报错日志，显示说是内存不够，container分配的2g物理内存已经使用完了，另外虚拟内存4.2g已经使用了3.9g。所以任务被杀死。网上找了一些问题的排查，比如说调整增加了map和reduce的内存，，设置虚拟内存的比率，取消虚拟内存的检查等等，但是其实好多都没有用，要具体问题具体分析。下面具体分析一下。</p><ol><li><p>查看大数据集群配置为每个container分配到内存的区间，从下面参数的结果可知，我们公司yarn的配置为每个container可申请的内存区间是1g-8g之间。具体每个container实际分配多少内存要看实际平台资源的负载情况 ，以及任务的优先级等因素。甚至有种方法说增加下面set yarn.scheduler.minimum-allocation-mb 参数的值，即将每个container的分配内存区间值调大。但是实际上这个值要通过yarn-site.xml文件进行配置，并且需要重启集群才会生效，而实际开发中，这种方法不太可能实现。</p><p>查看yarn为每个container分配的内存区间</p><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">hive&gt;set yarn.scheduler.minimum-allocation-mb;</span><br><span class="line">yarn.scheduler.minimum-allocation-mb=1024</span><br><span class="line">hive&gt;set yarn.scheduler.maximum-allocation-mb;</span><br><span class="line">yarn.scheduler.maximum-allocation-mb=8192</span><br></pre></td></tr></table></figure></li><li><p>从下面看到集群的配置为每个maptask和reduce task可使用的内存大下默认为2g。所以这个时候，如果是因为平台资源紧张造成部分任务因内存不够而失败（之前很多时候可以正常跑成功的任务）。这时候单方面调大mapreduce.map.memory.mb和mapreduce.reduce.memory.mb的值没有任何意义，因为尽管每个container可以分配的内存是1-8g，但现在因为集群资源紧张可能分配的内存很小，比如小于2个g，那么你在调大运行在container上到map和reduce可使用内存，没有任何意义。有一种情况调大mapreduce.map.memory.mb和mapreduce.reduce.memory.mb的值有用，那就是平台资源很丰富，每个container实际分配的内存很大，比如6个g。这样会加快程序的运行，但值太大也会造成资源的浪费。</p><p>查看每个map,reduce默认使用内存的配置大小</p><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">hive&gt;set mapreduce.map.memory.mb;</span><br><span class="line">mapreduce.map.memory.mb=2048</span><br><span class="line">hive&gt;set mapreduce.reduce.memory.mb;</span><br><span class="line">mapreduce.reduce.memory.mb=2048</span><br></pre></td></tr></table></figure></li><li><p>增加虚拟内存的虚拟化比率</p><p>通过下面可知，默认每个maptask和reudcetask虚拟化的内存比例是2.1。这里集群每个map,reduce设置的默认内存使用大小为2g。所以虚拟内存最大2.1*2=4.2g（上面报错4.2g的来源：3.9 GB of 4.2 GB virtual memory used.），而且这个参数也是通过yarn-site.xml进行配置。其实实际开发中可以对应的配置大些。</p><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">hive (default)&gt; set yarn.nodemanager.vmem-pmem-ratio;</span><br><span class="line">yarn.nodemanager.vmem-pmem-ratio=2.1</span><br></pre></td></tr></table></figure></li><li><p>配置yarn不内存检查</p><p>通过yarn-site.xml文件将yarn.nodemanager.vmem-check-enabled设置为false,然后重启集群。但是这种不建议，可能会造成内存泄露。</p><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">hive (default)&gt; set yarn.nodemanager.vmem-check-enabled;</span><br><span class="line">yarn.nodemanager.vmem-<span class="keyword">check</span>-enabled=<span class="literal">true</span></span><br></pre></td></tr></table></figure></li><li><p>增加map和reduce的个数</p><p>很显然，此举是将每个map和reduce的工作量降小了，可以起到一定作用。一般maptask的个数由文件大小，切片信息等确定，而reduce的个数由最终需要聚合的结果决定，如果增加过多，会产生多个小文件。</p><ul><li>增加map的个数，可以通过设置切片信息大小，因为一般一个切片启动一个maptask。如下每个block的大小是128Mb，所以我们可以将   set mapred.max.split.size 成64Mb.这样一个块用两个task执行。</li></ul><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">hive&gt;set dfs.block.size;</span><br><span class="line">dfs.block.size=134217728</span><br></pre></td></tr></table></figure><ul><li>增加reduce数量可以通过：set  hive.exec.reducers.bytes.per.reducer配置</li></ul></li><li><p>所以分析了一下，实际开发中，配到这种情况，重启集群也不太靠谱的情况下，只能检查优化一下自己的程序了。</p><ul><li><p>一般可以给任务设置失败重试次数，自动多试几次可能会成功。</p></li><li><p>检查程序是否有数据倾斜的问题，一般来说大多数这种情况都是数据倾斜造成的。除非是的集群参数配置的不合理，那么可以修改一下，适当按照上面的情况增加一下值。</p></li></ul></li></ol>]]></content>
+      
+      
+      <categories>
+          
+          <category> Hive </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Hive </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>如何控制reduce个数与参数调优</title>
+      <link href="/2021/07/04/hive/33/"/>
+      <url>/2021/07/04/hive/33/</url>
+      
+        <content type="html"><![CDATA[<p>相比map个数的控制复杂性，reduce个数的设定要相对简单多了，reduce的个数一般最后决定了输出文件的个数，二者相等，如果想多输出文件的个数（这样文件变小，但有可能程序变慢），那么可以人为增加reduce个数。如果想减少文件个数，也可以手动较少reduce个数(同样可能程序变慢）。但实际开发中，reduce的个数一般通过程序自动推定，而不人为干涉，因为人为控制的话，如果使用不当很容易造成结果不准确，且降低执行效率。</p><h2 id="控制reduce个数的方式与参数"><a href="#控制reduce个数的方式与参数" class="headerlink" title="控制reduce个数的方式与参数"></a>控制reduce个数的方式与参数</h2><p>首先可以通过参数直接控制最终reduce的个数，使用参数<code>mapred.reduce.tasks</code></p><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">hive&gt; set mapred.reduce.tasks ;</span><br><span class="line">mapred.reduce.tasks=-1   <span class="comment">--我们使用的官方默认值-1,表示不人为设置reduce的个数，实际这种方式用的也少。</span></span><br></pre></td></tr></table></figure><p>在hive中如果不指定reduce个数的情况下，Hive会猜测确定一个reduce个数，基于以下两个设定</p><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">1.set hive.exec.reducers.bytes.per.reducer=<span class="number">300000000</span>  <span class="comment">--我们默认值 300Mb</span></span><br><span class="line"> 注意：在hive <span class="number">0.14</span><span class="number">.0</span>之前默认hive.exec.reducers.bytes.per.reducer默认值是<span class="number">1</span>Gb，每个reduce最多处理<span class="number">1</span>Gb。</span><br><span class="line"> 但是在之后版本默认值都是<span class="number">256</span>Mb.这里我们用的是<span class="number">300</span>Mb。为什么<span class="number">300</span>Mb写的是<span class="number">300</span>*<span class="number">1000</span>*<span class="number">1000</span>?因为网络传输中用的<span class="number">1000</span>，而不是<span class="number">1024</span>机制。</span><br><span class="line"> </span><br><span class="line"><span class="number">2.</span><span class="keyword">set</span> hive.exec.reducers.max=<span class="number">1009</span>    <span class="comment">--我们默认值，这个值一般不会修改。</span></span><br><span class="line"> 注意，在hive <span class="number">0.14</span><span class="number">.0</span>之前默认是<span class="number">999</span>，之后是<span class="number">1009</span>,所以我们的也是官方默认值。</span><br><span class="line"> </span><br><span class="line"><span class="number">3.</span>reduce计算方式：计算reducer数的公式很简单</span><br><span class="line"><span class="keyword">Num</span>=<span class="keyword">min</span>(hive.exec.reducers.max2，<span class="keyword">map</span>输出数据量/hive.exec.reducers.bytes.per.reducer)</span><br></pre></td></tr></table></figure><h2 id="案例演示控制reduce个数的方法"><a href="#案例演示控制reduce个数的方法" class="headerlink" title="案例演示控制reduce个数的方法"></a>案例演示控制reduce个数的方法</h2><ol><li><p>数据准备</p><p>这里文件大表的大小为23.4G,存储为22个文件，平均每个文件大小都在1.1G左右。小表的文件2个，合计58Mb.</p><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">[finance]$ hadoop fs -count hdfs:<span class="comment">//suninghadoop2/user/finance/hive/warehouse/fdm_tmp.db/company_liquidation_fgeics_company_ar_d</span></span><br><span class="line"><span class="number">1</span>           <span class="number">22</span>        <span class="number">25154158871</span> hdfs:<span class="comment">//suninghadoop2/user/finance/hive/warehouse/fdm_tmp.db/company_liquidation_fgeics_company_ar_d</span></span><br><span class="line">-----------------------------------------------------------------------------------------------------------------------------------</span><br><span class="line">[finance]$ hadoop fs -du -s -h hdfs:<span class="comment">//suninghadoop2/user/finance/hive/warehouse/fdm_tmp.db/company_liquidation_fgeics_company_ar_d</span></span><br><span class="line"><span class="number">23.4</span> G  hdfs:<span class="comment">//suninghadoop2/user/finance/hive/warehouse/fdm_tmp.db/company_liquidation_fgeics_company_ar_d</span></span><br><span class="line">-----------------------------------------------------------------------------------------------------------------------------------</span><br><span class="line">[finance]$ hadoop fs -du -h hdfs:<span class="comment">//suninghadoop2/user/finance/hive/warehouse/fdm_tmp.db/company_liquidation_fgeics_company_ar_d</span></span><br><span class="line"><span class="number">1.1</span> G  hdfs:<span class="comment">//suninghadoop2/user/finance/hive/warehouse/fdm_tmp.db/company_liquidation_fgeics_company_ar_d/000000_0</span></span><br><span class="line"><span class="number">1.1</span> G  hdfs:<span class="comment">//suninghadoop2/user/finance/hive/warehouse/fdm_tmp.db/company_liquidation_fgeics_company_ar_d/000001_0</span></span><br><span class="line">...............................</span><br></pre></td></tr></table></figure></li><li><p>通过hive.exec.reducers.bytes.per.reducer控制reduce个数</p><p>使用系统默认的配置参数，系统自动计算reduce个数，这里需要85个reduce。85*300&gt;23.4G。程序运行时间为123S.</p><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">set</span> mapred.max.split.size=<span class="number">256000000</span>  ;<span class="comment">--默认值</span></span><br><span class="line"><span class="keyword">set</span> mapred.min.split.size=<span class="number">10000000</span> ; <span class="comment">----默认值</span></span><br><span class="line"><span class="keyword">set</span> hive.exec.reducers.bytes.per.reducer = <span class="number">300000000</span>; <span class="comment">----默认值</span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">table</span> <span class="keyword">IF</span> <span class="keyword">EXISTS</span> fdm_tmp.company_liquidation_fgeics_company_ar_d_tmp;</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> fdm_tmp.company_liquidation_fgeics_company_ar_d_tmp</span><br><span class="line"><span class="keyword">as</span> </span><br><span class="line"><span class="keyword">select</span></span><br><span class="line"> a.id</span><br><span class="line">,a.entid</span><br><span class="line">,a.ancheyear</span><br><span class="line">,b.liqmen</span><br><span class="line">,b.ligprincipal</span><br><span class="line">,a.regno</span><br><span class="line">,a.tel</span><br><span class="line">,a.postalcode</span><br><span class="line">,a.dom</span><br><span class="line">,a.email</span><br><span class="line">,a.busst</span><br><span class="line">,a.empnum</span><br><span class="line">,a.name</span><br><span class="line">,a.updated</span><br><span class="line">,b.etl_time</span><br><span class="line"><span class="keyword">from</span> fdm_tmp.t_fgeics_company_liquidation_d_tmp  b</span><br><span class="line"><span class="keyword">right</span> <span class="keyword">join</span> fdm_tmp.company_liquidation_fgeics_company_ar_d  a</span><br><span class="line"><span class="keyword">on</span> b.entid = a.entid;</span><br><span class="line"> </span><br><span class="line">Hadoop job information for Stage-1: number of mappers: 112; number of reducers: 85</span><br><span class="line">Time taken: 123.945 seconds</span><br></pre></td></tr></table></figure><p>增大hive.exec.reducers.bytes.per.reducer = 1000000000; 发现需要的reduce变成了26个，减少了一大半。且满足26*1Gb&gt;23.4G。但程序运行时间增加将近一半237s.</p><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">set</span> mapred.max.split.size=<span class="number">256000000</span>;</span><br><span class="line"><span class="keyword">set</span> mapred.min.split.size=<span class="number">10000000</span>; </span><br><span class="line"><span class="keyword">set</span> hive.exec.reducers.bytes.per.reducer = <span class="number">1000000000</span>;</span><br><span class="line"> </span><br><span class="line">Hadoop job information for Stage-1: number of mappers: 112; number of reducers: 26</span><br><span class="line">Time taken: 237.104 seconds</span><br></pre></td></tr></table></figure><p>降低hive.exec.reducers.bytes.per.reducer = 128000000; 发现需要的reduce变成了，增加到197个。执行时间为141s.</p><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">set</span> mapred.max.split.size=<span class="number">256000000</span>;</span><br><span class="line"><span class="keyword">set</span> mapred.min.split.size=<span class="number">10000000</span>; </span><br><span class="line"><span class="keyword">set</span> hive.exec.reducers.bytes.per.reducer = <span class="number">128000000</span>;</span><br><span class="line">Hadoop job information for Stage-1: number of mappers: 112; number of reducers: 197</span><br><span class="line">Time taken: 141.371 seconds</span><br></pre></td></tr></table></figure></li><li><p>通过mapred.reduce.tasks直接设置reduce个数（慎用）</p><p>如下，手动设置reduce的个数为100个，则reduce的个数就是100个，每个reduce处理的数据按总数据量 /100.</p><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">set</span> mapred.max.split.size=<span class="number">256000000</span>;</span><br><span class="line"><span class="keyword">set</span> mapred.min.split.size=<span class="number">10000000</span>; </span><br><span class="line"><span class="keyword">set</span> mapred.reduce.tasks=<span class="number">100</span>;</span><br><span class="line"> </span><br><span class="line">Hadoop job information for Stage-1: number of mappers: 112; number of reducers: 100</span><br></pre></td></tr></table></figure></li></ol><p>总结:</p><p>同map函数一样，启动和初始化reduce也会消耗时间和资源。所以reduce的个数不宜过多，且reduce的个数决定了最终输出文件的个数，如果reduce个数过多则会产生很多小文件，对于以后的计算也会降低效率。</p><p>当然reduce个数如果过少，也会造成单个reduce处理数据量太大也会影响程序的效率。所以一般reduce的个数最好让程序自己去推定与计算。</p><p>那么什么时候可以进行手动设定reduce数量呢？比如系统自动计算的reduce个数，因为集群资源不足，造成程序运行出现OOM(内存溢出不足)时，可以根据推定的reduce个数手动增加数量，保证程序在跑的慢的基础上可以完整运行。</p><h2 id="reduce的特殊情况，程序只有一个reduce"><a href="#reduce的特殊情况，程序只有一个reduce" class="headerlink" title="reduce的特殊情况，程序只有一个reduce"></a>reduce的特殊情况，程序只有一个reduce</h2><p>什么情况下程序只有一个reduce呢？一般map输出的结果值小于hive.exec.reducers.bytes.per.reducer值时，程序只有一个reduce没有问题，其次手动设置mapred.reduce.tasks=1,这个时候程序只有一个reduce。那么正常除了这两种情况下，正常程序还有什么情况下只有 一个reduce呢？</p><ol><li><p>代码用了order by ,因为order by是全局排序</p><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">drop</span> <span class="keyword">table</span> <span class="keyword">IF</span> <span class="keyword">EXISTS</span> fdm_tmp.company_liquidation_fgeics_company_ar_d_tmp;</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> fdm_tmp.company_liquidation_fgeics_company_ar_d_tmp</span><br><span class="line"><span class="keyword">as</span> </span><br><span class="line"><span class="keyword">select</span></span><br><span class="line"> a.id</span><br><span class="line">,a.entid</span><br><span class="line">,a.ancheyear</span><br><span class="line">,b.liqmen</span><br><span class="line">,b.ligprincipal</span><br><span class="line">,a.regno</span><br><span class="line">,a.tel</span><br><span class="line">,a.postalcode</span><br><span class="line">,a.dom</span><br><span class="line">,a.email</span><br><span class="line">,a.busst</span><br><span class="line">,a.empnum</span><br><span class="line">,a.name</span><br><span class="line">,a.updated</span><br><span class="line">,b.etl_time</span><br><span class="line"><span class="keyword">from</span> fdm_tmp.t_fgeics_company_liquidation_d_tmp  b</span><br><span class="line"><span class="keyword">right</span> <span class="keyword">join</span> fdm_tmp.company_liquidation_fgeics_company_ar_d  a</span><br><span class="line"><span class="keyword">on</span> b.entid = a.entid</span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> a.id ;</span><br><span class="line"> </span><br><span class="line">Hadoop job information for Stage-1: number of mappers: 112; number of reducers: 85</span><br><span class="line">Hadoop job information for Stage-2: number of mappers: 81; number of reducers: 1</span><br></pre></td></tr></table></figure><p>order by 全局排序针对所有的数据，所以最终所有的数据都要分发给一个reduce去处理。比如这里23.4G文件使用order by，系统 启动了两个MR程序执行。最终使用一个reduce进行排序，极度慢,慎用。</p></li><li><p>表关联时出现了笛卡尔乘积</p><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">drop</span> <span class="keyword">table</span> <span class="keyword">IF</span> <span class="keyword">EXISTS</span> fdm_tmp.company_liquidation_fgeics_company_ar_d_tmp;</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> fdm_tmp.company_liquidation_fgeics_company_ar_d_tmp</span><br><span class="line"><span class="keyword">as</span> </span><br><span class="line"><span class="keyword">select</span></span><br><span class="line"> a.id</span><br><span class="line">,a.entid</span><br><span class="line">,a.ancheyear</span><br><span class="line">,b.liqmen</span><br><span class="line">,b.ligprincipal</span><br><span class="line">,a.regno</span><br><span class="line">,a.tel</span><br><span class="line">,a.postalcode</span><br><span class="line">,a.dom</span><br><span class="line">,a.email</span><br><span class="line">,a.busst</span><br><span class="line">,a.empnum</span><br><span class="line">,a.name</span><br><span class="line">,a.updated</span><br><span class="line">,b.etl_time</span><br><span class="line"><span class="keyword">from</span> fdm_tmp.t_fgeics_company_liquidation_d_tmp  b</span><br><span class="line"><span class="keyword">right</span> <span class="keyword">join</span> fdm_tmp.company_liquidation_fgeics_company_ar_d  a</span><br><span class="line"><span class="keyword">on</span> <span class="literal">True</span>;</span><br><span class="line">Hadoop job information for Stage-1: number of mappers: 112; number of reducers: 1</span><br></pre></td></tr></table></figure><p>表之间进行join时，如果出现 了笛卡尔乘积，需要全局处理，所以MR不得不使用 一个reduce去处理，所以要尽量避免出现这种 情况。</p></li><li><p>使用count要注意</p><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">--1.单独使用count(1),count(*)要比count(id)快。</span></span><br><span class="line">因为列的引用加入增加了序列化和反序列化的问题。但是这时候count仍然只有1个reduce.</span><br><span class="line">add jar /home/bigdata/software/hive/ext-lib/suning-hive-inputformat.jar;</span><br><span class="line"><span class="keyword">select</span> <span class="keyword">count</span>(<span class="number">1</span>)</span><br><span class="line"><span class="keyword">from</span> fdm_ssa.t_fgeics_company_ar_d  </span><br><span class="line"><span class="keyword">WHERE</span> statis_date = <span class="string">'20190718'</span> ;</span><br><span class="line">Hadoop job information for Stage-1: number of mappers: 248; number of reducers: 1</span><br><span class="line">OK</span><br><span class="line">158746942</span><br><span class="line">Time taken: 46.182 seconds, Fetched: 1 row(s)</span><br><span class="line"><span class="comment">-------------------------------------------------------------------------------</span></span><br><span class="line"> </span><br><span class="line"><span class="comment">--2.改写加入group by ，稍微快一些，这时候reduce个数不是1.而是129个。</span></span><br><span class="line"> </span><br><span class="line">add jar /home/bigdata/software/hive/ext-lib/suning-hive-inputformat.jar;</span><br><span class="line"><span class="keyword">select</span> </span><br><span class="line">statis_date,</span><br><span class="line"><span class="keyword">count</span>(<span class="number">1</span>)</span><br><span class="line"><span class="keyword">from</span> fdm_ssa.t_fgeics_company_ar_d  </span><br><span class="line"><span class="keyword">WHERE</span> statis_date = <span class="string">'20190718'</span> </span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> statis_date</span><br><span class="line">;</span><br><span class="line"> </span><br><span class="line">Hadoop job information for Stage-1: number of mappers: 248; number of reducers: 129</span><br><span class="line">OK</span><br><span class="line">20190718158746942</span><br><span class="line">Time taken: 44.167 seconds, Fetched: 1 row(s)</span><br><span class="line"><span class="comment">---------------------------------------------------------------------------------</span></span><br></pre></td></tr></table></figure></li></ol>]]></content>
+      
+      
+      <categories>
+          
+          <category> Hive </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Hive </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Hive运行SQL重置进度，引发的一些对Hive输入文件的思考</title>
       <link href="/2021/06/30/hive/32/"/>
       <url>/2021/06/30/hive/32/</url>
@@ -4844,6 +4973,31 @@
     
     
     <entry>
+      <title>Kafka集群和客户端不在同一个网段报错 -Batch containing 11 record(s) expired due to timeout while requesting metadata</title>
+      <link href="/2018/10/12/PE/4/"/>
+      <url>/2018/10/12/PE/4/</url>
+      
+        <content type="html"><![CDATA[<p><strong>背景：</strong><br>Kafka集群在一个192.168.0.x网段的，而我们的生产者在192.168.17.x网段的一台机器上，故当生产者发送消息给Kafka时，<br>无法将消息发送过去。</p><p><strong>错误：</strong><br>11:21:13,936 ERROR KafkaProducer - Batch containing 11 record(s) expired due to timeout while requesting metadata from brokers for onlinelogs-1</p><p><strong>分析：</strong><br>1.做Kafka集群的demo测试是OK的，详情参考：<a href="http://blog.itpub.net/30089851/viewspace-2132049/" target="_blank" rel="noopener">http://blog.itpub.net/30089851/viewspace-2132049/</a></p><p>2.在生产者机器上 telnet kafka节点ip 9092 ,也是通的，甚是奇怪。</p><p>3.谷歌了几下：<br>需要配置 <code>advertised.host.name</code> 参数，将Kafka各个节点，该参数配置为当前机器的IP即可，重启生效配置，测试OK。</p><p>新版本的参数：<a href="http://kafka.apache.org/documentation/#advertised.listeners" target="_blank" rel="noopener">advertised.listeners</a></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 生产故障案例 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 生产故障案例 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Spark、IDEA和Maven的环境准备&amp;Hadoop的依赖以及常用API&amp;WordCount Debug流程&amp;map、reduce方法的参数类型和作用&amp;瘦包在服务器上的jar包依赖</title>
       <link href="/2018/10/12/hadoop/9/"/>
       <url>/2018/10/12/hadoop/9/</url>
@@ -4865,31 +5019,6 @@
             <tag> Hadoop </tag>
             
             <tag> MapReduce </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>Kafka集群和客户端不在同一个网段报错 -Batch containing 11 record(s) expired due to timeout while requesting metadata</title>
-      <link href="/2018/10/12/PE/4/"/>
-      <url>/2018/10/12/PE/4/</url>
-      
-        <content type="html"><![CDATA[<p><strong>背景：</strong><br>Kafka集群在一个192.168.0.x网段的，而我们的生产者在192.168.17.x网段的一台机器上，故当生产者发送消息给Kafka时，<br>无法将消息发送过去。</p><p><strong>错误：</strong><br>11:21:13,936 ERROR KafkaProducer - Batch containing 11 record(s) expired due to timeout while requesting metadata from brokers for onlinelogs-1</p><p><strong>分析：</strong><br>1.做Kafka集群的demo测试是OK的，详情参考：<a href="http://blog.itpub.net/30089851/viewspace-2132049/" target="_blank" rel="noopener">http://blog.itpub.net/30089851/viewspace-2132049/</a></p><p>2.在生产者机器上 telnet kafka节点ip 9092 ,也是通的，甚是奇怪。</p><p>3.谷歌了几下：<br>需要配置 <code>advertised.host.name</code> 参数，将Kafka各个节点，该参数配置为当前机器的IP即可，重启生效配置，测试OK。</p><p>新版本的参数：<a href="http://kafka.apache.org/documentation/#advertised.listeners" target="_blank" rel="noopener">advertised.listeners</a></p>]]></content>
-      
-      
-      <categories>
-          
-          <category> 生产故障案例 </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> 生产故障案例 </tag>
             
         </tags>
       
@@ -4928,6 +5057,35 @@
       <url>/2018/10/11/hadoop/8/</url>
       
         <content type="html"><![CDATA[<h3 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h3><ol><li>梳理YARN资源调优参数</li><li>调度器整理三种，区别是什么，CDH默认是什么</li></ol><h3 id="YARN的资源调优"><a href="#YARN的资源调优" class="headerlink" title="YARN的资源调优"></a>YARN的资源调优</h3><p><code>背景:</code> 假设每台服务器拥有内存128G 16物理core，怎么分配？</p><ol><li><p>装完CentOS，消耗内存1G</p></li><li><p>系统预览15%-20%内存(包含1.1)，以防全部使用导致系统夯住 和 oom机制事件，或者给未来部署组件预览点空间(<code>128*20%=25.6G==26G</code>)</p></li><li><p>假设只有DN NM节点，余下内存: <code>128-26=102G</code></p><ol><li><p>给DN进程(自身)2G，给NM进程(自身)4G，剩余<code>102-2-4=96G</code></p></li><li><p>container内存的分配共96G</p><ul><li><p><code>yarn.nodemanager.resource.memory-mb</code>     共 96G</p></li><li><p><code>yarn.scheduler.minimum-allocation-mb</code>    最少1G    极限情况下，只有96个container 内存1G</p></li><li><p><code>yarn.scheduler.maximum-allocation-mb</code>    最多96G  极限情况下，只有1个container 内存96G</p><p>container的内存会自动增加，默认1G递增，那么container的个数的范围: 1-96个</p></li></ul></li><li><p>container物理核分配 (物理核:虚拟核 =1:2 ==&gt;16:32)</p><ul><li><p><code>yarn.nodemanager.resource.cpu-vcores</code>            共 32个</p></li><li><p><code>yarn.scheduler.minimum-allocation-vcores</code>     最少1个   极限情况下，只有32个container    </p></li><li><p><code>yarn.scheduler.maximum-allocation-vcores</code>     最多32个 极限情况下，只有1个container</p><p>container的物理核会自动增加，默认1个递增，那么container的个数的范围: :1-32个</p></li></ul></li><li><p><code>关键:</code> cloudera公司推荐，一个container的vcore最好不要超过5，那么我们设置4</p><ul><li><p><code>yarn.scheduler.maximum-allocation-vcores</code>    4   </p><p>目前为止，极限情况下，共有8个container (32/4)</p></li></ul></li><li><p>综合memory+vcore的分配</p><ol><li><p>一共有32个vcore，一个container的vcore是4个，那么分配container一共有8个</p></li><li><p>重新分配核</p><ul><li><p><code>yarn.nodemanager.resource.cpu-vcores</code>            共32个</p></li><li><p><code>yarn.scheduler.minimum-allocation-vcores</code>    最少4个    </p></li><li><p><code>yarn.scheduler.maximum-allocation-vcores</code>    最多4个   极限container 8个</p></li></ul></li><li><p>根据物理核重新分配内存</p><ul><li><p><code>yarn.nodemanager.resource.memory-mb</code>      共96G</p></li><li><p><code>yarn.scheduler.minimum-allocation-mb</code>    最少12G  </p></li><li><p><code>yarn.scheduler.maximum-allocation-mb</code>    最多12G   (极限container 8个)</p></li></ul></li><li><p>分配后的每个container的物理核数是4个，内存大小是12G，当然spark计算时内存不够大，这个参数肯定要调大，那么这种理想化的设置个数必然要打破，以memory为主</p></li></ol></li><li><p>假如 256G内存 56core，请问参数如何设置</p><ol><li><p>首先减去系统内存开销和其他进程开销，</p><ul><li><p>系统开销: 256*0.2=52G</p></li><li><p>DN开销: 2G</p></li><li><p>NM开销: 4G</p></li><li><p>Hbase开销: 暂无</p></li><li><p>升序内存容量: 256-52-2-4=198G</p></li></ul></li><li><p>确定每个container的物理核数量是4个，56/4=14个container容器</p></li><li><p>确定了最多分配14个container容器，每个容器的内存应该分配的容量是: 198/14==&gt;14G</p><p><strong>那么每个container的最大核数设置4，最大内存数设置14G</strong></p></li></ol></li><li><p>假如该节点还有组件，比如hbase regionserver进程，那么该如何设置？</p><p>总容量减就完事了。    </p></li></ol><p>所有的配置信息在<code>yarn-default.xm</code>l文件中</p><h4 id="内存参数默认值"><a href="#内存参数默认值" class="headerlink" title="内存参数默认值:"></a>内存参数默认值:</h4><table><thead><tr><th>KEY</th><th>VALUE</th><th>DESC</th></tr></thead><tbody><tr><td>yarn.nodemanager.resource.memory-mb</td><td>-1</td><td>可以分配给容器的物理内存总量(以MB为单位)。</td></tr><tr><td>yarn.scheduler.minimum-allocation-mb</td><td>1024</td><td>RM上每个容器请求的最小分配</td></tr><tr><td>yarn.scheduler.maximum-allocation-mb</td><td>8192</td><td>RM上每个容器请求的最大分配</td></tr></tbody></table><h4 id="核数参数默认值"><a href="#核数参数默认值" class="headerlink" title="核数参数默认值:"></a>核数参数默认值:</h4><table><thead><tr><th>KEY</th><th>VALUE</th><th>DESC</th></tr></thead><tbody><tr><td>yarn.nodemanager.resource.cpu-vcores</td><td>-1</td><td>可以为容器分配的vcore总数量。</td></tr><tr><td>yarn.scheduler.minimum-allocation-vcores</td><td>1</td><td>RM上每个容器请求的最小虚拟CPU核心分配。</td></tr><tr><td>yarn.scheduler.maximum-allocation-vcores</td><td>4</td><td>RM上每个容器请求的最大虚拟CPU核心分配。</td></tr></tbody></table></li></ol><h3 id="Yarn的三种调度器"><a href="#Yarn的三种调度器" class="headerlink" title="Yarn的三种调度器"></a>Yarn的三种调度器</h3><ul><li><p>Apache hadoop2.x的默认调度器是Capacity Scheduler(计算调度器)</p></li><li><p>CDH的默认调度器是Fair Scheduler(公平调度器)</p></li></ul><h4 id="Yarn三种调度策略对比"><a href="#Yarn三种调度策略对比" class="headerlink" title="Yarn三种调度策略对比"></a>Yarn三种调度策略对比</h4><p>在Yarn中有三种调度器可以选择：FIFO Scheduler ，Capacity Scheduler，FairScheduler。</p><ol><li><p>FIFO Scheduler</p><p><img src="https://img-blog.csdnimg.cn/20181101090612286.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM0MzgyNDUz,size_16,color_FFFFFF,t_70" alt="队列调度器"></p><p>FIFO Scheduler把应用按提交的顺序排成一个队列，这是一个先进先出队列，在进行资源分配的时候，先给队列中最头上的应用进行分配资源，待最头上的应用需求满足后再给下一个分配，以此类推。</p><p>FIFO Scheduler是最简单也是最容易理解的调度器，也不需要任何配置，但它并不适用于共享集群。大的应用可能会占用所有集群资源，这就导致其它应用被阻塞。在共享集群中，更适合采用Capacity Scheduler或Fair Scheduler，这两个调度器都允许大任务和小任务在提交的同时获得一定的系统资源。从图中可以看出，在FIFO 调度器中，小任务会被大任务阻塞。</p></li><li><p>Capacity Scheduler</p><p><img src="https://img-blog.csdnimg.cn/20181101091012607.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM0MzgyNDUz,size_16,color_FFFFFF,t_70" alt="计算调度器"></p><p>而对于Capacity调度器，有一个专门的队列用来运行小任务，但是为小任务专门设置一个队列会预先占用一定的集群资源，这就导致大任务的执行时间会落后于使用FIFO调度器时的时间。</p></li><li><p>Fair Scheduler</p><p><img src="https://img-blog.csdnimg.cn/20181101091843173.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM0MzgyNDUz,size_16,color_FFFFFF,t_70" alt="公平调度器"></p><p>在Fair调度器中，我们不需要预先占用一定的系统资源，Fair调度器会为所有运行的job动态的调整系统资源。如上图所示，当第一个大job提交时，只有这一个job在运行，此时它获得了所有集群资源；当第二个小任务提交后，Fair调度器会分配一半资源给这个小任务，让这两个任务公平的共享集群资源。</p><p>需要注意的是，在上图Fair调度器中，从第二个任务提交到获得资源会有一定的延迟，因为它需要等待第一个任务释放占用的Container。小任务执行完成之后也会释放自己占用的资源，大任务又获得了全部的系统资源。最终的效果就是Fair调度器即得到了高的资源利用率又能保证小任务及时完成。</p></li></ol><h3 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">yarn application -kill &lt;Application ID&gt;#杀死进程</span><br></pre></td></tr></table></figure>]]></content>
+      
+      
+      <categories>
+          
+          <category> Hadoop </category>
+          
+          <category> Yarn </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Hadoop </tag>
+            
+            <tag> Yarn </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>熟悉YARN的参数</title>
+      <link href="/2018/10/11/hadoop/18/"/>
+      <url>/2018/10/11/hadoop/18/</url>
+      
+        <content type="html"><![CDATA[<p>YARN会管理集群中所有机器的可用计算资源. 基于这些资源YARN会调度应用(比如MapReduce)发来的资源请求, 然后YARN会通过分配Container来给每个应用提供处理能力, Container是YARN中处理能力的基本单元, 是对内存, CPU等的封装. </p><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.nodemanager.resource.memory-mb<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>22528<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">discription</span>&gt;</span>每个节点可用内存,单位MB<span class="tag">&lt;/<span class="name">discription</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.scheduler.minimum-allocation-mb<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>1500<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">discription</span>&gt;</span>单个任务可申请最少内存，默认1024MB<span class="tag">&lt;/<span class="name">discription</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>yarn.scheduler.maximum-allocation-mb<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">value</span>&gt;</span>16384<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">discription</span>&gt;</span>单个任务可申请最大内存，默认8192MB<span class="tag">&lt;/<span class="name">discription</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure>]]></content>
       
       
       <categories>
@@ -5652,9 +5810,9 @@
       
         <tags>
             
-            <tag> Linux </tag>
-            
             <tag> DataWarehouse </tag>
+            
+            <tag> Linux </tag>
             
         </tags>
       
@@ -5679,9 +5837,9 @@
       
         <tags>
             
-            <tag> Linux </tag>
-            
             <tag> DataWarehouse </tag>
+            
+            <tag> Linux </tag>
             
         </tags>
       
@@ -5706,9 +5864,9 @@
       
         <tags>
             
-            <tag> Linux </tag>
-            
             <tag> DataWarehouse </tag>
+            
+            <tag> Linux </tag>
             
         </tags>
       
@@ -5733,9 +5891,9 @@
       
         <tags>
             
-            <tag> Linux </tag>
-            
             <tag> DataWarehouse </tag>
+            
+            <tag> Linux </tag>
             
         </tags>
       
@@ -5760,9 +5918,9 @@
       
         <tags>
             
-            <tag> Linux </tag>
-            
             <tag> DataWarehouse </tag>
+            
+            <tag> Linux </tag>
             
         </tags>
       
