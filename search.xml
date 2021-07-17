@@ -4,6 +4,131 @@
   
     
     <entry>
+      <title>hive中的null</title>
+      <link href="/2021/07/18/hive/39/"/>
+      <url>/2021/07/18/hive/39/</url>
+      
+        <content type="html"><![CDATA[<ol><li><p>Hive中有种假NULL，它看起来和NULL一摸一样，但是实际却不是NULL。</p><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> test_null(</span><br><span class="line">    word <span class="keyword">string</span></span><br><span class="line">)</span><br><span class="line"><span class="keyword">row</span> <span class="keyword">format</span> <span class="keyword">delimited</span> <span class="keyword">fields</span> <span class="keyword">terminated</span> <span class="keyword">by</span> <span class="string">'\t'</span></span><br></pre></td></tr></table></figure></li><li><p>写入<code>&#39;\N&#39;</code></p><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">insert</span> overwrite <span class="keyword">table</span> test_null <span class="keyword">select</span> <span class="string">'\\N'</span>;</span><br></pre></td></tr></table></figure></li><li><p>查询</p><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">hive (default)&gt; select * from test_null;</span><br><span class="line">OK</span><br><span class="line">test_null.word</span><br><span class="line">NULL</span><br></pre></td></tr></table></figure><p>这种假NULL产生的原因实际上源于对表的错误操作。在Hive中，空值NULL在底层默认是用<code>&#39;\N&#39;</code>来存储的</p></li><li><p>看一下底层的数据存储</p><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# hdfs dfs -cat hdfs://aliyun:9000/user/hive/warehouse/test_null/000000_0</span><br><span class="line">\N</span><br></pre></td></tr></table></figure><p>这样的设计存在一个问题是如果实际想存储<code>&#39;\N&#39;</code>，那么实际查询出来的也是NULL而不是<code>&#39;\N&#39;</code> 。</p></li><li><p>修改NULL的默认存储字符</p><figure class="highlight"><table><tr><td class="code"><pre><span class="line">hive&gt; alter table test_null SET SERDEPROPERTIES('serialization.null.format' = 'a');</span><br></pre></td></tr></table></figure></li><li><p>插入一个NULL</p><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">insert</span> overwrite <span class="keyword">table</span> test_null <span class="keyword">select</span> <span class="literal">NULL</span>;</span><br></pre></td></tr></table></figure></li><li><p>看一下修改后的底层的数据存储</p><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">[root@aliyun ~]# hdfs dfs -cat hdfs://aliyun:9000/user/hive/warehouse/test_null/000000_0</span><br><span class="line">a</span><br></pre></td></tr></table></figure><p>其实上面说的这个假NULL出现的原因就是在默认情况下（即用<code>&#39;\N&#39;</code>表示NULL），插入了NULL值，然后又用SET SERDEPROPERTIES语句修改了存储NULL的字符串。</p><p><code>&#39;\N&#39;</code>显示为NULL在Hive中是一个特例，于是就出现了这个假NULL，在开发过程中一定要注意！</p></li></ol>]]></content>
+      
+      
+      <categories>
+          
+          <category> Hive </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Hive </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>hive中如何避免用科学计数法表示浮点数？</title>
+      <link href="/2021/07/18/hive/38/"/>
+      <url>/2021/07/18/hive/38/</url>
+      
+        <content type="html"><![CDATA[<ol><li><p>format_number</p><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">hive&gt; select format_number(pow(10,8),'##################.##');</span><br><span class="line">100000000</span><br></pre></td></tr></table></figure></li><li><p>decimal</p><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">hive&gt; select cast (pow(10,8) as decimal(20, 2) );</span><br><span class="line">100000000</span><br></pre></td></tr></table></figure></li></ol>]]></content>
+      
+      
+      <categories>
+          
+          <category> Hive </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Hive </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Hive中小表与大表关联(join)的性能分析(转载)</title>
+      <link href="/2021/07/18/hive/37/"/>
+      <url>/2021/07/18/hive/37/</url>
+      
+        <content type="html"><![CDATA[<p><a href="http://blog.sina.com.cn/s/blog_6ff05a2c01016j7n.html" target="_blank" rel="noopener">原文地址:</a></p><p>经常看到一些Hive优化的建议中说当小表与大表做关联时，把小表写在前面，这样可以使Hive的关联速度更快，提到的原因都是说因为小表可以先放到内存中，然后大表的每条记录再去内存中检测，最终完成关联查询。这样的原因看似合理，但是仔细推敲，又站不住脚跟。</p><p>多小的表算小表？如果所谓的小表在内存中放不下怎么办？我用2个只有几条记录的表做关联查询，这应该算是小表了，在查看reduce的执行日志时依然是有写磁盘的操作的。实际上reduce在接收全部map的输出后一定会有一个排序所有键值对并合并写入磁盘文件的操作。写入磁盘（spill）有可能是多次的，因此有可能会生成多个临时文件，但是最终都要合并成一个文件，即最终每一个reduce都只处理一个文件。</p><p>我做了一个实验，用1条记录的表和3亿多条记录的表做join，无论小表是放在join的前面还是join的后面，执行的时间几乎都是相同的。再去看reduce的执行日志，1条记录的表在join前或者join后两次查询的reduce日志几乎也是一摸一样的。如果按照上面的说法把join左侧的表放内存等待join右侧的表到内存中去检测，那么当3亿多条记录的表放在join左侧时，内存肯定是无法容下这么多记录的，势必要进行写磁盘的操作，那它的执行时间应该会比小表在join前时长很多才对，但事实并不是这样，也就说明了上面说到的原因并不合理。</p><p><strong>事实上 “把小表放在前面做关联可以提高效率” 这种说法是错误的。正确的说法应该是 “把重复关联键少的表放在join前面做关联可以提高join的效率” 。</strong></p><p>分析一下Hive对于两表关联在底层是如何实现的。因为不论多复杂的Hive查询，最终都要转化成mapreduce的JOB去执行，因此Hive对于关联的实现应该和mapreduce对于关联的实现类似。而mapreduce对于关联的实现，简单来说，是把关联键和标记是在join左边还是右边的标识位作为组合键(key)，把一条记录以及标记是在join左边还是右边的标识位组合起来作为值(value)。在reduce的shuffle阶段，按照组合键的关联键进行主排序，当关联键相同时，再按照标识位进行辅助排序。而在分区段时，只用关联键中的关联键进行分区段，这样关联键相同的记录就会放在同一个value list中，同时保证了join左边的表的记录在value list的前面，而join右边的表的记录在value list的后面。</p><p>例如A join B ON (A.id = b.id) ，假设A表和B表都有1条id = 3的记录，那么A表这条记录的组合键是(3,0)，B表这条记录的组合键是(3,1)。排序时可以保证A表的记录在B表的记录的前面。而在reduce做处理时，把id=3的放在同一个value list中，形成 key = 3,value list = [A表id=3的记录,B表id=3的记录]</p><p>接下来我们再来看当两个表做关联时reduce做了什么。Reduce会一起处理id相同的所有记录。我们把value list用数组来表示。</p><p>1) Reduce先读取第一条记录v[0],如果发现v[0]是B表的记录，那说明没有A表的记录，最终不会关联输出，因此不用再继续处理这个id了，读取v[0]用了1次读取操作。</p><p>2) 如果发现v[0]到v[length-1]全部是A表的记录，那说明没有B表的记录，同样最终不会关联输出，但是这里注意，已经对value做了length次的读取操作。</p><p>3) 例如A表id=3有1条记录，B表id=3有10条记录。首先读取v[0]发现是A表的记录，用了1次读取操作。然后再读取v[1]发现是B表的操作，这时v[0]和v[1]可以直接关联输出了，累计用了2次操作。这时候reduce已经知道从v[1]开始后面都是B 表的记录了，因此可以直接用v[0]依次和v[2],v[3]……v[10]做关联操作并输出，累计用了11次操作。</p><p>4) 换过来，假设A表id=3有10条记录，B表id=3有1条记录。首先读取v[0]发现是A表的记录，用了1次读取操作。然后再读取v[1]发现依然是A表的记录，累计用了2次读取操作。以此类推，读取v[9]时发现还是A表的记录，累计用了10次读取操作。然后读取最后1条记录v[10]发现是B表的记录，可以将v[0]和v[10]进行关联输出，累计用了11次操作。接下来可以直接把v[1]~v[9]分别与v[10]进行关联输出，累计用了20次操作。</p><p>5) 再复杂一点，假设A表id=3有2条记录，B表id=3有5条记录。首先读取v[0]发现是A表的记录，用了1次读取操作。然后再读取v[1]发现依然是A表的记录，累计用了2次读取操作。然后读取v[2]发现是B表的记录，此时v[0]和v[2]可以直接关联输出，累计用了3次操作。接下来v[0]可以依次和v[3]<del>v[6]进行关联输出，累计用了7次操作。接下来v[1]再依次和v[2]</del>v[6]进行关联输出，累计用了12次操作。</p><p>6) 把5的例子调过来，假设A表id=3有5条记录，B表id=3有2条记录。先读取v[0]发现是A表的记录，用了1次读取操作。然后再读取v[1]发现依然是A表的记录，累计用了2次读取操作。以此类推，读取到v[4]发现依然是A表的记录，累计用了5次读取操作。接下来读取v[5]，发现是B表的记录，此时v[0]和v[5]可以直接关联输出，累计用了6次操作。然后v[0]和v[6]进行关联输出，累计用了7次操作。然后v[1]分别与v[5]、v[6]关联输出，累计用了9次操作。V[2] 分别与v[5]、v[6]关联输出，累计用了11次操作。以此类推，最后v[4] 分别与v[5]、v[6]关联输出，累计用了15次操作。</p><p>7) 额外提一下，当reduce检测A表的记录时，还要记录A表同一个key的记录的条数，当发现同一个key的记录个数超过hive.skewjoin.key的值（默认为1000000）时，会在reduce的日志中打印出该key，并标记为倾斜的关联键。</p><p><strong>最终得出的结论是：写在关联左侧的表每有1条重复的关联键时底层就会多1次运算处理。</strong></p><p>假设A表有一千万个id，平均每个id有3条重复值，那么把A表放在前面做关联就会多做三千万次的运算处理，这时候谁写在前谁写在后就看出性能的差别来了。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Hive </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Hive </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>sort by和order by的区别</title>
+      <link href="/2021/07/18/hive/36/"/>
+      <url>/2021/07/18/hive/36/</url>
+      
+        <content type="html"><![CDATA[<p>hive实现全排序：</p><ol><li><p>要么用order by，但这样默认了reducer个数为1，效率低下。</p></li><li><p>要么用sort by+order by，sort by过程可以设置reducer个数（n），order by过程用n个reducer的输出文件进行一次全排序，得到最终的结果。</p></li></ol><p>使用sort by或者order by，会根据hive.exec.reducers.bytes.per.reducer计算reduce个数，如果reduce的数量小于这个值，则最终只有一个reduce，无论使用哪个排序都是一样，如果大于这个数，则sort by 是每个reduce内排序，order by是全局排序，所以选择使用sort by和order by的时候，最终的数据量是关键</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Hive </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Hive </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Spark SQL Overwrite问题</title>
+      <link href="/2021/07/17/spark/44/"/>
+      <url>/2021/07/17/spark/44/</url>
+      
+        <content type="html"><![CDATA[<h2 id="背景"><a href="#背景" class="headerlink" title="背景:"></a>背景:</h2><p>对Hive数据去重更新到原表, beeline中可以直接overwrite.</p><p>但是spark.sql中报错: Cannot overwrite a path that is also being read from.;</p><h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案:"></a>解决方案:</h2><p>经过研究, 发现spark.sql 貌似不能直接overwrite, 需要先到临时表再导回原表, 代码如下.</p><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">//将结果保存在临时表中    </span><br><span class="line">spark.sql("<span class="keyword">select</span> ....<span class="string">").write.mode(SaveMode.Overwrite).saveAsTable("</span>tmp_tab<span class="string">")</span></span><br><span class="line"><span class="string">//将临时表覆盖结果表</span></span><br><span class="line"><span class="string">spark.table("</span>tmp_tab<span class="string">").write.mode(SaveMode.Overwrite).saveAsTable("</span>result_tab<span class="string">")</span></span><br></pre></td></tr></table></figure><h2 id="原因"><a href="#原因" class="headerlink" title="原因"></a>原因</h2><p>hive处理数据的时候，底层走的是mapreduce，mapreduce框架的一个特点是中间数据落盘，即数据map阶段在经过环形缓冲区后会写入磁盘，后续的reduce阶段从磁盘拉取数据，我们可以看到这是有一个落盘的操作。</p><p>spark在经过map后数据是放在缓存的，没有落盘的操作，后续的reduce操作是从内存拉取数据。</p><p>hive在覆盖写原表的时候，可以看做是会把中间数据落盘，相当于先写到一个临时表然后再写会原表，spark中间数据不会落盘，相当于没有写临时表就直接覆盖原表，所以spark在overwrite原表的时候会报错，而hive不会。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Spark </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Spark </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Hadoop切分纯文本时对某一行跨两个分片这种情况的处理</title>
       <link href="/2021/07/07/hadoop/19/"/>
       <url>/2021/07/07/hadoop/19/</url>
@@ -133,7 +258,7 @@
     
     
     <entry>
-      <title>Hive运行SQL重置进度，引发的一些对Hive输入文件的思考</title>
+      <title>Hive运行SQL重置进度，如何控制map个数与参数调优</title>
       <link href="/2021/06/30/hive/32/"/>
       <url>/2021/06/30/hive/32/</url>
       
@@ -1009,11 +1134,11 @@
     
     
     <entry>
-      <title>每年总成绩都有提升的学生</title>
-      <link href="/2020/12/15/%E5%9C%BA%E6%99%AF%E9%97%AE%E9%A2%98/1/"/>
-      <url>/2020/12/15/%E5%9C%BA%E6%99%AF%E9%97%AE%E9%A2%98/1/</url>
+      <title>求年度最大连续登陆天数</title>
+      <link href="/2020/12/15/%E5%9C%BA%E6%99%AF%E9%97%AE%E9%A2%98/3/"/>
+      <url>/2020/12/15/%E5%9C%BA%E6%99%AF%E9%97%AE%E9%A2%98/3/</url>
       
-        <content type="html"><![CDATA[<p><strong>每年总成绩都有提升的学生</strong></p><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">2020,语文,A,83</span><br><span class="line">2020,数学,A,58</span><br><span class="line">2020,英语,A,29</span><br><span class="line">2020,语文,B,83</span><br><span class="line">2020,数学,B,77</span><br><span class="line">2020,英语,B,67</span><br><span class="line">2021,语文,A,50</span><br><span class="line">2021,数学,A,93</span><br><span class="line">2021,英语,A,70</span><br><span class="line">2021,语文,B,86</span><br><span class="line">2021,数学,B,43</span><br><span class="line">2021,英语,B,39</span><br><span class="line">2022,语文,A,90</span><br><span class="line">2022,数学,A,49</span><br><span class="line">2022,英语,A,80</span><br><span class="line">2022,语文,B,80</span><br><span class="line">2022,数学,B,83</span><br><span class="line">2022,英语,B,97</span><br></pre></td></tr></table></figure><p>思路: </p><ul><li>提取关键词<strong>每年</strong>、<strong>总成绩</strong>、<strong>都有提升</strong></li></ul><p>解决: </p><ol><li>对年份和学生分组，求总成绩。</li><li>使用<code>lag()</code>函数开窗，lag用于统计窗口内往上第n行值，取不到就给默认值，我们这里向上取一行，默认值为0，并且对学生分区，对年份排序(跟lag取数的顺序相关)。</li><li>每一行的总成绩减去lag函数拿到的上一行成绩，得到的可能是正数也可能是负数，正数代表提升。</li><li>使用<code>if()</code>函数对上面的结果进行处理，如果结果大于0给1，小于等于0给0，得到diff，方便统计。</li><li>子查询，对学生分区，使用avg()函数对diff进行统计，等于1则说明总成绩每年都在提升。</li></ol><p>代码:</p><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> </span><br><span class="line">student </span><br><span class="line"><span class="keyword">from</span></span><br><span class="line">(<span class="keyword">select</span></span><br><span class="line"><span class="keyword">year</span>,student,</span><br><span class="line"><span class="keyword">if</span>(sum_score - lag(sum_score,<span class="number">1</span>,<span class="number">0</span>) <span class="keyword">over</span>(<span class="keyword">partition</span> <span class="keyword">by</span> student <span class="keyword">order</span> <span class="keyword">by</span> <span class="keyword">year</span>) &gt; <span class="number">0</span> ,<span class="number">1</span>,<span class="number">0</span>) diff</span><br><span class="line"><span class="keyword">from</span></span><br><span class="line">(<span class="keyword">select</span></span><br><span class="line"><span class="keyword">year</span>,student,<span class="keyword">sum</span>(score) <span class="keyword">as</span> sum_score</span><br><span class="line"><span class="keyword">from</span></span><br><span class="line">scores</span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span></span><br><span class="line"><span class="keyword">year</span>,student</span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> </span><br><span class="line">student</span><br><span class="line">)</span><br><span class="line">)</span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> student <span class="keyword">having</span> <span class="keyword">avg</span>(diff) = <span class="number">1</span>;</span><br></pre></td></tr></table></figure><p>结果:</p><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">2020A1</span><br><span class="line">2021A1</span><br><span class="line">2022A1</span><br><span class="line">2020B1</span><br><span class="line">2021B0</span><br><span class="line">2022B1</span><br><span class="line"><span class="comment">-------------</span></span><br><span class="line">A</span><br></pre></td></tr></table></figure>]]></content>
+        <content type="html"><![CDATA[<p><strong>求年度最大连续登陆天数?</strong> </p><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">pk,20210801</span><br><span class="line">pk,20210802</span><br><span class="line">pk,20210803</span><br><span class="line">pk,20210804</span><br><span class="line">pk,20210806</span><br><span class="line">pk,20210807</span><br><span class="line">pk,20210808</span><br><span class="line">pk,20210811</span><br><span class="line">pk,20210812</span><br><span class="line">ruoze,20210730</span><br><span class="line">ruoze,20210731</span><br><span class="line">ruoze,20210801</span><br><span class="line">ruoze,20210804</span><br><span class="line">ruoze,20210806</span><br></pre></td></tr></table></figure><p>思路: </p><ul><li>提取关键词<strong>年度</strong>、<strong>连续登陆</strong>、<strong>最大</strong></li></ul><p>解决: </p><ol><li>在Spark SQL中有<code>DayOfYear()</code>函数来确定当前传入的时间是一年中的哪一天。</li><li>对day使用<code>row_number()</code> 开窗，按照用户分区、时间排序。</li><li>对每一行天数减去排名，得到一个常数值diff。</li><li>对上面的结果按照用户和diff分区，并对diff求<code>count()</code>，得到succession_day。</li><li>对上面的结果按照用户分区，并对succession_day求<code>max()</code>，得到用户的最大连续登陆天数。</li></ol><p>代码:</p><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> </span><br><span class="line"><span class="keyword">name</span>,<span class="keyword">max</span>(succession_day) max_succession_day</span><br><span class="line"><span class="keyword">from</span>(</span><br><span class="line"><span class="keyword">select</span></span><br><span class="line"><span class="keyword">name</span>,<span class="keyword">count</span>(<span class="number">1</span>) succession_day</span><br><span class="line"><span class="keyword">from</span>(</span><br><span class="line"><span class="keyword">select</span> </span><br><span class="line"><span class="keyword">name</span>,</span><br><span class="line"><span class="built_in">date</span>,</span><br><span class="line"><span class="keyword">dayofyear</span>(from_unixtime(<span class="keyword">unix_timestamp</span>(<span class="built_in">date</span>,<span class="string">'yyyyMMdd'</span>),<span class="string">'yyyy-MM-dd'</span>)) - row_number() <span class="keyword">over</span>(<span class="keyword">partition</span> <span class="keyword">by</span> <span class="keyword">name</span> <span class="keyword">order</span> <span class="keyword">by</span> <span class="built_in">date</span>) diff </span><br><span class="line"><span class="keyword">from</span> </span><br><span class="line">succession_login)</span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> <span class="keyword">name</span>,diff)</span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> <span class="keyword">name</span></span><br></pre></td></tr></table></figure><p>结果:</p><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">pk4</span><br><span class="line">ruoze3</span><br></pre></td></tr></table></figure>]]></content>
       
       
       <categories>
@@ -1034,11 +1159,11 @@
     
     
     <entry>
-      <title>求年度最大连续登陆天数</title>
-      <link href="/2020/12/15/%E5%9C%BA%E6%99%AF%E9%97%AE%E9%A2%98/3/"/>
-      <url>/2020/12/15/%E5%9C%BA%E6%99%AF%E9%97%AE%E9%A2%98/3/</url>
+      <title>每年总成绩都有提升的学生</title>
+      <link href="/2020/12/15/%E5%9C%BA%E6%99%AF%E9%97%AE%E9%A2%98/1/"/>
+      <url>/2020/12/15/%E5%9C%BA%E6%99%AF%E9%97%AE%E9%A2%98/1/</url>
       
-        <content type="html"><![CDATA[<p><strong>求年度最大连续登陆天数?</strong> </p><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">pk,20210801</span><br><span class="line">pk,20210802</span><br><span class="line">pk,20210803</span><br><span class="line">pk,20210804</span><br><span class="line">pk,20210806</span><br><span class="line">pk,20210807</span><br><span class="line">pk,20210808</span><br><span class="line">pk,20210811</span><br><span class="line">pk,20210812</span><br><span class="line">ruoze,20210730</span><br><span class="line">ruoze,20210731</span><br><span class="line">ruoze,20210801</span><br><span class="line">ruoze,20210804</span><br><span class="line">ruoze,20210806</span><br></pre></td></tr></table></figure><p>思路: </p><ul><li>提取关键词<strong>年度</strong>、<strong>连续登陆</strong>、<strong>最大</strong></li></ul><p>解决: </p><ol><li>在Spark SQL中有<code>DayOfYear()</code>函数来确定当前传入的时间是一年中的哪一天。</li><li>对day使用<code>row_number()</code> 开窗，按照用户分区、时间排序。</li><li>对每一行天数减去排名，得到一个常数值diff。</li><li>对上面的结果按照用户和diff分区，并对diff求<code>count()</code>，得到succession_day。</li><li>对上面的结果按照用户分区，并对succession_day求<code>max()</code>，得到用户的最大连续登陆天数。</li></ol><p>代码:</p><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> </span><br><span class="line"><span class="keyword">name</span>,<span class="keyword">max</span>(succession_day) max_succession_day</span><br><span class="line"><span class="keyword">from</span>(</span><br><span class="line"><span class="keyword">select</span></span><br><span class="line"><span class="keyword">name</span>,<span class="keyword">count</span>(<span class="number">1</span>) succession_day</span><br><span class="line"><span class="keyword">from</span>(</span><br><span class="line"><span class="keyword">select</span> </span><br><span class="line"><span class="keyword">name</span>,</span><br><span class="line"><span class="built_in">date</span>,</span><br><span class="line"><span class="keyword">dayofyear</span>(from_unixtime(<span class="keyword">unix_timestamp</span>(<span class="built_in">date</span>,<span class="string">'yyyyMMdd'</span>),<span class="string">'yyyy-MM-dd'</span>)) - row_number() <span class="keyword">over</span>(<span class="keyword">partition</span> <span class="keyword">by</span> <span class="keyword">name</span> <span class="keyword">order</span> <span class="keyword">by</span> <span class="built_in">date</span>) diff </span><br><span class="line"><span class="keyword">from</span> </span><br><span class="line">succession_login)</span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> <span class="keyword">name</span>,diff)</span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> <span class="keyword">name</span></span><br></pre></td></tr></table></figure><p>结果:</p><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">pk4</span><br><span class="line">ruoze3</span><br></pre></td></tr></table></figure>]]></content>
+        <content type="html"><![CDATA[<p><strong>每年总成绩都有提升的学生</strong></p><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">2020,语文,A,83</span><br><span class="line">2020,数学,A,58</span><br><span class="line">2020,英语,A,29</span><br><span class="line">2020,语文,B,83</span><br><span class="line">2020,数学,B,77</span><br><span class="line">2020,英语,B,67</span><br><span class="line">2021,语文,A,50</span><br><span class="line">2021,数学,A,93</span><br><span class="line">2021,英语,A,70</span><br><span class="line">2021,语文,B,86</span><br><span class="line">2021,数学,B,43</span><br><span class="line">2021,英语,B,39</span><br><span class="line">2022,语文,A,90</span><br><span class="line">2022,数学,A,49</span><br><span class="line">2022,英语,A,80</span><br><span class="line">2022,语文,B,80</span><br><span class="line">2022,数学,B,83</span><br><span class="line">2022,英语,B,97</span><br></pre></td></tr></table></figure><p>思路: </p><ul><li>提取关键词<strong>每年</strong>、<strong>总成绩</strong>、<strong>都有提升</strong></li></ul><p>解决: </p><ol><li>对年份和学生分组，求总成绩。</li><li>使用<code>lag()</code>函数开窗，lag用于统计窗口内往上第n行值，取不到就给默认值，我们这里向上取一行，默认值为0，并且对学生分区，对年份排序(跟lag取数的顺序相关)。</li><li>每一行的总成绩减去lag函数拿到的上一行成绩，得到的可能是正数也可能是负数，正数代表提升。</li><li>使用<code>if()</code>函数对上面的结果进行处理，如果结果大于0给1，小于等于0给0，得到diff，方便统计。</li><li>子查询，对学生分区，使用avg()函数对diff进行统计，等于1则说明总成绩每年都在提升。</li></ol><p>代码:</p><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> </span><br><span class="line">student </span><br><span class="line"><span class="keyword">from</span></span><br><span class="line">(<span class="keyword">select</span></span><br><span class="line"><span class="keyword">year</span>,student,</span><br><span class="line"><span class="keyword">if</span>(sum_score - lag(sum_score,<span class="number">1</span>,<span class="number">0</span>) <span class="keyword">over</span>(<span class="keyword">partition</span> <span class="keyword">by</span> student <span class="keyword">order</span> <span class="keyword">by</span> <span class="keyword">year</span>) &gt; <span class="number">0</span> ,<span class="number">1</span>,<span class="number">0</span>) diff</span><br><span class="line"><span class="keyword">from</span></span><br><span class="line">(<span class="keyword">select</span></span><br><span class="line"><span class="keyword">year</span>,student,<span class="keyword">sum</span>(score) <span class="keyword">as</span> sum_score</span><br><span class="line"><span class="keyword">from</span></span><br><span class="line">scores</span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span></span><br><span class="line"><span class="keyword">year</span>,student</span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> </span><br><span class="line">student</span><br><span class="line">)</span><br><span class="line">)</span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> student <span class="keyword">having</span> <span class="keyword">avg</span>(diff) = <span class="number">1</span>;</span><br></pre></td></tr></table></figure><p>结果:</p><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">2020A1</span><br><span class="line">2021A1</span><br><span class="line">2022A1</span><br><span class="line">2020B1</span><br><span class="line">2021B0</span><br><span class="line">2022B1</span><br><span class="line"><span class="comment">-------------</span></span><br><span class="line">A</span><br></pre></td></tr></table></figure>]]></content>
       
       
       <categories>
@@ -4336,31 +4461,6 @@
     
     
     <entry>
-      <title>Flume架构摸排</title>
-      <link href="/2018/12/01/flume/1/"/>
-      <url>/2018/12/01/flume/1/</url>
-      
-        <content type="html"><![CDATA[<h2 id="Flume定义"><a href="#Flume定义" class="headerlink" title="Flume定义"></a>Flume定义</h2><p>Flume是Cloudera提供的一个高可用的，高可靠的，分布式的海量日志采集、聚合和传输的系统。Flume基于流式架构，灵活简单。</p><h2 id="Flume的优点"><a href="#Flume的优点" class="headerlink" title="Flume的优点"></a>Flume的优点</h2><ol><li><p>可以和任意存储进程集成。</p></li><li><p>输入的的数据速率大于写入目的存储的速率，flume会进行缓冲，减小hdfs的压力。</p></li><li><p>flume中的事务基于channel，使用了两个事务模型（sender + receiver），确保消息被可靠发送。</p></li></ol><p>Flume使用两个独立的事务分别负责从soucrce到channel，以及从channel到sink的事件传递。一旦事务中所有的数据全部成功提交到channel，那么source才认为该数据读取完成。同理，只有成功被sink写出去的数据，才会从channel中移除。</p><h2 id="Flume组成架构"><a href="#Flume组成架构" class="headerlink" title="Flume组成架构"></a>Flume组成架构</h2><p><img src="https://yerias.github.io/flume_img/flume.jpg" alt="flume架构图"></p><ul><li><p>Agent</p><p>Agent是一个JVM进程，它以事件的形式将数据从源头送至目的。</p><p>Agent主要有3个部分组成，Source、Channel、Sink。</p></li><li><p>Source</p><p>Source是负责接收数据到Flume Agent的组件。</p><p>Source组件可以处理各种类型、各种格式的日志数据，包括avro、thrift、exec、jms、spooling directory、netcat、sequence generator、syslog、http、legacy。</p></li><li><p>Channel</p><p>Channel是位于Source和Sink之间的缓冲区。因此，Channel允许Source和Sink运作在不同的速率上。Channel是线程安全的，可以同时处理几个Source的写入操作和几个Sink的读取操作。</p><p>Flume自带两种Channel：Memory Channel和File Channel。</p><ol><li><p>Memory Channel是内存中的队列。Memory Channel在不需要关心数据丢失的情景下适用。如果需要关心数据丢失，那么Memory Channel就不应该使用，因为程序死亡、机器宕机或者重启都会导致数据丢失。</p></li><li><p>File Channel将所有事件写到磁盘。因此在程序关闭或机器宕机的情况下不会丢失数据。</p></li></ol></li><li><p>Sink</p><p>Sink不断地轮询Channel中的事件且批量地移除它们，并将这些事件批量写入到存储或索引系统、或者被发送到另一个Flume Agent。</p><p>Sink是完全事务性的。在从Channel批量删除数据之前，每个Sink用Channel启动一个事务。批量事件一旦成功写出到存储系统或下一个Flume Agent，Sink就利用Channel提交事务。事务一旦被提交，该Channel从自己的内部缓冲区删除事件。</p><p>Sink组件目的地包括hdfs、logger、avro、thrift、ipc、file、null、HBase、solr、自定义。</p></li><li><p>Event</p><p>传输单元，Flume数据传输的基本单元，以事件的形式将数据从源头送至目的地。 Event由可选的header和载有数据的一个byte array 构成。Header是容纳了key-value字符串对的HashMap。</p></li></ul><h2 id="Flume拓扑结构"><a href="#Flume拓扑结构" class="headerlink" title="Flume拓扑结构"></a>Flume拓扑结构</h2><h3 id="Flume-Agent连接"><a href="#Flume-Agent连接" class="headerlink" title="Flume Agent连接"></a>Flume Agent连接</h3><p><img src="https://yerias.github.io/flume_img/flume2.jpg" alt="flume2"></p><p>这种模式是将多个flume给顺序连接起来了，从最初的source开始到最终sink传送的目的存储系统。此模式不建议桥接过多的flume数量， flume数量过多不仅会影响传输速率，而且一旦传输过程中某个节点flume宕机，会影响整个传输系统。</p><h3 id="单source，多channel、sink"><a href="#单source，多channel、sink" class="headerlink" title="单source，多channel、sink"></a>单source，多channel、sink</h3><p><img src="https://yerias.github.io/flume_img/flume3.jpg" alt="flume3"></p><p>Flume支持将事件流向一个或者多个目的地。这种模式将数据源复制到多个channel中，每个channel都有相同的数据，sink可以选择传送的不同的目的地。</p><h3 id="Flume负载均衡"><a href="#Flume负载均衡" class="headerlink" title="Flume负载均衡"></a>Flume负载均衡</h3><p><img src="https://yerias.github.io/flume_img/flume4.jpg" alt="flume4"></p><p>Flume支持使用将多个sink逻辑上分到一个sink组，flume将数据发送到不同的sink，主要解决负载均衡和故障转移问题。</p><h3 id="Flume-Agent聚合"><a href="#Flume-Agent聚合" class="headerlink" title="Flume Agent聚合"></a>Flume Agent聚合</h3><p><img src="https://yerias.github.io/flume_img/flume5.jpg" alt="flume5"></p><p>这种模式是我们最常见的，也非常实用，日常web应用通常分布在上百个服务器，大者甚至上千个、上万个服务器。产生的日志，处理起来也非常麻烦。用flume的这种组合方式能很好的解决这一问题，每台服务器部署一个flume采集日志，传送到一个集中收集日志的flume，再由此flume上传到hdfs、hive、hbase、jms等，进行日志分析。</p>]]></content>
-      
-      
-      <categories>
-          
-          <category> Flume </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> Flume </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>SQOOP安装&amp;RDBMS导入HDFS&amp;RDBMS导入HIVE&amp;HDFS导入RDBMS&amp;HIVE导入RDBMS&amp;SQOOP的ETL案例&amp;在SHELL中操作MYSQL</title>
       <link href="/2018/12/01/sqoop/1/"/>
       <url>/2018/12/01/sqoop/1/</url>
@@ -4378,6 +4478,31 @@
         <tags>
             
             <tag> Sqoop </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Flume架构摸排</title>
+      <link href="/2018/12/01/flume/1/"/>
+      <url>/2018/12/01/flume/1/</url>
+      
+        <content type="html"><![CDATA[<h2 id="Flume定义"><a href="#Flume定义" class="headerlink" title="Flume定义"></a>Flume定义</h2><p>Flume是Cloudera提供的一个高可用的，高可靠的，分布式的海量日志采集、聚合和传输的系统。Flume基于流式架构，灵活简单。</p><h2 id="Flume的优点"><a href="#Flume的优点" class="headerlink" title="Flume的优点"></a>Flume的优点</h2><ol><li><p>可以和任意存储进程集成。</p></li><li><p>输入的的数据速率大于写入目的存储的速率，flume会进行缓冲，减小hdfs的压力。</p></li><li><p>flume中的事务基于channel，使用了两个事务模型（sender + receiver），确保消息被可靠发送。</p></li></ol><p>Flume使用两个独立的事务分别负责从soucrce到channel，以及从channel到sink的事件传递。一旦事务中所有的数据全部成功提交到channel，那么source才认为该数据读取完成。同理，只有成功被sink写出去的数据，才会从channel中移除。</p><h2 id="Flume组成架构"><a href="#Flume组成架构" class="headerlink" title="Flume组成架构"></a>Flume组成架构</h2><p><img src="https://yerias.github.io/flume_img/flume.jpg" alt="flume架构图"></p><ul><li><p>Agent</p><p>Agent是一个JVM进程，它以事件的形式将数据从源头送至目的。</p><p>Agent主要有3个部分组成，Source、Channel、Sink。</p></li><li><p>Source</p><p>Source是负责接收数据到Flume Agent的组件。</p><p>Source组件可以处理各种类型、各种格式的日志数据，包括avro、thrift、exec、jms、spooling directory、netcat、sequence generator、syslog、http、legacy。</p></li><li><p>Channel</p><p>Channel是位于Source和Sink之间的缓冲区。因此，Channel允许Source和Sink运作在不同的速率上。Channel是线程安全的，可以同时处理几个Source的写入操作和几个Sink的读取操作。</p><p>Flume自带两种Channel：Memory Channel和File Channel。</p><ol><li><p>Memory Channel是内存中的队列。Memory Channel在不需要关心数据丢失的情景下适用。如果需要关心数据丢失，那么Memory Channel就不应该使用，因为程序死亡、机器宕机或者重启都会导致数据丢失。</p></li><li><p>File Channel将所有事件写到磁盘。因此在程序关闭或机器宕机的情况下不会丢失数据。</p></li></ol></li><li><p>Sink</p><p>Sink不断地轮询Channel中的事件且批量地移除它们，并将这些事件批量写入到存储或索引系统、或者被发送到另一个Flume Agent。</p><p>Sink是完全事务性的。在从Channel批量删除数据之前，每个Sink用Channel启动一个事务。批量事件一旦成功写出到存储系统或下一个Flume Agent，Sink就利用Channel提交事务。事务一旦被提交，该Channel从自己的内部缓冲区删除事件。</p><p>Sink组件目的地包括hdfs、logger、avro、thrift、ipc、file、null、HBase、solr、自定义。</p></li><li><p>Event</p><p>传输单元，Flume数据传输的基本单元，以事件的形式将数据从源头送至目的地。 Event由可选的header和载有数据的一个byte array 构成。Header是容纳了key-value字符串对的HashMap。</p></li></ul><h2 id="Flume拓扑结构"><a href="#Flume拓扑结构" class="headerlink" title="Flume拓扑结构"></a>Flume拓扑结构</h2><h3 id="Flume-Agent连接"><a href="#Flume-Agent连接" class="headerlink" title="Flume Agent连接"></a>Flume Agent连接</h3><p><img src="https://yerias.github.io/flume_img/flume2.jpg" alt="flume2"></p><p>这种模式是将多个flume给顺序连接起来了，从最初的source开始到最终sink传送的目的存储系统。此模式不建议桥接过多的flume数量， flume数量过多不仅会影响传输速率，而且一旦传输过程中某个节点flume宕机，会影响整个传输系统。</p><h3 id="单source，多channel、sink"><a href="#单source，多channel、sink" class="headerlink" title="单source，多channel、sink"></a>单source，多channel、sink</h3><p><img src="https://yerias.github.io/flume_img/flume3.jpg" alt="flume3"></p><p>Flume支持将事件流向一个或者多个目的地。这种模式将数据源复制到多个channel中，每个channel都有相同的数据，sink可以选择传送的不同的目的地。</p><h3 id="Flume负载均衡"><a href="#Flume负载均衡" class="headerlink" title="Flume负载均衡"></a>Flume负载均衡</h3><p><img src="https://yerias.github.io/flume_img/flume4.jpg" alt="flume4"></p><p>Flume支持使用将多个sink逻辑上分到一个sink组，flume将数据发送到不同的sink，主要解决负载均衡和故障转移问题。</p><h3 id="Flume-Agent聚合"><a href="#Flume-Agent聚合" class="headerlink" title="Flume Agent聚合"></a>Flume Agent聚合</h3><p><img src="https://yerias.github.io/flume_img/flume5.jpg" alt="flume5"></p><p>这种模式是我们最常见的，也非常实用，日常web应用通常分布在上百个服务器，大者甚至上千个、上万个服务器。产生的日志，处理起来也非常麻烦。用flume的这种组合方式能很好的解决这一问题，每台服务器部署一个flume采集日志，传送到一个集中收集日志的flume，再由此flume上传到hdfs、hive、hbase、jms等，进行日志分析。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Flume </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Flume </tag>
             
         </tags>
       
@@ -5153,9 +5278,9 @@
       
         <tags>
             
-            <tag> MapReduce </tag>
-            
             <tag> HDFS </tag>
+            
+            <tag> MapReduce </tag>
             
         </tags>
       
@@ -5218,6 +5343,35 @@
     
     
     <entry>
+      <title>MySQL中的Top N</title>
+      <link href="/2018/10/08/mysql/4/"/>
+      <url>/2018/10/08/mysql/4/</url>
+      
+        <content type="html"><![CDATA[<h3 id="切入点"><a href="#切入点" class="headerlink" title="切入点"></a>切入点</h3><p>MySQL没有获取Top N的这种函数，但是在MySQL中求Top N又是必须掌握的点</p><p>比如查询分组后的最大值、最小值所在的整行记录或者分组后的Top N行记录</p><p>下面我们就如何在MySQL中求Top N做出深度的思考和验证</p><h3 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h3><p>测试表结构如下：</p><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">&gt;&gt; CREATE TABLE `student` (</span><br><span class="line">  `id` int(11) NOT NULL AUTO_INCREMENT,</span><br><span class="line">  `name` varchar(20) DEFAULT NULL,</span><br><span class="line">  `course` varchar(20) DEFAULT NULL,</span><br><span class="line">  `score` int(11) DEFAULT NULL,</span><br><span class="line">  PRIMARY KEY (`id`)</span><br><span class="line">) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8</span><br></pre></td></tr></table></figure><p> 插入数据：</p><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">&gt;&gt; insert into student(name,course,score)</span><br><span class="line"><span class="keyword">values</span></span><br><span class="line">(<span class="string">'张三'</span>,<span class="string">'语文'</span>,<span class="number">80</span>),</span><br><span class="line">(<span class="string">'李四'</span>,<span class="string">'语文'</span>,<span class="number">90</span>),</span><br><span class="line">(<span class="string">'王五'</span>,<span class="string">'语文'</span>,<span class="number">93</span>),</span><br><span class="line">(<span class="string">'张三'</span>,<span class="string">'数学'</span>,<span class="number">77</span>),</span><br><span class="line">(<span class="string">'李四'</span>,<span class="string">'数学'</span>,<span class="number">68</span>),</span><br><span class="line">(<span class="string">'王五'</span>,<span class="string">'数学'</span>,<span class="number">99</span>),</span><br><span class="line">(<span class="string">'张三'</span>,<span class="string">'英语'</span>,<span class="number">90</span>),</span><br><span class="line">(<span class="string">'李四'</span>,<span class="string">'英语'</span>,<span class="number">50</span>),</span><br><span class="line">(<span class="string">'王五'</span>,<span class="string">'英语'</span>,<span class="number">89</span>);</span><br></pre></td></tr></table></figure><p>查看结果：</p><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">&gt;&gt; select * from student;</span><br><span class="line">+<span class="comment">----+--------+--------+-------+</span></span><br><span class="line">| id | name   | course | score |</span><br><span class="line">+<span class="comment">----+--------+--------+-------+</span></span><br><span class="line">|  1 | 张三   | 语文   |    80 |</span><br><span class="line">|  2 | 李四   | 语文   |    90 |</span><br><span class="line">|  3 | 王五   | 语文   |    93 |</span><br><span class="line">|  4 | 张三   | 数学   |    77 |</span><br><span class="line">|  5 | 李四   | 数学   |    68 |</span><br><span class="line">|  6 | 王五   | 数学   |    99 |</span><br><span class="line">|  7 | 张三   | 英语   |    90 |</span><br><span class="line">|  8 | 李四   | 英语   |    50 |</span><br><span class="line">|  9 | 王五   | 英语   |    89 |</span><br><span class="line">+<span class="comment">----+--------+--------+-------+</span></span><br></pre></td></tr></table></figure><h3 id="TOP-1"><a href="#TOP-1" class="headerlink" title="TOP 1"></a>TOP 1</h3><p>查询每门课程分数最高的学生以及成绩</p><ol><li><p>我们先拆分题目，这是一题查询分组求最大值的题目，拆分后的题目是：查询 每门课程 分数最高 的学生以及成绩</p><p>我们首先按照常规思路来写SQL: </p><p>select 学生姓名，学生分数</p><p>group by 课程</p><p>max(分数) </p><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> </span><br><span class="line">s.name,s.course,<span class="keyword">max</span>(s.score) <span class="keyword">as</span> score</span><br><span class="line"><span class="keyword">from</span> </span><br><span class="line">student s</span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> </span><br><span class="line">s.course;</span><br></pre></td></tr></table></figure><p>得出的查询结果是:</p><table><thead><tr><th>name</th><th>course</th><th>score</th></tr></thead><tbody><tr><td>张三</td><td>数学</td><td>99</td></tr><tr><td>张三</td><td>英语</td><td>90</td></tr><tr><td>张三</td><td>语文</td><td>93</td></tr></tbody></table><h4 id="问题-为什么姓名都是张三？课程和对应的成绩又全是对的？"><a href="#问题-为什么姓名都是张三？课程和对应的成绩又全是对的？" class="headerlink" title="问题: 为什么姓名都是张三？课程和对应的成绩又全是对的？"></a>问题: 为什么姓名都是张三？课程和对应的成绩又全是对的？</h4><p>我预测是因为没有把姓名加入group的分组字段，那么我们把姓名加入group的分组字段后试试看</p><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> </span><br><span class="line">s.name,s.course,<span class="keyword">max</span>(s.score) <span class="keyword">as</span> score</span><br><span class="line"><span class="keyword">from</span> </span><br><span class="line">student s</span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> </span><br><span class="line">s.name,s.course;</span><br></pre></td></tr></table></figure><p>得出的查询结果是:</p><table><thead><tr><th>name</th><th>course</th><th>score</th></tr></thead><tbody><tr><td>张三</td><td>数学</td><td>77</td></tr><tr><td>张三</td><td>英语</td><td>90</td></tr><tr><td>张三</td><td>语文</td><td>80</td></tr><tr><td>李四</td><td>数学</td><td>68</td></tr><tr><td>李四</td><td>英语</td><td>50</td></tr><tr><td>李四</td><td>语文</td><td>90</td></tr><tr><td>王五</td><td>数学</td><td>99</td></tr><tr><td>王五</td><td>英语</td><td>89</td></tr><tr><td>王五</td><td>语文</td><td>93</td></tr></tbody></table><p>结果还是不对，这次把所有的字段都查询出来了，字段的排序规则是先按姓名分组，再按课程分组，因为课程是唯一的，所以跟直接查询的结果一样。</p></li><li><p>我们回到上一步，上一步的课程和成绩对应上了，姓名没有对应上，我们干脆就不要姓名和，拿课程和成绩作为一张表再和自己联结一次，以课程和成绩作为过滤字段，说不定就能得到想要的姓名字段。</p><p>思路：</p><ol><li><p>先课程分组求出最高的分数</p><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> </span><br><span class="line">s.course,<span class="keyword">max</span>(s.score) <span class="keyword">as</span> score</span><br><span class="line"><span class="keyword">from</span> </span><br><span class="line">student s</span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> </span><br><span class="line">s.course;</span><br></pre></td></tr></table></figure></li><li><p>把前面得出的结果作为表t再自联结一次</p><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> </span><br><span class="line">s.name,s.score</span><br><span class="line"><span class="keyword">from</span> </span><br><span class="line">student s</span><br><span class="line"><span class="keyword">join</span> t </span><br><span class="line"><span class="keyword">on</span> s.course=t.course <span class="keyword">and</span> s.score=t.score;</span><br></pre></td></tr></table></figure></li><li><p>把t替换成查询出来的结果</p><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> </span><br><span class="line">s.name,s.course,s.score</span><br><span class="line"><span class="keyword">from</span> </span><br><span class="line">student s</span><br><span class="line"><span class="keyword">join</span> (<span class="keyword">select</span> </span><br><span class="line">s.course,<span class="keyword">max</span>(s.score) <span class="keyword">as</span> score</span><br><span class="line"><span class="keyword">from</span> </span><br><span class="line">student s</span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> </span><br><span class="line">s.course) t </span><br><span class="line"><span class="keyword">on</span> s.course=t.course <span class="keyword">and</span> s.score=t.score;</span><br></pre></td></tr></table></figure><p>得出的查询结果是:</p><table><thead><tr><th>name</th><th>course</th><th>score</th></tr></thead><tbody><tr><td>王五</td><td>语文</td><td>93</td></tr><tr><td>王五</td><td>数学</td><td>99</td></tr><tr><td>张三</td><td>英语</td><td>90</td></tr></tbody></table><p>和原数据比较，这就是我们要得到的每门课程的top1。</p></li></ol></li></ol><h3 id="TOP-N"><a href="#TOP-N" class="headerlink" title="TOP N"></a>TOP N</h3><p>查询每门课程前两名的学生以及成绩</p><p>首先求Top 1的方法不适用与Top N，然后毫无头绪。。。</p><p>翻看其他人的博客后，发现求Top N的核心是: <code>自联结表的需求字段比较，也就是自己跟自己比较，然后把比较的结果求count()，最后控制过滤的记录数即可</code></p><h4 id="注意-自己和自己比较，可以通过联结和子查询，我们这里使用子查询"><a href="#注意-自己和自己比较，可以通过联结和子查询，我们这里使用子查询" class="headerlink" title="注意:  自己和自己比较，可以通过联结和子查询，我们这里使用子查询"></a>注意:  自己和自己比较，可以通过联结和子查询，我们这里使用子查询</h4><p>思路:</p><ol><li><p>首先是子查询，然后是自己和自己比较，得出一个count()值，最后使用where过滤这个count值</p><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> </span><br><span class="line">a.name,a.course,a.score</span><br><span class="line"><span class="keyword">from</span> </span><br><span class="line">student a</span><br><span class="line"><span class="keyword">where</span> </span><br><span class="line"><span class="number">2</span>&gt;(<span class="keyword">select</span> <span class="keyword">count</span>(b.score) <span class="keyword">from</span> student b <span class="keyword">where</span> a.course=b.course <span class="keyword">and</span> a.score&lt;b.score)</span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> a.course <span class="keyword">desc</span>,a.score <span class="keyword">desc</span>;</span><br></pre></td></tr></table></figure><p>梳理这段SQL，select字段不难，from字段不难，order by字段不难，难就难在where字段，我们先不看为什么使用2大于这个子查询，先把注意力放在子查询的where字段中的两个表成绩比较，实际上理解了为什么这么比较这题就解出来了。</p></li><li><p>我们画图来解释。。。只是做为示范，所以只取一个课程的成绩比较，其他的一样</p><p><img src="https://yerias.github.io/hadoop_img/20191205012529.jpg" alt="a.score&lt;b.score比较图"></p><p>可以看出，表a中的成绩越大，满足<code>a.score&lt;b.score</code>的次数越少，<code>where条件过滤count()的值越少越满足Top N的条件，可以根据where条件灵活控制过滤的记录数,我们这里是2，即取Top 2的记录。</code></p><h4 id="再提出一个问题，为什么要用a-score-lt-b-score而不是a-score-gt-b-score？"><a href="#再提出一个问题，为什么要用a-score-lt-b-score而不是a-score-gt-b-score？" class="headerlink" title="再提出一个问题，为什么要用a.score&lt;b.score而不是a.score&gt;b.score？"></a>再提出一个问题，为什么要用<code>a.score&lt;b.score</code>而不是<code>a.score&gt;b.score</code>？</h4><p>通过结果可以倒推出来，我们<code>select</code>语句中要的是表a，根据题意表a必定是比较中较大的值。如果使用<code>a.score&gt;b.score</code>，where条件限制的是满足最少的条件，把表a中最大的值给过滤了，那么得出的的count()结果是反的。</p></li></ol>]]></content>
+      
+      
+      <categories>
+          
+          <category> MySQL </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> DataWarehouse </tag>
+            
+            <tag> MySQL </tag>
+            
+            <tag> Rank </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Linux下MySQL进程死掉的可能解决方案</title>
       <link href="/2018/10/08/mysql/5/"/>
       <url>/2018/10/08/mysql/5/</url>
@@ -5264,35 +5418,6 @@
             <tag> Hadoop </tag>
             
             <tag> HDFS </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>MySQL中的Top N</title>
-      <link href="/2018/10/08/mysql/4/"/>
-      <url>/2018/10/08/mysql/4/</url>
-      
-        <content type="html"><![CDATA[<h3 id="切入点"><a href="#切入点" class="headerlink" title="切入点"></a>切入点</h3><p>MySQL没有获取Top N的这种函数，但是在MySQL中求Top N又是必须掌握的点</p><p>比如查询分组后的最大值、最小值所在的整行记录或者分组后的Top N行记录</p><p>下面我们就如何在MySQL中求Top N做出深度的思考和验证</p><h3 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h3><p>测试表结构如下：</p><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">&gt;&gt; CREATE TABLE `student` (</span><br><span class="line">  `id` int(11) NOT NULL AUTO_INCREMENT,</span><br><span class="line">  `name` varchar(20) DEFAULT NULL,</span><br><span class="line">  `course` varchar(20) DEFAULT NULL,</span><br><span class="line">  `score` int(11) DEFAULT NULL,</span><br><span class="line">  PRIMARY KEY (`id`)</span><br><span class="line">) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8</span><br></pre></td></tr></table></figure><p> 插入数据：</p><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">&gt;&gt; insert into student(name,course,score)</span><br><span class="line"><span class="keyword">values</span></span><br><span class="line">(<span class="string">'张三'</span>,<span class="string">'语文'</span>,<span class="number">80</span>),</span><br><span class="line">(<span class="string">'李四'</span>,<span class="string">'语文'</span>,<span class="number">90</span>),</span><br><span class="line">(<span class="string">'王五'</span>,<span class="string">'语文'</span>,<span class="number">93</span>),</span><br><span class="line">(<span class="string">'张三'</span>,<span class="string">'数学'</span>,<span class="number">77</span>),</span><br><span class="line">(<span class="string">'李四'</span>,<span class="string">'数学'</span>,<span class="number">68</span>),</span><br><span class="line">(<span class="string">'王五'</span>,<span class="string">'数学'</span>,<span class="number">99</span>),</span><br><span class="line">(<span class="string">'张三'</span>,<span class="string">'英语'</span>,<span class="number">90</span>),</span><br><span class="line">(<span class="string">'李四'</span>,<span class="string">'英语'</span>,<span class="number">50</span>),</span><br><span class="line">(<span class="string">'王五'</span>,<span class="string">'英语'</span>,<span class="number">89</span>);</span><br></pre></td></tr></table></figure><p>查看结果：</p><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">&gt;&gt; select * from student;</span><br><span class="line">+<span class="comment">----+--------+--------+-------+</span></span><br><span class="line">| id | name   | course | score |</span><br><span class="line">+<span class="comment">----+--------+--------+-------+</span></span><br><span class="line">|  1 | 张三   | 语文   |    80 |</span><br><span class="line">|  2 | 李四   | 语文   |    90 |</span><br><span class="line">|  3 | 王五   | 语文   |    93 |</span><br><span class="line">|  4 | 张三   | 数学   |    77 |</span><br><span class="line">|  5 | 李四   | 数学   |    68 |</span><br><span class="line">|  6 | 王五   | 数学   |    99 |</span><br><span class="line">|  7 | 张三   | 英语   |    90 |</span><br><span class="line">|  8 | 李四   | 英语   |    50 |</span><br><span class="line">|  9 | 王五   | 英语   |    89 |</span><br><span class="line">+<span class="comment">----+--------+--------+-------+</span></span><br></pre></td></tr></table></figure><h3 id="TOP-1"><a href="#TOP-1" class="headerlink" title="TOP 1"></a>TOP 1</h3><p>查询每门课程分数最高的学生以及成绩</p><ol><li><p>我们先拆分题目，这是一题查询分组求最大值的题目，拆分后的题目是：查询 每门课程 分数最高 的学生以及成绩</p><p>我们首先按照常规思路来写SQL: </p><p>select 学生姓名，学生分数</p><p>group by 课程</p><p>max(分数) </p><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> </span><br><span class="line">s.name,s.course,<span class="keyword">max</span>(s.score) <span class="keyword">as</span> score</span><br><span class="line"><span class="keyword">from</span> </span><br><span class="line">student s</span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> </span><br><span class="line">s.course;</span><br></pre></td></tr></table></figure><p>得出的查询结果是:</p><table><thead><tr><th>name</th><th>course</th><th>score</th></tr></thead><tbody><tr><td>张三</td><td>数学</td><td>99</td></tr><tr><td>张三</td><td>英语</td><td>90</td></tr><tr><td>张三</td><td>语文</td><td>93</td></tr></tbody></table><h4 id="问题-为什么姓名都是张三？课程和对应的成绩又全是对的？"><a href="#问题-为什么姓名都是张三？课程和对应的成绩又全是对的？" class="headerlink" title="问题: 为什么姓名都是张三？课程和对应的成绩又全是对的？"></a>问题: 为什么姓名都是张三？课程和对应的成绩又全是对的？</h4><p>我预测是因为没有把姓名加入group的分组字段，那么我们把姓名加入group的分组字段后试试看</p><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> </span><br><span class="line">s.name,s.course,<span class="keyword">max</span>(s.score) <span class="keyword">as</span> score</span><br><span class="line"><span class="keyword">from</span> </span><br><span class="line">student s</span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> </span><br><span class="line">s.name,s.course;</span><br></pre></td></tr></table></figure><p>得出的查询结果是:</p><table><thead><tr><th>name</th><th>course</th><th>score</th></tr></thead><tbody><tr><td>张三</td><td>数学</td><td>77</td></tr><tr><td>张三</td><td>英语</td><td>90</td></tr><tr><td>张三</td><td>语文</td><td>80</td></tr><tr><td>李四</td><td>数学</td><td>68</td></tr><tr><td>李四</td><td>英语</td><td>50</td></tr><tr><td>李四</td><td>语文</td><td>90</td></tr><tr><td>王五</td><td>数学</td><td>99</td></tr><tr><td>王五</td><td>英语</td><td>89</td></tr><tr><td>王五</td><td>语文</td><td>93</td></tr></tbody></table><p>结果还是不对，这次把所有的字段都查询出来了，字段的排序规则是先按姓名分组，再按课程分组，因为课程是唯一的，所以跟直接查询的结果一样。</p></li><li><p>我们回到上一步，上一步的课程和成绩对应上了，姓名没有对应上，我们干脆就不要姓名和，拿课程和成绩作为一张表再和自己联结一次，以课程和成绩作为过滤字段，说不定就能得到想要的姓名字段。</p><p>思路：</p><ol><li><p>先课程分组求出最高的分数</p><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> </span><br><span class="line">s.course,<span class="keyword">max</span>(s.score) <span class="keyword">as</span> score</span><br><span class="line"><span class="keyword">from</span> </span><br><span class="line">student s</span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> </span><br><span class="line">s.course;</span><br></pre></td></tr></table></figure></li><li><p>把前面得出的结果作为表t再自联结一次</p><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> </span><br><span class="line">s.name,s.score</span><br><span class="line"><span class="keyword">from</span> </span><br><span class="line">student s</span><br><span class="line"><span class="keyword">join</span> t </span><br><span class="line"><span class="keyword">on</span> s.course=t.course <span class="keyword">and</span> s.score=t.score;</span><br></pre></td></tr></table></figure></li><li><p>把t替换成查询出来的结果</p><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> </span><br><span class="line">s.name,s.course,s.score</span><br><span class="line"><span class="keyword">from</span> </span><br><span class="line">student s</span><br><span class="line"><span class="keyword">join</span> (<span class="keyword">select</span> </span><br><span class="line">s.course,<span class="keyword">max</span>(s.score) <span class="keyword">as</span> score</span><br><span class="line"><span class="keyword">from</span> </span><br><span class="line">student s</span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> </span><br><span class="line">s.course) t </span><br><span class="line"><span class="keyword">on</span> s.course=t.course <span class="keyword">and</span> s.score=t.score;</span><br></pre></td></tr></table></figure><p>得出的查询结果是:</p><table><thead><tr><th>name</th><th>course</th><th>score</th></tr></thead><tbody><tr><td>王五</td><td>语文</td><td>93</td></tr><tr><td>王五</td><td>数学</td><td>99</td></tr><tr><td>张三</td><td>英语</td><td>90</td></tr></tbody></table><p>和原数据比较，这就是我们要得到的每门课程的top1。</p></li></ol></li></ol><h3 id="TOP-N"><a href="#TOP-N" class="headerlink" title="TOP N"></a>TOP N</h3><p>查询每门课程前两名的学生以及成绩</p><p>首先求Top 1的方法不适用与Top N，然后毫无头绪。。。</p><p>翻看其他人的博客后，发现求Top N的核心是: <code>自联结表的需求字段比较，也就是自己跟自己比较，然后把比较的结果求count()，最后控制过滤的记录数即可</code></p><h4 id="注意-自己和自己比较，可以通过联结和子查询，我们这里使用子查询"><a href="#注意-自己和自己比较，可以通过联结和子查询，我们这里使用子查询" class="headerlink" title="注意:  自己和自己比较，可以通过联结和子查询，我们这里使用子查询"></a>注意:  自己和自己比较，可以通过联结和子查询，我们这里使用子查询</h4><p>思路:</p><ol><li><p>首先是子查询，然后是自己和自己比较，得出一个count()值，最后使用where过滤这个count值</p><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> </span><br><span class="line">a.name,a.course,a.score</span><br><span class="line"><span class="keyword">from</span> </span><br><span class="line">student a</span><br><span class="line"><span class="keyword">where</span> </span><br><span class="line"><span class="number">2</span>&gt;(<span class="keyword">select</span> <span class="keyword">count</span>(b.score) <span class="keyword">from</span> student b <span class="keyword">where</span> a.course=b.course <span class="keyword">and</span> a.score&lt;b.score)</span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> a.course <span class="keyword">desc</span>,a.score <span class="keyword">desc</span>;</span><br></pre></td></tr></table></figure><p>梳理这段SQL，select字段不难，from字段不难，order by字段不难，难就难在where字段，我们先不看为什么使用2大于这个子查询，先把注意力放在子查询的where字段中的两个表成绩比较，实际上理解了为什么这么比较这题就解出来了。</p></li><li><p>我们画图来解释。。。只是做为示范，所以只取一个课程的成绩比较，其他的一样</p><p><img src="https://yerias.github.io/hadoop_img/20191205012529.jpg" alt="a.score&lt;b.score比较图"></p><p>可以看出，表a中的成绩越大，满足<code>a.score&lt;b.score</code>的次数越少，<code>where条件过滤count()的值越少越满足Top N的条件，可以根据where条件灵活控制过滤的记录数,我们这里是2，即取Top 2的记录。</code></p><h4 id="再提出一个问题，为什么要用a-score-lt-b-score而不是a-score-gt-b-score？"><a href="#再提出一个问题，为什么要用a-score-lt-b-score而不是a-score-gt-b-score？" class="headerlink" title="再提出一个问题，为什么要用a.score&lt;b.score而不是a.score&gt;b.score？"></a>再提出一个问题，为什么要用<code>a.score&lt;b.score</code>而不是<code>a.score&gt;b.score</code>？</h4><p>通过结果可以倒推出来，我们<code>select</code>语句中要的是表a，根据题意表a必定是比较中较大的值。如果使用<code>a.score&gt;b.score</code>，where条件限制的是满足最少的条件，把表a中最大的值给过滤了，那么得出的的count()结果是反的。</p></li></ol>]]></content>
-      
-      
-      <categories>
-          
-          <category> MySQL </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> DataWarehouse </tag>
-            
-            <tag> MySQL </tag>
-            
-            <tag> Rank </tag>
             
         </tags>
       
@@ -5377,11 +5502,11 @@
       
         <tags>
             
+            <tag> DataWarehouse </tag>
+            
             <tag> Hadoop </tag>
             
             <tag> HDFS </tag>
-            
-            <tag> DataWarehouse </tag>
             
         </tags>
       
@@ -5408,13 +5533,13 @@
       
         <tags>
             
+            <tag> Linux </tag>
+            
             <tag> Hadoop </tag>
             
             <tag> MapReduce </tag>
             
             <tag> Yarn </tag>
-            
-            <tag> Linux </tag>
             
         </tags>
       
@@ -5810,9 +5935,9 @@
       
         <tags>
             
-            <tag> DataWarehouse </tag>
-            
             <tag> Linux </tag>
+            
+            <tag> DataWarehouse </tag>
             
         </tags>
       
@@ -5837,9 +5962,9 @@
       
         <tags>
             
-            <tag> DataWarehouse </tag>
-            
             <tag> Linux </tag>
+            
+            <tag> DataWarehouse </tag>
             
         </tags>
       
@@ -5864,9 +5989,9 @@
       
         <tags>
             
-            <tag> DataWarehouse </tag>
-            
             <tag> Linux </tag>
+            
+            <tag> DataWarehouse </tag>
             
         </tags>
       
@@ -5891,9 +6016,9 @@
       
         <tags>
             
-            <tag> DataWarehouse </tag>
-            
             <tag> Linux </tag>
+            
+            <tag> DataWarehouse </tag>
             
         </tags>
       
@@ -5918,9 +6043,9 @@
       
         <tags>
             
-            <tag> DataWarehouse </tag>
-            
             <tag> Linux </tag>
+            
+            <tag> DataWarehouse </tag>
             
         </tags>
       
