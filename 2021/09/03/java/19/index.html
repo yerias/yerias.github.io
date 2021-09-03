@@ -1,0 +1,76 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="无锁 VS 偏向锁 VS 轻量级锁 VS 重量级锁"><meta name="keywords" content="Java"><meta name="author" content="Tunan"><meta name="copyright" content="Tunan"><title>无锁 VS 偏向锁 VS 轻量级锁 VS 重量级锁 | TUNANのBlog</title><link rel="shortcut icon" href="/melody-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.6.1"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.6.1"><link rel="dns-prefetch" href="https://cdn.staticfile.org"><link rel="dns-prefetch" href="https://cdn.bootcss.com"><link rel="dns-prefetch" href="https://creativecommons.org"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"We didn't find any results for the search: ${query}"}},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  }
+} </script></head><body><canvas class="fireworks"></canvas><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="toggle-sidebar-info text-center"><span data-toggle="Toggle article">Toggle site</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">Catalog</div><div class="sidebar-toc__progress"><span class="progress-notice">You've read</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#Java对象头"><span class="toc-number">1.</span> <span class="toc-text">Java对象头</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Monitor"><span class="toc-number">2.</span> <span class="toc-text">Monitor</span></a></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="/img/xiaoqi.jpg"></div><div class="author-info__name text-center">Tunan</div><div class="author-info__description text-center">BigData Developer</div><div class="follow-button"><a href="#">Follow Me</a></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">Articles</span><span class="pull-right">256</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">Tags</span><span class="pull-right">39</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">Categories</span><span class="pull-right">35</span></a></div><hr><div class="author-info-links"><div class="author-info-links__title text-center">Links</div><a class="author-info-links__name text-center" href="https://hadoop.apache.org/docs/r2.10.0/hadoop-project-dist/hadoop-common/SingleCluster.html" target="_blank" rel="noopener">HADOOP</a><a class="author-info-links__name text-center" href="https://cwiki.apache.org/confluence/display/Hive/" target="_blank" rel="noopener">HIVE</a><a class="author-info-links__name text-center" href="http://archive.cloudera.com/cdh5/cdh/5/" target="_blank" rel="noopener">CDH</a><a class="author-info-links__name text-center" href="http://flume.apache.org/" target="_blank" rel="noopener">FLUME</a><a class="author-info-links__name text-center" href="https://azkaban.github.io/" target="_blank" rel="noopener">AZKABAN</a><a class="author-info-links__name text-center" href="https://www.maxinhong.com/" target="_blank" rel="noopener">叶梨子</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/qingyunzong" target="_blank" rel="noopener">老铁</a><a class="author-info-links__name text-center" href="https://blog.csdn.net/jim8973/" target="_blank" rel="noopener">飞哥</a><a class="author-info-links__name text-center" href="https://vinxikk.github.io/" target="_blank" rel="noopener">vinx</a><a class="author-info-links__name text-center" href="http://dongxicheng.org/" target="_blank" rel="noopener">懂西成(Hadoop技术内幕作者)</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/xing901022/" target="_blank" rel="noopener">xingoo</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/itboys/tag/" target="_blank" rel="noopener">大葱拌豆腐</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/shishanyuan" target="_blank" rel="noopener">郭景瞻(图解Spark作者)</a><a class="author-info-links__name text-center" href="https://segmentfault.com/u/wishdaren_5c243b920a3eb" target="_blank" rel="noopener">Wish大人</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/huxi2b/" target="_blank" rel="noopener">huxi_2b(kafka)</a></div></div></div><div id="content-outer"><div id="top-container" style="background-image: url(/img/soroush-golpoor-1497416-unsplash.jpg)"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">TUNANのBlog</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> Search</span></a><a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/categories">Categories</a></span></div><div id="post-info"><div id="post-title">无锁 VS 偏向锁 VS 轻量级锁 VS 重量级锁</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2021-09-03</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/Java/">Java</a><div class="post-meta-wordcount"><span>Word count: </span><span class="word-count">2.1k</span><span class="post-meta__separator">|</span><span>Reading time: 6 min</span></div></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><p>这四种锁是指锁的状态，专门针对synchronized的。在介绍这四种锁状态之前还需要介绍一些额外的知识。</p>
+<p>首先为什么Synchronized能实现线程同步？</p>
+<p>在回答这个问题之前我们需要了解两个重要的概念：“Java对象头”、“Monitor”。</p>
+<h4 id="Java对象头"><a href="#Java对象头" class="headerlink" title="Java对象头"></a>Java对象头</h4><p>synchronized是悲观锁，在操作同步资源之前需要给同步资源先加锁，这把锁就是存在Java对象头里的，而Java对象头又是什么呢？</p>
+<p>我们以Hotspot虚拟机为例，Hotspot的对象头主要包括两部分数据：Mark Word（标记字段）、Klass Pointer（类型指针）。</p>
+<p><strong>Mark Word</strong>：默认存储对象的HashCode，分代年龄和锁标志位信息。这些信息都是与对象自身定义无关的数据，所以Mark Word被设计成一个非固定的数据结构以便在极小的空间内存存储尽量多的数据。它会根据对象的状态复用自己的存储空间，也就是说在运行期间Mark Word里存储的数据会随着锁标志位的变化而变化。</p>
+<p><strong>Klass Point</strong>：对象指向它的类元数据的指针，虚拟机通过这个指针来确定这个对象是哪个类的实例。</p>
+<h4 id="Monitor"><a href="#Monitor" class="headerlink" title="Monitor"></a>Monitor</h4><p>Monitor可以理解为一个同步工具或一种同步机制，通常被描述为一个对象。每一个Java对象就有一把看不见的锁，称为内部锁或者Monitor锁。</p>
+<p>Monitor是线程私有的数据结构，每一个线程都有一个可用monitor record列表，同时还有一个全局的可用列表。每一个被锁住的对象都会和一个monitor关联，同时monitor中有一个Owner字段存放拥有该锁的线程的唯一标识，表示该锁被这个线程占用。</p>
+<p>现在话题回到synchronized，synchronized通过Monitor来实现线程同步，Monitor是依赖于底层的操作系统的Mutex Lock（互斥锁）来实现的线程同步。</p>
+<p>如同我们在自旋锁中提到的“阻塞或唤醒一个Java线程需要操作系统切换CPU状态来完成，这种状态转换需要耗费处理器时间。如果同步代码块中的内容过于简单，状态转换消耗的时间有可能比用户代码执行的时间还要长”。这种方式就是synchronized最初实现同步的方式，这就是JDK 6之前synchronized效率低的原因。这种依赖于操作系统Mutex Lock所实现的锁我们称之为“重量级锁”，JDK 6中为了减少获得锁和释放锁带来的性能消耗，引入了“偏向锁”和“轻量级锁”。</p>
+<p>所以目前锁一共有4种状态，级别从低到高依次是：无锁、偏向锁、轻量级锁和重量级锁。锁状态只能升级不能降级。</p>
+<p>通过上面的介绍，我们对synchronized的加锁机制以及相关知识有了一个了解，那么下面我们给出四种锁状态对应的的Mark Word内容，然后再分别讲解四种锁状态的思路以及特点：</p>
+<table>
+<thead>
+<tr>
+<th align="left">锁状态</th>
+<th align="left">存储内容</th>
+<th align="left">存储内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">无锁</td>
+<td align="left">对象的hashCode、对象分代年龄、是否是偏向锁（0）</td>
+<td align="left">01</td>
+</tr>
+<tr>
+<td align="left">偏向锁</td>
+<td align="left">偏向线程ID、偏向时间戳、对象分代年龄、是否是偏向锁（1）</td>
+<td align="left">01</td>
+</tr>
+<tr>
+<td align="left">轻量级锁</td>
+<td align="left">指向栈中锁记录的指针</td>
+<td align="left">00</td>
+</tr>
+<tr>
+<td align="left">重量级锁</td>
+<td align="left">指向互斥量（重量级锁）的指针</td>
+<td align="left">10</td>
+</tr>
+</tbody></table>
+<p><strong>无锁</strong></p>
+<p>无锁没有对资源进行锁定，所有的线程都能访问并修改同一个资源，但同时只有一个线程能修改成功。</p>
+<p>无锁的特点就是修改操作在循环内进行，线程会不断的尝试修改共享资源。如果没有冲突就修改成功并退出，否则就会继续循环尝试。如果有多个线程修改同一个值，必定会有一个线程能修改成功，而其他修改失败的线程会不断重试直到修改成功。上面我们介绍的CAS原理及应用即是无锁的实现。无锁无法全面代替有锁，但无锁在某些场合下的性能是非常高的。</p>
+<p><strong>偏向锁</strong></p>
+<p>偏向锁是指一段同步代码一直被一个线程所访问，那么该线程会自动获取锁，降低获取锁的代价。</p>
+<p>在大多数情况下，锁总是由同一线程多次获得，不存在多线程竞争，所以出现了偏向锁。其目标就是在只有一个线程执行同步代码块时能够提高性能。</p>
+<p>当一个线程访问同步代码块并获取锁时，会在Mark Word里存储锁偏向的线程ID。在线程进入和退出同步块时不再通过CAS操作来加锁和解锁，而是检测Mark Word里是否存储着指向当前线程的偏向锁。引入偏向锁是为了在无多线程竞争的情况下尽量减少不必要的轻量级锁执行路径，因为轻量级锁的获取及释放依赖多次CAS原子指令，而偏向锁只需要在置换ThreadID的时候依赖一次CAS原子指令即可。</p>
+<p>偏向锁只有遇到其他线程尝试竞争偏向锁时，持有偏向锁的线程才会释放锁，线程不会主动释放偏向锁。偏向锁的撤销，需要等待全局安全点（在这个时间点上没有字节码正在执行），它会首先暂停拥有偏向锁的线程，判断锁对象是否处于被锁定状态。撤销偏向锁后恢复到无锁（标志位为“01”）或轻量级锁（标志位为“00”）的状态。</p>
+<p>偏向锁在JDK 6及以后的JVM里是默认启用的。可以通过JVM参数关闭偏向锁：-XX:-UseBiasedLocking=false，关闭之后程序默认会进入轻量级锁状态。</p>
+<p><strong>轻量级锁</strong></p>
+<p>是指当锁是偏向锁的时候，被另外的线程所访问，偏向锁就会升级为轻量级锁，其他线程会通过自旋的形式尝试获取锁，不会阻塞，从而提高性能。</p>
+<p>在代码进入同步块的时候，如果同步对象锁状态为无锁状态（锁标志位为“01”状态，是否为偏向锁为“0”），虚拟机首先将在当前线程的栈帧中建立一个名为锁记录（Lock Record）的空间，用于存储锁对象目前的Mark Word的拷贝，然后拷贝对象头中的Mark Word复制到锁记录中。</p>
+<p>拷贝成功后，虚拟机将使用CAS操作尝试将对象的Mark Word更新为指向Lock Record的指针，并将Lock Record里的owner指针指向对象的Mark Word。</p>
+<p>如果这个更新动作成功了，那么这个线程就拥有了该对象的锁，并且对象Mark Word的锁标志位设置为“00”，表示此对象处于轻量级锁定状态。</p>
+<p>如果轻量级锁的更新操作失败了，虚拟机首先会检查对象的Mark Word是否指向当前线程的栈帧，如果是就说明当前线程已经拥有了这个对象的锁，那就可以直接进入同步块继续执行，否则说明多个线程竞争锁。</p>
+<p>若当前只有一个等待线程，则该线程通过自旋进行等待。但是当自旋超过一定的次数，或者一个线程在持有锁，一个在自旋，又有第三个来访时，轻量级锁升级为重量级锁。</p>
+<p><strong>重量级锁</strong></p>
+<p>升级为重量级锁时，锁标志的状态值变为“10”，此时Mark Word中存储的是指向重量级锁的指针，此时等待锁的线程都会进入阻塞状态。</p>
+<p>整体的锁状态升级流程如下：</p>
+<p><img src="https://yerias.github.io/java_img/8afdf6f2.png" alt=""></p>
+<p>综上，偏向锁通过对比Mark Word解决加锁问题，避免执行CAS操作。而轻量级锁是通过用CAS操作和自旋来解决加锁问题，避免线程阻塞和唤醒而影响性能。重量级锁是将除了拥有锁的线程以外的线程都阻塞。</p>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="mailto:undefined" target="_blank" rel="noopener">Tunan</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="http://yerias.github.io/2021/09/03/java/19/">http://yerias.github.io/2021/09/03/java/19/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Java/">Java</a></div><div class="social-share" data-disabled="facebook,twitter,douban,linkedin,diandian"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js@1.0.16/dist/css/share.min.css"><script src="https://cdn.jsdelivr.net/npm/social-share.js@1.0.16/dist/js/social-share.min.js"></script><nav id="pagination"><div class="prev-post pull-left"><a href="/2021/09/03/java/20/"><i class="fa fa-chevron-left">  </i><span>公平锁 VS 非公平锁</span></a></div><div class="next-post pull-right"><a href="/2021/09/03/java/18/"><span>自旋锁 VS 适应性自旋锁</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer class="footer-bg" style="background-image: url(/img/soroush-golpoor-1497416-unsplash.jpg)"><div class="layout" id="footer"><div class="copyright">&copy;2018 - 2021 By Tunan</div><div class="framework-info"><span>Driven - </span><a href="#"><span>Hexo</span></a><span class="footer-separator">|</span><span>Theme - </span><a href="#"><span>Melody</span></a></div><div class="footer_custom_text">大家好，我是图南，很高兴认识你们！</div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file-o"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.6.1"></script><script src="/js/fancybox.js?version=1.6.1"></script><script src="/js/sidebar.js?version=1.6.1"></script><script src="/js/copy.js?version=1.6.1"></script><script src="/js/fireworks.js?version=1.6.1"></script><script src="/js/transition.js?version=1.6.1"></script><script src="/js/scroll.js?version=1.6.1"></script><script src="/js/head.js?version=1.6.1"></script><script src="/js/search/local-search.js"></script><script>if(/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+}</script><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">Local search</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="Search for Posts"></div></div></div><hr><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>Powered by</span> <a href="https://github.com/wzpan/hexo-generator-search" target="_blank" rel="noopener" style="color:#49B1F5;">hexo-generator-search</a></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div></body></html>
