@@ -1,0 +1,137 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="Java IO 概览"><meta name="keywords" content="Java"><meta name="author" content="Tunan"><meta name="copyright" content="Tunan"><title>Java IO 概览 | TUNANのBlog</title><link rel="shortcut icon" href="/melody-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.6.1"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.6.1"><link rel="dns-prefetch" href="https://cdn.staticfile.org"><link rel="dns-prefetch" href="https://cdn.bootcss.com"><link rel="dns-prefetch" href="https://creativecommons.org"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"We didn't find any results for the search: ${query}"}},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  }
+} </script></head><body><canvas class="fireworks"></canvas><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="toggle-sidebar-info text-center"><span data-toggle="Toggle article">Toggle site</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">Catalog</div><div class="sidebar-toc__progress"><span class="progress-notice">You've read</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Java-IO流"><span class="toc-number">1.</span> <span class="toc-text">Java IO流</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Java流操作的相关类或接口"><span class="toc-number">1.1.</span> <span class="toc-text">Java流操作的相关类或接口</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Java流类图结构"><span class="toc-number">1.2.</span> <span class="toc-text">Java流类图结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#流的概念和作用"><span class="toc-number">1.3.</span> <span class="toc-text">流的概念和作用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#IO流的分类"><span class="toc-number">1.4.</span> <span class="toc-text">IO流的分类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#字符流和字节流"><span class="toc-number">1.5.</span> <span class="toc-text">字符流和字节流</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#输入流和输出流"><span class="toc-number">1.6.</span> <span class="toc-text">输入流和输出流</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Java-IO流对象"><span class="toc-number">2.</span> <span class="toc-text">Java IO流对象</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#输入字节流-InputStream"><span class="toc-number">2.1.</span> <span class="toc-text">输入字节流 InputStream</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#输出字节流-OutputStream"><span class="toc-number">2.2.</span> <span class="toc-text">输出字节流 OutputStream</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#字节流的输入与输出对应图"><span class="toc-number">2.3.</span> <span class="toc-text">字节流的输入与输出对应图</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#字符输入流Reader"><span class="toc-number">2.4.</span> <span class="toc-text">字符输入流Reader</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#字符输出流Writer"><span class="toc-number">2.5.</span> <span class="toc-text">字符输出流Writer</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#字符流的输入与输出对应图"><span class="toc-number">2.6.</span> <span class="toc-text">字符流的输入与输出对应图</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#字符流与字节流的转换"><span class="toc-number">2.7.</span> <span class="toc-text">字符流与字节流的转换</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#File类"><span class="toc-number">2.8.</span> <span class="toc-text">File类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RandomAccessFile类"><span class="toc-number">2.9.</span> <span class="toc-text">RandomAccessFile类</span></a></li></ol></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="/img/xiaoqi.jpg"></div><div class="author-info__name text-center">Tunan</div><div class="author-info__description text-center">BigData Developer</div><div class="follow-button"><a href="#">Follow Me</a></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">Articles</span><span class="pull-right">264</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">Tags</span><span class="pull-right">39</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">Categories</span><span class="pull-right">35</span></a></div><hr><div class="author-info-links"><div class="author-info-links__title text-center">Links</div><a class="author-info-links__name text-center" href="https://hadoop.apache.org/docs/r2.10.0/hadoop-project-dist/hadoop-common/SingleCluster.html" target="_blank" rel="noopener">HADOOP</a><a class="author-info-links__name text-center" href="https://cwiki.apache.org/confluence/display/Hive/" target="_blank" rel="noopener">HIVE</a><a class="author-info-links__name text-center" href="http://archive.cloudera.com/cdh5/cdh/5/" target="_blank" rel="noopener">CDH</a><a class="author-info-links__name text-center" href="http://flume.apache.org/" target="_blank" rel="noopener">FLUME</a><a class="author-info-links__name text-center" href="https://azkaban.github.io/" target="_blank" rel="noopener">AZKABAN</a><a class="author-info-links__name text-center" href="https://www.maxinhong.com/" target="_blank" rel="noopener">叶梨子</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/qingyunzong" target="_blank" rel="noopener">老铁</a><a class="author-info-links__name text-center" href="https://blog.csdn.net/jim8973/" target="_blank" rel="noopener">飞哥</a><a class="author-info-links__name text-center" href="https://vinxikk.github.io/" target="_blank" rel="noopener">vinx</a><a class="author-info-links__name text-center" href="http://dongxicheng.org/" target="_blank" rel="noopener">懂西成(Hadoop技术内幕作者)</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/xing901022/" target="_blank" rel="noopener">xingoo</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/itboys/tag/" target="_blank" rel="noopener">大葱拌豆腐</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/shishanyuan" target="_blank" rel="noopener">郭景瞻(图解Spark作者)</a><a class="author-info-links__name text-center" href="https://segmentfault.com/u/wishdaren_5c243b920a3eb" target="_blank" rel="noopener">Wish大人</a><a class="author-info-links__name text-center" href="https://www.cnblogs.com/huxi2b/" target="_blank" rel="noopener">huxi_2b(kafka)</a></div></div></div><div id="content-outer"><div id="top-container" style="background-image: url(/img/soroush-golpoor-1497416-unsplash.jpg)"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">TUNANのBlog</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> Search</span></a><a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/categories">Categories</a></span></div><div id="post-info"><div id="post-title">Java IO 概览</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2021-09-04</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/Java/">Java</a><div class="post-meta-wordcount"><span>Word count: </span><span class="word-count">2.3k</span><span class="post-meta__separator">|</span><span>Reading time: 6 min</span></div></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><h2 id="Java-IO流"><a href="#Java-IO流" class="headerlink" title="Java IO流"></a>Java IO流</h2><p>Java IO 也称为IO流，IO = 流，它的核心就是对文件的操作，对于 字节 、字符类型的输入和输出流。</p>
+<p>IO是指对数据流的输入和输出，也称为IO流，IO流主要分为两大类，字节流和字符流。字节流可以处理任何类型的数据，如图片，视频等，字符流只能处理字符类型的数据。</p>
+<p>IO流的本质是数据传输，并且流是单向的。</p>
+<p>常用的字节流FileInputStream、FileOutputStream、ObjectInputStream、ObjectOutputStream。</p>
+<p>IO分阻塞型IO和非阻塞型IO（NIO）</p>
+<p>阻塞型IO在读取数据时，如果数据未到达，会一直阻塞到读取到数据为止，所以称为阻塞型IO，在高并发的环境下性能不佳。</p>
+<p>NIO不是使用 “流” 来作为数据的传输方式，而是使用通道，通道的数据传输是双向的，且NIO的数据写入和读取都是异步的，不会阻塞线程，所以称为非阻塞型IO，在高并发的环境下性能很好。</p>
+<h3 id="Java流操作的相关类或接口"><a href="#Java流操作的相关类或接口" class="headerlink" title="Java流操作的相关类或接口"></a><strong>Java流操作的相关类或接口</strong></h3><p>File – 文件类</p>
+<p>RandomAccessFile – 随机存储文件类</p>
+<p>InputStream – 字节输入流</p>
+<p>OutputStream – 字节输出流</p>
+<p>Reader – 字符输入流</p>
+<p>Writer – 字符输出流</p>
+<h3 id="Java流类图结构"><a href="#Java流类图结构" class="headerlink" title="Java流类图结构"></a><strong>Java流类图结构</strong></h3><p><img src="https://yerias.github.io/java_img/v2-eb4.jpg" alt=""></p>
+<h3 id="流的概念和作用"><a href="#流的概念和作用" class="headerlink" title="流的概念和作用"></a><strong>流的概念和作用</strong></h3><p>流是一组有顺序的，有起点和终点的字节集合，是对数据传输的总称或抽象。即数据在设备间传输称之为流。</p>
+<p>流的本质是数据传输，根据数据传输的特性将流区分为各种类，方便更直观的进行数据操作。</p>
+<h3 id="IO流的分类"><a href="#IO流的分类" class="headerlink" title="IO流的分类"></a><strong>IO流的分类</strong></h3><ul>
+<li><p>根据数据处理的不同类型分为：字节流和字符流</p>
+</li>
+<li><p>根据数据流向不同分为：输入流和输出流</p>
+</li>
+</ul>
+<h3 id="字符流和字节流"><a href="#字符流和字节流" class="headerlink" title="字符流和字节流"></a><strong>字符流和字节流</strong></h3><p>字符流的由来：因为数据编码的不同，而有了对字符进行高效操作的流对象，本质上其实就是对于字节流的读取时，去查了指定的码表。</p>
+<p>字节流和字符流的区别：</p>
+<ul>
+<li><p>读写单位的不同：字节流以字节（8bit）为单位。字符流以字符为单位，根据码表映射字符，一次可能读多个字节。</p>
+</li>
+<li><p>处理对象不同：字节流可以处理任何类型的数据，如图片、avi等，而字符流只能处理字符类型的数据。</p>
+</li>
+</ul>
+<h3 id="输入流和输出流"><a href="#输入流和输出流" class="headerlink" title="输入流和输出流"></a><strong>输入流和输出流</strong></h3><p>对于输入流只能进行读操作。</p>
+<p>对于输出流只能进行鞋操作。</p>
+<p>程序中需要对于传输数据的不同特性而使用不用的流。</p>
+<h2 id="Java-IO流对象"><a href="#Java-IO流对象" class="headerlink" title="Java IO流对象"></a><strong>Java IO流对象</strong></h2><h3 id="输入字节流-InputStream"><a href="#输入字节流-InputStream" class="headerlink" title="输入字节流 InputStream"></a><strong>输入字节流 InputStream</strong></h3><p>从IO中输入字节流的继承图中可以看出。</p>
+<ol>
+<li><p>InputStream是所有数据字节流的父类，它是一个抽象类。</p>
+</li>
+<li><p>ByteArrayInputStream、StringBufferInputStream、FileInputStream是三种基本的介质流，它们分别从Byte数组、StringBuffer、和本地文件中读取数据，PipedInputStream是从与其他线程共用的管道中读取数据。</p>
+</li>
+<li><p>ObjectInputStream和所有FileInputStream 的子类都是装饰流（装饰器模式的主角）。</p>
+</li>
+</ol>
+<h3 id="输出字节流-OutputStream"><a href="#输出字节流-OutputStream" class="headerlink" title="输出字节流 OutputStream"></a><strong>输出字节流 OutputStream</strong></h3><p>从IO中输入字节流的继承图中可以看出。</p>
+<ol>
+<li><p>OutputStream是所有输出字节流的父类，它是一个抽象类。</p>
+</li>
+<li><p>ByteArrayOutputStream、FIleOutputStream是两种基本的介质，它们分别向Byte 数组，和本地文件中写入数据。PipedOutputStream是从与其他线程共用的管道中写入数据。</p>
+</li>
+<li><p>ObjectOutputStream和所有FileOutputStream的子类都是装饰流。</p>
+</li>
+</ol>
+<h3 id="字节流的输入与输出对应图"><a href="#字节流的输入与输出对应图" class="headerlink" title="字节流的输入与输出对应图"></a><strong>字节流的输入与输出对应图</strong></h3><p><img src="https://yerias.github.io/java_img/v2-61.png" alt=""></p>
+<p>图中蓝色为主要对应部分，红色为不对应部分，黑色的虚线部分代表这些流一般需要搭配使用。从上面的图中可以看出Java IO中的字节流是非常对称的。我们来看看这些字节流中不对称的几个类。</p>
+<ol>
+<li>LineNumberInputStream 主要完成从流中读取数据时，会得到相应的行号，至于什么时候分行、在哪里分行是由改类主动确定的，并不是在原始中有这样一个行号。在输出部分没有对应的部分，我们完全可以自己建立一个LineNumberOutputStream，在最初写入时会有一个基准的行号，以后每次遇到换行时会在下一行添加一个行号，看起来也是可以的。好像更不入流了。</li>
+<li>PushbackInputStream 的功能是查看最后一个字节，不满意就放入缓冲区。主要用在编译器的语法、词法分析部分。输出部分的BufferedOutputStream 几乎实现相近的功能。</li>
+<li>StringBufferInputStream 已经被Deprecated，本身就不应该出现在InputStream 部分，主要因为String 应该属于字符流的范围。已经被废弃了，当然输出部分也没有必要需要它了！还允许它存在只是为了保持版本的向下兼容而已。</li>
+<li>SequenceInputStream 可以认为是一个工具类，将两个或者多个输入流当成一个输入流依次读取。完全可以从IO 包中去除，还完全不影响IO 包的结构，却让其更“纯洁”――纯洁的Decorator 模式。</li>
+<li>PrintStream 也可以认为是一个辅助工具。主要可以向其他输出流，或者FileInputStream 写入数据，本身内部实现还是带缓冲的。本质上是对其它流的综合运用的一个工具而已。一样可以踢出IO 包！System.out 和System.out 就是PrintStream 的实例。</li>
+</ol>
+<h3 id="字符输入流Reader"><a href="#字符输入流Reader" class="headerlink" title="字符输入流Reader"></a><strong>字符输入流Reader</strong></h3><p>在上面的继承关系图中可以看出：</p>
+<ol>
+<li><p>Reader是所有的输入字符流的父类，它是一个抽象类。</p>
+</li>
+<li><p>CharReader、StringReader 是两种基本的介质流，它们分别将Char数组、String中读取数据。PipedInputReader 是从与其他线程共用的管道中读取数据。</p>
+</li>
+<li><p>BuffereReader 很明显的是一个装饰器，它和其子类复制装饰其他Reader对象。</p>
+</li>
+<li><p>FilterReader 是所有自定义具体装饰流的父类，其子类PushbackReader 对Reader 对象进行装饰，回增加一个行号。</p>
+</li>
+<li><p>InputStreamReader 是一个连接字节流和字符流的桥梁，它将字节流转变为字符流。FileReader 可以说是一个达到此功能、常用的工具类，在其源代码中明显使用了将FileInputStream转变为Reader 的方法。我们可以从这个类中得到一定的技巧。Reader 中各个类的用途和使用方法基本和InputStream 中的类使用一致。</p>
+</li>
+</ol>
+<h3 id="字符输出流Writer"><a href="#字符输出流Writer" class="headerlink" title="字符输出流Writer"></a><strong>字符输出流Writer</strong></h3><p>在上面的关系图中可以看出：</p>
+<ol>
+<li><p>Writer 是所有输出字符流的父类，它是一个抽象类。</p>
+</li>
+<li><p>CharArrayWriter、StringWriter 是两种基本的介质流，它们分别向Char 数组、String 中写入数据。PipedInputWriter 是从与其他线程共用的管道中读取数据。</p>
+</li>
+<li><p>BuffereWriter 很明显是一个装饰器，他和其子类复制装饰其他Reader对象。</p>
+</li>
+<li><p>FilterWriter 和PrintStream 及其类似，功能和使用也非常相似。</p>
+</li>
+<li><p>OutputStreamWriter 是OutputStream 到Writer 转换到桥梁，它的子类FileWriter 其实就是一个实现此功能的具体类（具体可以研究一下SourceCode）。功能和使用OutputStream极其类似。</p>
+</li>
+</ol>
+<h3 id="字符流的输入与输出对应图"><a href="#字符流的输入与输出对应图" class="headerlink" title="字符流的输入与输出对应图"></a>字符流的输入与输出对应图</h3><p><img src="https://yerias.github.io/java_img/v2-614.png" alt=""></p>
+<h3 id="字符流与字节流的转换"><a href="#字符流与字节流的转换" class="headerlink" title="字符流与字节流的转换"></a><strong>字符流与字节流的转换</strong></h3><p>转换流的特点：</p>
+<ol>
+<li><p>其是字符流和字节流之间的桥梁。</p>
+</li>
+<li><p>可对读取到的字节数据经过指定编码转换成字符。</p>
+</li>
+<li><p>可对读取到的字符数据经过指定编码转换成字节。</p>
+</li>
+</ol>
+<p>何时使用转换流？</p>
+<ol>
+<li><p>当字节和字符之间有转换动作时。</p>
+</li>
+<li><p>流操作的数据需要编码或解码时。</p>
+</li>
+</ol>
+<p>具体的对象体现：</p>
+<ol>
+<li><p>InputStreamReader：字节到字符的桥梁。</p>
+</li>
+<li><p>OutputStreamWriter：字符到字节的桥梁。</p>
+</li>
+</ol>
+<p>这两个流对象时字符体系中的成员，它们有转换的作用，本身又是字符流，所以在构造的时候需要传入字节流对象进来。</p>
+<h3 id="File类"><a href="#File类" class="headerlink" title="File类"></a><strong>File类</strong></h3><p>File类是对文件系统中文件以及文件夹进行封装的对象，可以通过对象的思想来操作文件和文件夹。File类保存文件或目录的各种数据信息，包括文件名、文件长度、最后修改时间、是否可读、获取当前文件的路径名、判断文件是否存在、获取当前目录中的文件列表、创建、删除文件和目录等方法。</p>
+<h3 id="RandomAccessFile类"><a href="#RandomAccessFile类" class="headerlink" title="RandomAccessFile类"></a>RandomAccessFile类</h3><p>该对象不是流体系中的一员，其封装了字节流，同时还封装了一个缓冲区（字符数组），通过内部的指针来操作字符数组中的数据。该对象特点：</p>
+<ol>
+<li><p>该对象只能操作文件，所以构造函数接受两种数据类型的参数：</p>
+<ul>
+<li>字符串文件路径</li>
+<li>File对象</li>
+</ul>
+</li>
+<li><p>该对象既可以对文件进行读操作，也能进行写操作，在进行对象实例化时可指定操作模式（r , rw）。</p>
+</li>
+</ol>
+<p>注意：<strong>该对象在实例化时，如果要操作的文件不存在，会自动创建；如果文件存在，写数据未指定位置，会从头开始写，即覆盖原有的内容。</strong>可以用于多线程下载或多个线程同时写数据到文件。</p>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="mailto:undefined" target="_blank" rel="noopener">Tunan</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="http://yerias.github.io/2021/09/04/java/28/">http://yerias.github.io/2021/09/04/java/28/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Java/">Java</a></div><div class="social-share" data-disabled="facebook,twitter,douban,linkedin,diandian"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js@1.0.16/dist/css/share.min.css"><script src="https://cdn.jsdelivr.net/npm/social-share.js@1.0.16/dist/js/social-share.min.js"></script><nav id="pagination"><div class="prev-post pull-left"><a href="/2021/09/05/java/29/"><i class="fa fa-chevron-left">  </i><span>Guava ListenableFuture 源码解析</span></a></div><div class="next-post pull-right"><a href="/2021/09/04/java/27/"><span>Java Callable 和 Java Future</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer class="footer-bg" style="background-image: url(/img/soroush-golpoor-1497416-unsplash.jpg)"><div class="layout" id="footer"><div class="copyright">&copy;2018 - 2021 By Tunan</div><div class="framework-info"><span>Driven - </span><a href="#"><span>Hexo</span></a><span class="footer-separator">|</span><span>Theme - </span><a href="#"><span>Melody</span></a></div><div class="footer_custom_text">大家好，我是图南，很高兴认识你们！</div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file-o"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.6.1"></script><script src="/js/fancybox.js?version=1.6.1"></script><script src="/js/sidebar.js?version=1.6.1"></script><script src="/js/copy.js?version=1.6.1"></script><script src="/js/fireworks.js?version=1.6.1"></script><script src="/js/transition.js?version=1.6.1"></script><script src="/js/scroll.js?version=1.6.1"></script><script src="/js/head.js?version=1.6.1"></script><script src="/js/search/local-search.js"></script><script>if(/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+}</script><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">Local search</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="Search for Posts"></div></div></div><hr><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>Powered by</span> <a href="https://github.com/wzpan/hexo-generator-search" target="_blank" rel="noopener" style="color:#49B1F5;">hexo-generator-search</a></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div></body></html>
